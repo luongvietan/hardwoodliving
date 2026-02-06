@@ -273,7 +273,7 @@ type ActionResult<T> =
 
 ```
 GitHub Repository
-    ↓ (push to main)
+    ↓ (push to master)
 Vercel CI/CD Pipeline
     ↓ (build + deploy)
 ┌──────────────────────────────────┐
@@ -296,7 +296,7 @@ Sanity Content Lake    Supabase
 
 | Environment | Domain | Branch | Purpose |
 |---|---|---|---|
-| Production | `hardwoodliving.com` | `main` | Live website |
+| Production | `hardwoodliving.com` | `master` | Live website |
 | Staging | `hardwoodliving.net` | `staging` | Client review, QA |
 | Preview | Vercel preview URLs | PR branches | Developer preview |
 
@@ -322,7 +322,7 @@ NEXT_PUBLIC_SITE_URL=<site-url>
 1. Developer pushes to GitHub branch
 2. Vercel automatically builds preview deployment
 3. PR review + merge to `staging` → deploys to staging
-4. Merge `staging` to `main` → deploys to production
+4. Merge `staging` to `master` → deploys to production
 5. Sanity webhook triggers on-demand ISR revalidation
 
 **Monitoring:**

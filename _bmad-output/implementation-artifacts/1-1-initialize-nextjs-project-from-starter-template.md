@@ -2,7 +2,7 @@
 
 **Epic:** 1-Project Foundation & Site Shell
 **Story Key:** 1-1-initialize-nextjs-project-from-starter-template
-**Status:** review
+**Status:** done
 
 ## Story Requirements
 
@@ -14,16 +14,16 @@ So that **all future development has a consistent, working foundation**.
 
 ### Acceptance Criteria
 
-- [ ] **Given** no project exists yet
-- [ ] **When** the developer runs `npx create-next-app@latest hardwoodliving --typescript --tailwind --eslint --app --src-dir --import-alias "@/*"`
-- [ ] **Then** the project is created with TypeScript, Tailwind CSS, ESLint, App Router, and `src/` directory structure
-- [ ] **And** `next-sanity`, `@sanity/image-url`, `@sanity/vision`, `sanity` are installed
-- [ ] **And** `@supabase/supabase-js`, `@supabase/ssr` are installed
-- [ ] **And** TypeScript strict mode is enabled in `tsconfig.json`
-- [ ] **And** the project runs successfully on `localhost:3000`
-- [ ] **And** `.env.example` file is created with all required environment variable templates
-- [ ] **And** `.gitignore` includes `.env.local` and other sensitive files
-- [ ] **And** the project directory structure matches the Architecture document layout
+- [x] **Given** no project exists yet
+- [x] **When** the developer runs `npx create-next-app@latest hardwoodliving --typescript --tailwind --eslint --app --src-dir --import-alias "@/*"`
+- [x] **Then** the project is created with TypeScript, Tailwind CSS, ESLint, App Router, and `src/` directory structure
+- [x] **And** `next-sanity`, `@sanity/image-url`, `@sanity/vision`, `sanity` are installed
+- [x] **And** `@supabase/supabase-js`, `@supabase/ssr` are installed
+- [x] **And** TypeScript strict mode is enabled in `tsconfig.json`
+- [x] **And** the project runs successfully on `localhost:3000`
+- [x] **And** `.env.example` file is created with all required environment variable templates
+- [x] **And** `.gitignore` includes `.env.local` and other sensitive files
+- [x] **And** the project directory structure matches the Architecture document layout
 
 ---
 
@@ -113,15 +113,25 @@ Project initialized successfully. Verified all dependencies (Sanity, Supabase, T
 
 ### File List
 *List of all files created or modified in this story.*
-- [x] package.json
-- [x] tsconfig.json
-- [x] .env.example
-- [x] .gitignore
-- [x] src/app/layout.tsx
-- [x] src/app/page.tsx
-- [x] src/app/globals.css
-- [x] src/components/
-- [x] src/lib/
+- [x] package.json (modified — added Sanity, Supabase, shadcn dependencies)
+- [x] package-lock.json (modified — dependency lockfile)
+- [x] tsconfig.json (verified — strict mode enabled)
+- [x] .env.example (new — environment variable template)
+- [x] .gitignore (modified — added .env* pattern, .vercel)
+- [x] next.config.ts (verified — default Next.js config)
+- [x] src/app/layout.tsx (modified — project metadata)
+- [x] src/app/page.tsx (default — placeholder from create-next-app)
+- [x] src/app/globals.css (default — Tailwind CSS directives)
+- [x] src/components/ui/.gitkeep (new — directory scaffold)
+- [x] src/components/layout/.gitkeep (new — directory scaffold)
+- [x] src/components/products/.gitkeep (new — directory scaffold)
+- [x] src/components/forms/.gitkeep (new — directory scaffold)
+- [x] src/components/home/.gitkeep (new — directory scaffold)
+- [x] src/components/admin/.gitkeep (new — directory scaffold)
+- [x] src/lib/sanity/.gitkeep (new — directory scaffold)
+- [x] src/lib/supabase/.gitkeep (new — directory scaffold)
+- [x] src/lib/utils/.gitkeep (new — directory scaffold)
+- [x] src/lib/types/.gitkeep (new — directory scaffold)
 
 ### Tasks / Subtasks
 
@@ -135,7 +145,13 @@ Project initialized successfully. Verified all dependencies (Sanity, Supabase, T
 - [x] Verify project builds and runs (`npm run dev`)
 - [x] Commit initial project structure
 
+#### Additional Dependencies (documented by review)
+- `shadcn` (devDependency) — CLI tool for adding Tailwind-based UI components; not in original story scope but compatible with architecture (Tailwind utility classes)
+- `dotenv` (devDependency) — Environment variable loading for tests
+- `tsx` (devDependency) — TypeScript execution for Node.js test runner
+
 ### Change Log
 
 - **2026-02-07**: Story created for development.
 - **2026-02-07**: Story completed by Dev Agent.
+- **2026-02-07**: Code review — 7 issues found (2H, 3M, 2L). Fixed: ACs checked, shadcn moved to devDependencies, File List detailed, layout.tsx metadata updated, .gitignore duplicate removed, additional dependencies documented.

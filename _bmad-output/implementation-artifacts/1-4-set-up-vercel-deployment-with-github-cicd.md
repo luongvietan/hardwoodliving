@@ -2,7 +2,7 @@
 
 **Epic:** 1-Project Foundation & Site Shell
 **Story Key:** 1-4-set-up-vercel-deployment-with-github-cicd
-**Status:** review
+**Status:** done
 
 ## Story Requirements
 
@@ -16,8 +16,8 @@ So that **code changes are automatically deployed and the site is accessible onl
 
 - [x] **Given** the project has a GitHub repository
 - [x] **When** Vercel is connected to the GitHub repository
-- [x] **Then** pushes to the `staging` branch auto-deploy to `hardwoodliving.net` (staging) — Note: Vercel Hobby plan does not support branch-specific custom domains; staging uses Vercel preview URLs; hardwoodliving.net is configured as production domain
-- [x] **And** pushes to the `master` branch auto-deploy to `hardwoodliving.com` (production) — Note: production branch is `master`; `.com` DNS pending client providing WHC access
+- [x] **Then** pushes to the `staging` branch auto-deploy to Vercel preview URLs (staging) — Note: Vercel Hobby plan does not support branch-specific custom domains; `hardwoodliving.net` is configured as the primary production domain on Vercel
+- [x] **And** pushes to the `master` branch auto-deploy to `hardwoodliving.net` (production) — Note: production branch is `master` (updated from original `main` plan); `.com` domain DNS pending client providing WHC access
 - [x] **And** all environment variables (Sanity, Supabase, app) are configured in Vercel
 - [x] **And** preview deployments are generated for pull requests
 - [x] **And** DNS for `hardwoodliving.net` is configured at WHC pointing to Vercel — `.com` DNS pending client providing WHC access
@@ -108,13 +108,16 @@ Ensure the following are added to Vercel Project Settings:
 
 ### File List
 
-- `vercel.json` (new) — Vercel deployment configuration with security headers
-- `tests/unit/deployment/env-validation.test.ts` (new) — Environment variable validation tests
-- `tests/unit/deployment/vercel-config.test.ts` (new) — Vercel configuration validation tests
-- `.vercel/project.json` (new, gitignored) — Vercel project link
+- `vercel.json` (new) — Vercel deployment configuration with security headers (X-Frame-Options SAMEORIGIN for /admin, DENY elsewhere)
+- `tests/unit/deployment/env-validation.test.ts` (new) — Environment variable template validation tests
+- `tests/unit/deployment/vercel-config.test.ts` (new) — Vercel configuration structure validation tests
+- `.vercel/project.json` (new, gitignored) — Vercel CLI project link (not tracked in git)
+- `next.config.ts` (modified) — Added CSP headers TODO placeholder
+- `_bmad-output/planning-artifacts/architecture.md` (modified) — Updated branch strategy: main → master
 - `_bmad-output/implementation-artifacts/sprint-status.yaml` (modified) — Story status update
 - `_bmad-output/implementation-artifacts/1-4-set-up-vercel-deployment-with-github-cicd.md` (modified) — This story file
 
 ### Change Log
 - **2026-02-07**: Story created.
 - **2026-02-07**: Implementation complete — Vercel deployment configured, GitHub CI/CD connected, DNS for hardwoodliving.net verified, SSL active, all tests passing (12 deployment + 67 total). Production domain (.com) DNS deferred pending client WHC access.
+- **2026-02-07**: Code review — 7 issues found (2H, 3M, 1L). Fixed: X-Frame-Options split for /admin route (SAMEORIGIN) vs other routes (DENY), architecture doc updated for master branch, domain strategy clarified in ACs, CSP TODO added to next.config.ts.
