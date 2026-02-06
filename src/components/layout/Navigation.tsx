@@ -1,14 +1,23 @@
 import Link from 'next/link';
-import { navigationLinks } from '@/lib/navigation';
+
+interface NavLink {
+  label: string;
+  href: string;
+}
+
+interface NavigationProps {
+  links?: NavLink[];
+}
 
 /**
  * Desktop navigation component with horizontal link layout.
  * Hidden on mobile (< md breakpoint), shown on tablet and desktop.
+ * Receives navigation data from Sanity CMS via Header.
  */
-export default function Navigation() {
+export default function Navigation({ links = [] }: NavigationProps) {
   return (
     <nav className="hidden md:flex md:items-center md:gap-1" aria-label="Main navigation">
-      {navigationLinks.map((link) => (
+      {links.map((link) => (
         <Link
           key={link.href}
           href={link.href}

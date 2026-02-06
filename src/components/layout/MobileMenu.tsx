@@ -3,7 +3,15 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { navigationLinks } from '@/lib/navigation';
+
+interface NavLink {
+  label: string;
+  href: string;
+}
+
+interface MobileMenuProps {
+  links?: NavLink[];
+}
 
 /**
  * Mobile navigation menu with hamburger toggle.
@@ -17,7 +25,7 @@ import { navigationLinks } from '@/lib/navigation';
  * - Focus is trapped within the menu when open
  * - Focus returns to hamburger button when menu closes
  */
-export default function MobileMenu() {
+export default function MobileMenu({ links = [] }: MobileMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -125,7 +133,7 @@ export default function MobileMenu() {
           className="absolute left-0 right-0 top-full z-50 border-b border-gray-200 bg-white shadow-lg"
         >
           <nav className="space-y-1 px-4 pb-4 pt-2" aria-label="Mobile navigation">
-            {navigationLinks.map((link) => (
+            {links.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
