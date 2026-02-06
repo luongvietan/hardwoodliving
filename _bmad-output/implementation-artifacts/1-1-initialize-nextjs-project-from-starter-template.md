@@ -2,7 +2,7 @@
 
 **Epic:** 1-Project Foundation & Site Shell
 **Story Key:** 1-1-initialize-nextjs-project-from-starter-template
-**Status:** ready-for-dev
+**Status:** review
 
 ## Story Requirements
 
@@ -109,30 +109,33 @@ src/
 *Use this section to log any errors encountered and how they were resolved.*
 
 #### Completion Notes
-*Summary of what was implemented, any deviations from the plan, and verification results.*
+Project initialized successfully. Verified all dependencies (Sanity, Supabase, Tailwind, TypeScript) are installed. Created `.env.example` with required variables. Updated `.gitignore` to allow `.env.example`. Scaffolded `src/` directory structure matching architecture requirements. Verified build passes. Committed initial structure.
 
 ### File List
 *List of all files created or modified in this story.*
-- [ ] package.json
-- [ ] tsconfig.json
-- [ ] .env.example
-- [ ] .gitignore
-- [ ] src/app/layout.tsx
-- [ ] src/app/page.tsx
-- [ ] src/app/globals.css
+- [x] package.json
+- [x] tsconfig.json
+- [x] .env.example
+- [x] .gitignore
+- [x] src/app/layout.tsx
+- [x] src/app/page.tsx
+- [x] src/app/globals.css
+- [x] src/components/
+- [x] src/lib/
 
 ### Tasks / Subtasks
 
-- [ ] Run `create-next-app` to initialize project
-- [ ] Install Sanity dependencies (`next-sanity`, `sanity`, etc.)
-- [ ] Install Supabase dependencies (`@supabase/supabase-js`, `@supabase/ssr`)
-- [ ] Verify `tsconfig.json` strict mode
-- [ ] Create `.env.example` with required variables
-- [ ] Update `.gitignore` to include local environment files
-- [ ] Scaffold `src/` directory structure (components, lib folders)
-- [ ] Verify project builds and runs (`npm run dev`)
-- [ ] Commit initial project structure
+- [x] Run `create-next-app` to initialize project
+- [x] Install Sanity dependencies (`next-sanity`, `sanity`, etc.)
+- [x] Install Supabase dependencies (`@supabase/supabase-js`, `@supabase/ssr`)
+- [x] Verify `tsconfig.json` strict mode
+- [x] Create `.env.example` with required variables
+- [x] Update `.gitignore` to include local environment files
+- [x] Scaffold `src/` directory structure (components, lib folders)
+- [x] Verify project builds and runs (`npm run dev`)
+- [x] Commit initial project structure
 
 ### Change Log
 
 - **2026-02-07**: Story created for development.
+- **2026-02-07**: Story completed by Dev Agent.

@@ -41,8 +41,8 @@ story_location: _bmad-output/implementation-artifacts
 
 development_status:
   epic-1: in-progress
-  1-1-initialize-nextjs-project-from-starter-template: in-progress
-  1-2-configure-sanity-cms-project-and-content-schemas: ready-for-dev
+  1-1-initialize-nextjs-project-from-starter-template: review
+  1-2-configure-sanity-cms-project-and-content-schemas: done
   1-3-configure-supabase-database-and-security-policies: ready-for-dev
   1-4-set-up-vercel-deployment-with-github-cicd: ready-for-dev
   1-5-build-responsive-site-layout-with-navigation: ready-for-dev
