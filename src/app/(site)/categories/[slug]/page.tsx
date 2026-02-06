@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
+import type { Image as SanityImage } from "sanity";
 import Container from "@/components/layout/Container";
 import { sanityFetch } from "@/lib/sanity/fetch";
 import { urlFor } from "@/lib/sanity/image";
@@ -32,7 +33,7 @@ interface Category {
   title: string;
   slug: { current: string };
   description?: string;
-  image?: { asset?: { _ref: string } };
+  image?: SanityImage;
 }
 
 interface Product {
@@ -41,7 +42,7 @@ interface Product {
   slug: { current: string };
   description?: string;
   price: number;
-  images?: { asset?: { _ref: string } }[];
+  images?: SanityImage[];
   isFeatured?: boolean;
 }
 
