@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import type { Image as SanityImage } from "sanity";
 import Container from "@/components/layout/Container";
 import { sanityFetch } from "@/lib/sanity/fetch";
 import { getHomepageQuery } from "@/lib/sanity/queries";
@@ -9,7 +10,7 @@ interface HomepageData {
   hero?: {
     heading?: string;
     subheading?: string;
-    image?: { asset?: { _ref: string } };
+    image?: SanityImage;
     ctaLink?: string;
     ctaText?: string;
   };
@@ -19,12 +20,12 @@ interface HomepageData {
     title: string;
     slug: { current: string };
     price: number;
-    images?: { asset?: { _ref: string } }[];
+    images?: SanityImage[];
   }[];
   testimonials?: {
     author: string;
     content: string;
-    image?: { asset?: { _ref: string } };
+    image?: SanityImage;
   }[];
 }
 

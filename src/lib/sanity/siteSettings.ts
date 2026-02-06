@@ -1,9 +1,10 @@
+import type { Image as SanityImage } from "sanity";
 import { sanityFetch } from "./fetch";
 import { getSiteSettingsQuery } from "./queries";
 
 export interface SiteSettings {
   siteName?: string;
-  logo?: { asset?: { _ref: string } };
+  logo?: SanityImage;
   navigation?: { title: string; path: string; _key: string }[];
   contactInfo?: {
     email?: string;
