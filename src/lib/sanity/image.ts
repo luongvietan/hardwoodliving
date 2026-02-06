@@ -1,5 +1,5 @@
 import { createImageUrlBuilder } from '@sanity/image-url';
-import type { Image } from 'sanity';
+import type { SanityImageValue } from './types';
 import { dataset, projectId } from './client';
 
 const imageBuilder = createImageUrlBuilder({
@@ -7,6 +7,6 @@ const imageBuilder = createImageUrlBuilder({
     dataset: dataset || '',
 });
 
-export const urlFor = (source: Image) => {
+export const urlFor = (source: SanityImageValue) => {
     return imageBuilder.image(source);
 };

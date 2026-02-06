@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import type { Image as SanityImage } from "sanity";
+import type { SanityImageValue } from "@/lib/sanity/types";
 import Container from "@/components/layout/Container";
 import { sanityFetch } from "@/lib/sanity/fetch";
 import { getProductBySlugQuery } from "@/lib/sanity/queries";
@@ -18,7 +18,7 @@ interface Product {
   description?: string;
   specs?: { label: string; value: string; _key: string }[];
   price: number;
-  images?: SanityImage[];
+  images?: SanityImageValue[];
   category?: {
     _id: string;
     title: string;

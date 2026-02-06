@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
     const tags = tagMap[type] || [type];
 
     for (const tag of tags) {
-      revalidateTag(tag);
+      revalidateTag(tag, "max");
     }
 
     return NextResponse.json({
