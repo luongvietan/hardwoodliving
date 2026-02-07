@@ -5,6 +5,25 @@ export default defineType({
     name: 'product',
     title: 'Product',
     type: 'document',
+    preview: {
+        select: {
+            title: 'title',
+            categoryTitle: 'category.title',
+            price: 'price',
+            priceUnit: 'priceUnit',
+            visibility: 'visibility',
+            media: 'images.0',
+        },
+        prepare({ title, categoryTitle, price, priceUnit, visibility, media }) {
+            const priceStr = price != null ? `$${price}${priceUnit ? ` ${priceUnit}` : ''}` : '';
+            const badge = visibility === 'wholesale' ? ' [Wholesale]' : visibility === 'hidden' ? ' [Hidden]' : '';
+            return {
+                title: `${title || 'Untitled'}${badge}`,
+                subtitle: [categoryTitle, priceStr].filter(Boolean).join(' — '),
+                media,
+            };
+        },
+    },
     fields: [
         defineField({
             name: 'title',

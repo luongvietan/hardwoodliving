@@ -1,5 +1,6 @@
 import { defineConfig } from 'sanity';
 import { type StructureResolver, structureTool } from 'sanity/structure';
+import { presentationTool } from 'sanity/presentation';
 import { visionTool } from '@sanity/vision';
 import { schemaTypes } from './src/lib/sanity/schemas';
 
@@ -49,6 +50,14 @@ export default defineConfig({
 
     plugins: [
         structureTool({ structure }),
+        presentationTool({
+            previewUrl: {
+                origin: process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000',
+                previewMode: {
+                    enable: '/api/draft-mode/enable',
+                },
+            },
+        }),
         visionTool(),
     ],
 

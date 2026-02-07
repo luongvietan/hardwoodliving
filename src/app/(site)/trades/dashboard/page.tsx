@@ -4,6 +4,9 @@ import Link from "next/link";
 import Container from "@/components/layout/Container";
 import { createClient } from "@/lib/supabase/server";
 import { LogoutButton } from "./LogoutButton";
+import type { Database } from "@/lib/types/supabase";
+
+type TradeProfile = Database["public"]["Tables"]["trades"]["Row"];
 
 export const metadata: Metadata = {
   title: "Trade Dashboard | Hardwood Living",
@@ -25,7 +28,7 @@ export default async function TradeDashboardPage() {
     .from("trades")
     .select("*")
     .eq("id", user.id)
-    .single();
+    .single() as { data: TradeProfile | null };
 
   const userName = tradeProfile?.name || user.user_metadata?.name || user.email;
   const companyName = tradeProfile?.company || user.user_metadata?.company || "Your Company";
