@@ -5,6 +5,10 @@ import { createClient } from "@/lib/supabase/server";
 import { isAdmin } from "@/lib/utils/isAdmin";
 import InquiriesSection from "@/components/admin/InquiriesSection";
 import TradesSection from "@/components/admin/TradesSection";
+import type { Database } from "@/lib/types/supabase";
+
+type InquiryRow = Database["public"]["Tables"]["inquiries"]["Row"];
+type TradeRow = Database["public"]["Tables"]["trades"]["Row"];
 
 export const metadata: Metadata = {
   title: "Leads Management | Hardwood Living",
@@ -63,10 +67,10 @@ export default async function LeadsPage() {
       )}
 
       {/* Inquiries with filtering and export */}
-      <InquiriesSection inquiries={inquiries ?? []} />
+      <InquiriesSection inquiries={(inquiries ?? []) as InquiryRow[]} />
 
       {/* Trades with filtering and export */}
-      <TradesSection trades={trades ?? []} />
+      <TradesSection trades={(trades ?? []) as TradeRow[]} />
     </Container>
   );
 }

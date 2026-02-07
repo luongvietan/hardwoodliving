@@ -48,10 +48,13 @@ export async function generateMetadata(): Promise<Metadata> {
 
   if (page?.seo) {
     const metadata: Metadata = {
-      title: page.seo.metaTitle || page.title || "Trades | Hardwood Living",
+      title: page.seo.metaTitle || page.title || "Trade Program",
       description:
         page.seo.metaDescription ||
         "Join our Trade Program for exclusive pricing, dedicated support, and wholesale access to premium hardwood products.",
+      alternates: {
+        canonical: "/trades",
+      },
     };
 
     if (page.seo.openGraphImage?.asset?._ref) {
@@ -74,9 +77,12 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 
   return {
-    title: page?.title || "Trades | Hardwood Living",
+    title: page?.title || "Trade Program",
     description:
       "Join our Trade Program for exclusive pricing, dedicated support, and wholesale access to premium hardwood products.",
+    alternates: {
+      canonical: "/trades",
+    },
   };
 }
 

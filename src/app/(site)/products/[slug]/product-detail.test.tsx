@@ -5,7 +5,7 @@
  * sanityFetch is mocked globally in test-setup.ts and overridden per-test.
  */
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import ProductPage from "./page";
 import { sanityFetch } from "@/lib/sanity/fetch";
 
@@ -77,22 +77,30 @@ describe("Product Detail Page", () => {
   it("renders product gallery with main image", async () => {
     vi.mocked(sanityFetch).mockResolvedValueOnce(fullProduct);
     await renderProductPage();
-    const mainImage = screen.getByAltText("Premium Oak Plank");
-    expect(mainImage).toBeInTheDocument();
+    // ProductGallery is dynamically imported — wait for lazy load to resolve
+    await waitFor(() => {
+      expect(screen.getByAltText("Premium Oak Plank")).toBeInTheDocument();
+    });
   });
 
   it("renders gallery with thumbnail navigation", async () => {
     vi.mocked(sanityFetch).mockResolvedValueOnce(fullProduct);
     await renderProductPage();
-    const thumbnails = screen.getAllByRole("button");
-    expect(thumbnails.length).toBeGreaterThanOrEqual(2);
+    // ProductGallery is dynamically imported — wait for lazy load to resolve
+    await waitFor(() => {
+      const thumbnails = screen.getAllByRole("button");
+      expect(thumbnails.length).toBeGreaterThanOrEqual(2);
+    });
   });
 
   it("renders gallery region with aria-label", async () => {
     vi.mocked(sanityFetch).mockResolvedValueOnce(fullProduct);
     const { container } = await renderProductPage();
-    const gallery = container.querySelector("[role='region']");
-    expect(gallery).toBeTruthy();
+    // ProductGallery is dynamically imported — wait for lazy load to resolve
+    await waitFor(() => {
+      const gallery = container.querySelector("[role='region']");
+      expect(gallery).toBeTruthy();
+    });
   });
 
   it("renders Featured badge when product is featured", async () => {

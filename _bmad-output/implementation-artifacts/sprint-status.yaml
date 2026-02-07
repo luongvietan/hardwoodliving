@@ -91,10 +91,10 @@ development_status:
   epic-7-retrospective: optional
 
   epic-8: in-progress
-  8-1-implement-technical-seo: ready-for-dev
-  8-2-implement-structured-data-and-url-redirects: ready-for-dev
-  8-3-build-custom-error-pages: ready-for-dev
-  8-4-performance-optimization: ready-for-dev
-  8-5-accessibility-compliance: ready-for-dev
-  8-6-cross-browser-testing-and-production-launch: ready-for-dev
+  8-1-implement-technical-seo: done
+  8-2-implement-structured-data-and-url-redirects: done
+  8-3-build-custom-error-pages: done
+  8-4-performance-optimization: done
+  8-5-accessibility-compliance: done
+  8-6-cross-browser-testing-and-production-launch: in-progress
   epic-8-retrospective: optional

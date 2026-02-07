@@ -37,6 +37,9 @@ interface Product {
 export const metadata: Metadata = {
   title: "Product Catalog",
   description: "Browse our complete range of premium hardwood flooring products by category.",
+  alternates: {
+    canonical: "/products",
+  },
 };
 
 export default async function ProductsCatalogPage({
@@ -160,6 +163,8 @@ export default async function ProductsCatalogPage({
                                 .url()}
                               alt={category.title}
                               fill
+                              sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+                              loading="lazy"
                               className="object-cover transition-transform duration-300 group-hover:scale-105"
                             />
                           ) : (

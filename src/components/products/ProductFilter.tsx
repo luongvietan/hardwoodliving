@@ -75,11 +75,12 @@ export default function ProductFilter({
       <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-gray-500">
         Filter by Category
       </h2>
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-2" role="group" aria-label="Category filters">
         <button
           type="button"
           onClick={() => handleCategoryClick(null)}
-          className={`rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+          aria-pressed={isActive(null)}
+          className={`rounded-full px-4 py-2 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 ${
             isActive(null)
               ? "bg-amber-700 text-white"
               : "bg-gray-100 text-gray-700 hover:bg-gray-200"
@@ -92,7 +93,8 @@ export default function ProductFilter({
             key={cat._id}
             type="button"
             onClick={() => handleCategoryClick(cat.slug.current)}
-            className={`rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+            aria-pressed={isActive(cat.slug.current)}
+            className={`rounded-full px-4 py-2 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 ${
               isActive(cat.slug.current)
                 ? "bg-amber-700 text-white"
                 : "bg-gray-100 text-gray-700 hover:bg-gray-200"
@@ -108,11 +110,12 @@ export default function ProductFilter({
           <h3 className="mb-3 mt-6 text-sm font-semibold uppercase tracking-wider text-gray-500">
             Filter by Product Type
           </h3>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2" role="group" aria-label="Product type filters">
             <button
               type="button"
               onClick={() => handleTypeClick(null)}
-              className={`rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+              aria-pressed={isTypeActive(null)}
+              className={`rounded-full px-4 py-2 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 ${
                 isTypeActive(null)
                   ? "bg-amber-700 text-white"
                   : "bg-gray-100 text-gray-700 hover:bg-gray-200"
@@ -125,7 +128,8 @@ export default function ProductFilter({
                 key={type._id}
                 type="button"
                 onClick={() => handleTypeClick(type.slug.current)}
-                className={`rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+                aria-pressed={isTypeActive(type.slug.current)}
+                className={`rounded-full px-4 py-2 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 ${
                   isTypeActive(type.slug.current)
                     ? "bg-amber-700 text-white"
                     : "bg-gray-100 text-gray-700 hover:bg-gray-200"

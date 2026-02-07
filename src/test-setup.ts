@@ -3,6 +3,27 @@ import { vi } from "vitest";
 import { createElement, type ImgHTMLAttributes, type AnchorHTMLAttributes, type ReactNode } from "react";
 
 // ---------------------------------------------------------------------------
+// Mock: next/dynamic -> uses React.lazy + Suspense for proper async resolution
+// in test environment. Components will render after the import resolves.
+// ---------------------------------------------------------------------------
+vi.mock("next/dynamic", async () => {
+  const React = await import("react");
+  return {
+    __esModule: true,
+    default: (importFn: () => Promise<{ default: unknown }>, _opts?: Record<string, unknown>) => {
+      const LazyComponent = React.lazy(importFn as () => Promise<{ default: React.ComponentType<Record<string, unknown>> }>);
+      return function DynamicMock(props: Record<string, unknown>) {
+        return React.createElement(
+          React.Suspense,
+          { fallback: null },
+          React.createElement(LazyComponent, props)
+        );
+      };
+    },
+  };
+});
+
+// ---------------------------------------------------------------------------
 // Mock: next/image -> renders a plain <img> with src, alt, and data attributes
 // ---------------------------------------------------------------------------
 vi.mock("next/image", () => ({

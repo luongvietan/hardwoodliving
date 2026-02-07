@@ -2,7 +2,7 @@
 
 **Epic:** 8-SEO, Performance & Launch Readiness
 **Story Key:** 8-1-implement-technical-seo
-**Status:** ready-for-dev
+**Status:** done
 
 ## Story Requirements
 
@@ -14,13 +14,13 @@ So that **customers can find us organically**.
 
 ### Acceptance Criteria
 
-- [ ] **Given** the site content is populated
-- [ ] **When** a crawler visits the site
-- [ ] **Then** a `sitemap.xml` is available listing all pages and products
-- [ ] **And** a `robots.txt` controls crawling access
-- [ ] **And** every page has unique Title and Meta Description
-- [ ] **And** Canonical URLs are self-referencing
-- [ ] **And** Semantic HTML (H1-H6) is used correctly
+- [x] **Given** the site content is populated
+- [x] **When** a crawler visits the site
+- [x] **Then** a `sitemap.xml` is available listing all pages and products
+- [x] **And** a `robots.txt` controls crawling access
+- [x] **And** every page has unique Title and Meta Description
+- [x] **And** Canonical URLs are self-referencing
+- [x] **And** Semantic HTML (H1-H6) is used correctly
 
 ---
 
@@ -48,15 +48,24 @@ So that **customers can find us organically**.
     Ensure `generateMetadata` in all dynamic pages populates fields.
 
 ### File List
-- [ ] src/app/sitemap.ts
-- [ ] src/app/robots.ts
+- [x] src/app/sitemap.ts (new)
+- [x] src/app/robots.ts (new)
+- [x] src/app/sitemap.test.tsx (new)
+- [x] src/app/robots.test.tsx (new)
+- [x] src/app/layout.tsx (modified - metadataBase, OG, canonical)
+- [x] src/app/(site)/products/[slug]/page.tsx (modified - canonical)
+- [x] src/app/(site)/categories/[slug]/page.tsx (modified - canonical)
+- [x] src/app/(site)/pages/[slug]/page.tsx (modified - canonical)
+- [x] src/app/(site)/products/page.tsx (modified - canonical)
+- [x] src/app/(site)/contact/page.tsx (modified - canonical)
+- [x] src/app/(site)/trades/page.tsx (modified - canonical)
 
 ### Tasks / Subtasks
 
-- [ ] Create Dynamic Sitemap
-- [ ] Create Robots.txt
-- [ ] Validated Metadata Implementation
-- [ ] Verify HTML Semantics
+- [x] Create Dynamic Sitemap
+- [x] Create Robots.txt
+- [x] Validated Metadata Implementation
+- [x] Verify HTML Semantics
 
 ### Testing Requirements
 
@@ -76,5 +85,19 @@ So that **customers can find us organically**.
 5. For async Server Components: `const jsx = await ServerComponent(); render(<>{jsx}</>);`
 6. Run with: `npm run test:components`
 
+### Dev Agent Record
+
+**Implementation Notes:**
+- Created dynamic sitemap.ts using Next.js Metadata API, fetching products/categories/pages from Sanity
+- Created robots.ts allowing / and disallowing /admin, /api paths
+- Added metadataBase to root layout for proper canonical URL resolution
+- Added Open Graph base config (type, locale, siteName) to root layout
+- Added canonical URLs (alternates.canonical) to ALL page routes
+- All pages already had proper H1-H6 semantic hierarchy (verified)
+- Every page has unique title via template pattern "%s | Hardwood Living"
+- All 9 tests pass (4 sitemap + 5 robots)
+
 ### Change Log
 - **2026-02-07**: Story created.
+- **2026-02-07**: Implementation complete. Sitemap, robots, metadata enhancements, canonical URLs added.
+- **2026-02-07**: Code review fixes applied: Extracted SITE_URL to shared `src/lib/constants.ts` (DRY), added `Promise.allSettled` error handling in sitemap.ts.

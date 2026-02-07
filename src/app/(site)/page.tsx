@@ -3,9 +3,11 @@ import HeroSection from "@/components/home/HeroSection";
 import IntroBlurb from "@/components/home/IntroBlurb";
 import FeaturedProducts from "@/components/home/FeaturedProducts";
 import Testimonials from "@/components/home/Testimonials";
+import JsonLd, { buildOrganizationJsonLd } from "@/components/seo/JsonLd";
 import { sanityFetch } from "@/lib/sanity/fetch";
 import { getHomepageQuery } from "@/lib/sanity/queries";
 import { urlFor } from "@/lib/sanity/image";
+import { SITE_URL } from "@/lib/constants";
 
 interface HomepageData {
   hero?: {
@@ -51,6 +53,16 @@ export default async function Home() {
 
   return (
     <>
+      {/* Organization Schema */}
+      <JsonLd
+        data={buildOrganizationJsonLd({
+          name: "Hardwood Living",
+          url: SITE_URL,
+          description:
+            "Premium hardwood flooring, engineered wood, and luxury vinyl options for residential and commercial spaces across Canada.",
+        })}
+      />
+
       {/* Hero Section */}
       <HeroSection
         heading={data?.hero?.heading}

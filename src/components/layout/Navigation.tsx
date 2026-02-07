@@ -21,7 +21,7 @@ export default function Navigation({ links = [] }: NavigationProps) {
         <Link
           key={link.href}
           href={link.href}
-          className="rounded-md px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-amber-50 hover:text-amber-900"
+          className="rounded-md px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-amber-50 hover:text-amber-900 focus-visible:bg-amber-50 focus-visible:text-amber-900"
         >
           {link.label}
         </Link>

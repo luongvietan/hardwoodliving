@@ -7,9 +7,12 @@ import {
 } from "@/lib/sanity/siteSettings";
 
 export const metadata: Metadata = {
-  title: "Contact | Hardwood Living",
+  title: "Contact Us",
   description:
     "Get in touch with our team for consultations, quotes, and inquiries about premium hardwood products.",
+  alternates: {
+    canonical: "/contact",
+  },
 };
 
 export default async function ContactPage({

@@ -1,14 +1,23 @@
 import type { Metadata } from "next";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import type { SanityImageValue } from "@/lib/sanity/types";
 import Container from "@/components/layout/Container";
 import ProductSpecs from "@/components/products/ProductSpecs";
 import ProductPrice from "@/components/products/ProductPrice";
-import ProductGallery from "@/components/products/ProductGallery";
+import JsonLd, { buildProductJsonLd, buildBreadcrumbJsonLd } from "@/components/seo/JsonLd";
 import { sanityFetch } from "@/lib/sanity/fetch";
+import { urlFor } from "@/lib/sanity/image";
 import { getVisibleProductBySlugQuery, getPublicProductSlugsQuery } from "@/lib/sanity/queries";
 import { getUserRole, getVisibilityOptions } from "@/lib/sanity/visibility";
 import { notFound } from "next/navigation";
+import { SITE_URL } from "@/lib/constants";
+
+/** Dynamically import ProductGallery for code splitting (heavy component with image logic) */
+const ProductGallery = dynamic(
+  () => import("@/components/products/ProductGallery"),
+  { ssr: true }
+);
 
 interface Product {
   _id: string;
@@ -55,6 +64,9 @@ export async function generateMetadata({
   return {
     title: product.title,
     description: product.description || `View ${product.title} details.`,
+    alternates: {
+      canonical: `/products/${slug}`,
+    },
   };
 }
 
@@ -78,8 +90,35 @@ export default async function ProductPage({
 
   if (!product) notFound();
 
+  // Build image URL for structured data
+  const productImageUrl = product.images?.[0]?.asset?._ref
+    ? urlFor(product.images[0]).width(800).height(800).auto("format").url()
+    : undefined;
+
+  // Build breadcrumb items for JSON-LD
+  const breadcrumbItems = [
+    { name: "Home", url: SITE_URL },
+    { name: "Products", url: `${SITE_URL}/products` },
+    ...(product.category
+      ? [{ name: product.category.title, url: `${SITE_URL}/categories/${product.category.slug.current}` }]
+      : []),
+    { name: product.title, url: `${SITE_URL}/products/${slug}` },
+  ];
+
   return (
     <Container className="py-12">
+      {/* Structured Data */}
+      <JsonLd
+        data={buildProductJsonLd({
+          name: product.title,
+          description: product.description,
+          image: productImageUrl,
+          price: product.price,
+          url: `${SITE_URL}/products/${slug}`,
+        })}
+      />
+      <JsonLd data={buildBreadcrumbJsonLd(breadcrumbItems)} />
+
       {/* Breadcrumb */}
       <nav aria-label="Breadcrumb" className="mb-6 flex items-center gap-2 text-sm text-gray-500">
         <Link href="/" className="hover:text-amber-900">Home</Link>

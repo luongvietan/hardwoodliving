@@ -187,7 +187,7 @@ describe("generateMetadata", () => {
     vi.mocked(sanityFetch).mockResolvedValue(null);
     const metadata = await generateMetadata();
 
-    expect(metadata.title).toBe("Trades | Hardwood Living");
+    expect(metadata.title).toBe("Trade Program");
   });
 
   it("falls back to CMS page title when SEO title is missing", async () => {

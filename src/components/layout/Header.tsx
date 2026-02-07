@@ -29,7 +29,7 @@ export default function Header({ siteName = 'Hardwood Living', navigation = [] }
       <Container>
         <div className="relative flex h-16 items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2">
+          <Link href="/" className="flex items-center gap-2" aria-label={`${siteName} - Home`}>
             <span className="text-xl font-bold tracking-tight text-amber-900">
               {firstName}<span className="text-gray-700">{restName}</span>
             </span>

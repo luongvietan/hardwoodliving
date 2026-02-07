@@ -41,6 +41,9 @@ export async function generateMetadata({
   const metadata: Metadata = {
     title: page.seo?.metaTitle || page.title,
     description: page.seo?.metaDescription || undefined,
+    alternates: {
+      canonical: `/pages/${slug}`,
+    },
   };
 
   if (page.seo?.openGraphImage?.asset?._ref) {

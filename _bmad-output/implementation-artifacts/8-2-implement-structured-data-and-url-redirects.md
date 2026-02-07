@@ -2,7 +2,7 @@
 
 **Epic:** 8-SEO, Performance & Launch Readiness
 **Story Key:** 8-2-implement-structured-data-and-url-redirects
-**Status:** ready-for-dev
+**Status:** done
 
 ## Story Requirements
 
@@ -14,12 +14,12 @@ So that **traffic is not lost during migration**.
 
 ### Acceptance Criteria
 
-- [ ] **Given** the legacy site has known URLs
-- [ ] **When** a user visits an old URL
-- [ ] **Then** they are 301 Redirected to the equivalent new URL
-- [ ] **And** Product Pages include JSON-LD Product Schema
-- [ ] **And** Homepage includes JSON-LD Organization Schema
-- [ ] **And** Breadcrumbs include BreadcrumbList Schema
+- [x] **Given** the legacy site has known URLs
+- [x] **When** a user visits an old URL
+- [x] **Then** they are 301 Redirected to the equivalent new URL
+- [x] **And** Product Pages include JSON-LD Product Schema
+- [x] **And** Homepage includes JSON-LD Organization Schema
+- [x] **And** Breadcrumbs include BreadcrumbList Schema
 
 ---
 
@@ -45,16 +45,20 @@ So that **traffic is not lost during migration**.
     Org Schema: `name`, `url`, `logo`.
 
 ### File List
-- [ ] next.config.ts
-- [ ] src/components/seo/JsonLd.tsx
+- [x] next.config.ts (modified - added redirects)
+- [x] src/components/seo/JsonLd.tsx (new)
+- [x] src/components/seo/JsonLd.test.tsx (new)
+- [x] src/app/(site)/products/[slug]/page.tsx (modified - Product + Breadcrumb JSON-LD)
+- [x] src/app/(site)/page.tsx (modified - Organization JSON-LD)
+- [x] src/app/(site)/categories/[slug]/page.tsx (modified - Breadcrumb JSON-LD)
 
 ### Tasks / Subtasks
 
-- [ ] Configure 301 Redirects
-- [ ] Implement JSON-LD Component
-- [ ] Add Product Schema to PDP
-- [ ] Add Org Schema to Home
-- [ ] Verify Rich Results Test
+- [x] Configure 301 Redirects
+- [x] Implement JSON-LD Component
+- [x] Add Product Schema to PDP
+- [x] Add Org Schema to Home
+- [x] Verify Rich Results Test
 
 ### Testing Requirements
 
@@ -74,5 +78,17 @@ So that **traffic is not lost during migration**.
 5. For async Server Components: `const jsx = await ServerComponent(); render(<>{jsx}</>);`
 6. Run with: `npm run test:components`
 
+### Dev Agent Record
+
+**Implementation Notes:**
+- Created reusable JsonLd component with builders for Product, Organization, BreadcrumbList schemas
+- Added Product + BreadcrumbList JSON-LD to product detail pages
+- Added Organization JSON-LD to homepage
+- Added BreadcrumbList JSON-LD to category pages
+- Configured 301 redirects in next.config.ts for common legacy URL patterns
+- All 8 JsonLd tests pass
+
 ### Change Log
 - **2026-02-07**: Story created.
+- **2026-02-07**: Implementation complete. JSON-LD structured data and 301 redirects added.
+- **2026-02-07**: Code review fixes applied: Fixed XSS vulnerability in JsonLd component (escape `</script>` tags), added "Products" level to product breadcrumb JSON-LD, used shared SITE_URL constant.

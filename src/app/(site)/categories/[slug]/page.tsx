@@ -5,6 +5,7 @@ import type { SanityImageValue } from "@/lib/sanity/types";
 import Container from "@/components/layout/Container";
 import ProductGrid from "@/components/products/ProductGrid";
 import ProductFilter from "@/components/products/ProductFilter";
+import JsonLd, { buildBreadcrumbJsonLd } from "@/components/seo/JsonLd";
 import { sanityFetch } from "@/lib/sanity/fetch";
 import { urlFor } from "@/lib/sanity/image";
 import {
@@ -16,6 +17,7 @@ import {
 } from "@/lib/sanity/queries";
 import { getUserRole, getVisibilityOptions } from "@/lib/sanity/visibility";
 import { notFound } from "next/navigation";
+import { SITE_URL } from "@/lib/constants";
 
 interface Category {
   _id: string;
@@ -60,6 +62,9 @@ export async function generateMetadata({
   return {
     title: category.title,
     description: category.description || `Browse our ${category.title} collection.`,
+    alternates: {
+      canonical: `/categories/${slug}`,
+    },
   };
 }
 
@@ -123,8 +128,21 @@ export default async function CategoryPage({
     revalidate,
   });
 
+  // Build breadcrumb items for JSON-LD
+  const breadcrumbItems = [
+    { name: "Home", url: SITE_URL },
+    { name: "Products", url: `${SITE_URL}/products` },
+    ...(category.parent
+      ? [{ name: category.parent.title, url: `${SITE_URL}/categories/${category.parent.slug.current}` }]
+      : []),
+    { name: category.title, url: `${SITE_URL}/categories/${slug}` },
+  ];
+
   return (
     <>
+      {/* Structured Data */}
+      <JsonLd data={buildBreadcrumbJsonLd(breadcrumbItems)} />
+
       {/* Category Header */}
       <section className="relative bg-gray-900 py-16">
         {category.image?.asset?._ref && (
@@ -132,6 +150,8 @@ export default async function CategoryPage({
             src={urlFor(category.image).width(1920).height(400).auto("format").url()}
             alt={category.title}
             fill
+            priority
+            sizes="100vw"
             className="object-cover opacity-30"
           />
         )}
