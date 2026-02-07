@@ -72,4 +72,26 @@ vi.mock("@/lib/sanity/queries", () => ({
   getFeaturedProductsQuery: 'mock-featured-query',
   getPageQuery: 'mock-page-query',
   getAllPageSlugsQuery: 'mock-all-page-slugs-query',
+  getAllCategoriesQuery: 'mock-all-categories-query',
+  getTopLevelCategoriesQuery: 'mock-top-level-categories-query',
+  getSubcategoriesByParentSlugQuery: 'mock-subcategories-by-parent-query',
+  getCategoryBySlugQuery: 'mock-category-by-slug-query',
+  getProductsByCategorySlugQuery: 'mock-products-by-category-slug-query',
+  getAllCategorySlugsQuery: 'mock-all-category-slugs-query',
+  getAllProductSlugsQuery: 'mock-all-product-slugs-query',
+  getPublicProductSlugsQuery: 'mock-public-product-slugs-query',
+  getProductBySlugQuery: 'mock-product-by-slug-query',
+  getVisibleProductsByCategoryAndTypeQuery: 'mock-visible-products-by-category-type-query',
+  getVisibleProductsQuery: 'mock-visible-products-query',
+  getVisibleProductBySlugQuery: 'mock-visible-product-by-slug-query',
+  getVisibleProductsByCategoryQuery: 'mock-visible-products-by-category-query',
+}));
+
+// ---------------------------------------------------------------------------
+// Mock: @/lib/sanity/visibility -> default to public role
+// ---------------------------------------------------------------------------
+vi.mock("@/lib/sanity/visibility", () => ({
+  getVisibilityOptions: (role: string) =>
+    role === "trade" ? ["public", "wholesale"] : ["public"],
+  getUserRole: vi.fn().mockResolvedValue("public"),
 }));

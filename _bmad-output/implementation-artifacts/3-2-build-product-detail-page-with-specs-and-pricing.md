@@ -2,7 +2,7 @@
 
 **Epic:** 3-Product Catalog & Browsing
 **Story Key:** 3-2-build-product-detail-page-with-specs-and-pricing
-**Status:** ready-for-dev
+**Status:** done
 
 ## Story Requirements
 
@@ -14,14 +14,14 @@ So that **I can evaluate whether the product meets my needs**.
 
 ### Acceptance Criteria
 
-- [ ] **Given** products exist in Sanity with full details
-- [ ] **When** a visitor navigates to a product detail page (`/products/[slug]`)
-- [ ] **Then** the page displays the product name, full description, and technical specifications (ProductSpecs component)
-- [ ] **And** the sale price is displayed publicly on the page (ProductPrice component)
-- [ ] **And** the page uses a clean URL format (`/products/[slug]`)
-- [ ] **And** if the product slug does not exist, a 404 page is displayed
-- [ ] **And** the page uses ISR with on-demand revalidation
-- [ ] **And** the page includes CMS-editable SEO metadata
+- [x] **Given** products exist in Sanity with full details
+- [x] **When** a visitor navigates to a product detail page (`/products/[slug]`)
+- [x] **Then** the page displays the product name, full description, and technical specifications (ProductSpecs component)
+- [x] **And** the sale price is displayed publicly on the page (ProductPrice component)
+- [x] **And** the page uses a clean URL format (`/products/[slug]`)
+- [x] **And** if the product slug does not exist, a 404 page is displayed
+- [x] **And** the page uses ISR with on-demand revalidation
+- [x] **And** the page includes CMS-editable SEO metadata
 
 ---
 
@@ -53,19 +53,24 @@ So that **I can evaluate whether the product meets my needs**.
     `generateMetadata` using product title/description.
 
 ### File List
-- [ ] src/app/products/[slug]/page.tsx
-- [ ] src/components/products/ProductSpecs.tsx
-- [ ] src/components/products/ProductPrice.tsx
+- [x] src/lib/sanity/queries.ts (modified - added public-only product slugs)
+- [x] src/test-setup.ts (modified - added query mocks)
+- [x] src/components/products/ProductSpecs.tsx (new)
+- [x] src/components/products/ProductSpecs.test.tsx (new)
+- [x] src/components/products/ProductPrice.tsx (new)
+- [x] src/components/products/ProductPrice.test.tsx (new)
+- [x] src/app/(site)/products/[slug]/page.tsx (modified - visibility-aware caching + public slugs)
+- [x] src/app/(site)/products/[slug]/product-detail.test.tsx (new)
 
 ### Tasks / Subtasks
 
-- [ ] Define `PRODUCT_BY_SLUG_QUERY`
-- [ ] Create `ProductSpecs` component
-- [ ] Create `ProductPrice` component
-- [ ] Implement `src/app/products/[slug]/page.tsx`
-- [ ] Implement `generateStaticParams`
-- [ ] Implement `generateMetadata`
-- [ ] Validate 404 handling
+- [x] Define `PRODUCT_BY_SLUG_QUERY`
+- [x] Create `ProductSpecs` component
+- [x] Create `ProductPrice` component
+- [x] Implement `src/app/products/[slug]/page.tsx`
+- [x] Implement `generateStaticParams`
+- [x] Implement `generateMetadata`
+- [x] Validate 404 handling
 
 ### Testing Requirements
 
@@ -85,5 +90,26 @@ So that **I can evaluate whether the product meets my needs**.
 5. For async Server Components: `const jsx = await ServerComponent(); render(<>{jsx}</>);`
 6. Run with: `npm run test:components`
 
+### Dev Agent Record
+
+**Implementation Plan:**
+- Added `getAllProductSlugsQuery` to shared queries
+- Created `ProductSpecs` component: definition list (dl/dt/dd) for technical specs
+- Created `ProductPrice` component: prominent price display with priceUnit support
+- Refactored product detail page to use extracted components and shared queries
+- Added breadcrumb navigation with aria-label for accessibility
+- priceUnit now uses CMS value instead of hardcoded "/ sq ft"
+
+**Completion Notes:**
+- All 7 tasks implemented and verified
+- 29 new tests added (6 ProductSpecs + 7 ProductPrice + 16 Product Detail Page)
+- Full regression suite: 144 tests passing, 0 regressions
+- Product page fully supports: specs, price, images, thumbnails, breadcrumbs, 404, SEO metadata
+- ISR configured via sanityFetch with tags ["product"]
+- Public-only static params used to avoid leaking wholesale slugs
+- Visibility-aware cache set to prevent cross-role content leakage
+
 ### Change Log
 - **2026-02-07**: Story created.
+- **2026-02-07**: Story implemented - Created ProductSpecs, ProductPrice components, refactored product detail page. All tests pass (144/144).
+- **2026-02-07**: Review fixes - Public-only static params + visibility-aware caching.

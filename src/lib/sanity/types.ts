@@ -6,6 +6,7 @@
 export interface SanityImageValue {
   _type?: "image";
   _key?: string;
+  alt?: string;
   asset?: {
     _ref: string;
     _type: "reference";

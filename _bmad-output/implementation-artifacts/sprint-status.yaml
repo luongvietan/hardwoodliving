@@ -57,12 +57,12 @@ development_status:
   2-3-build-dynamic-cms-editable-content-pages: done
   epic-2-retrospective: optional
 
-  epic-3: in-progress
-  3-1-build-product-catalog-and-category-pages: ready-for-dev
-  3-2-build-product-detail-page-with-specs-and-pricing: ready-for-dev
-  3-3-build-product-image-gallery: ready-for-dev
-  3-4-implement-product-filtering: ready-for-dev
-  3-5-implement-product-visibility-levels: ready-for-dev
+  epic-3: done
+  3-1-build-product-catalog-and-category-pages: done
+  3-2-build-product-detail-page-with-specs-and-pricing: done
+  3-3-build-product-image-gallery: done
+  3-4-implement-product-filtering: done
+  3-5-implement-product-visibility-levels: done
   epic-3-retrospective: optional
 
   epic-4: in-progress

@@ -2,7 +2,7 @@
 
 **Epic:** 3-Product Catalog & Browsing
 **Story Key:** 3-1-build-product-catalog-and-category-pages
-**Status:** ready-for-dev
+**Status:** done
 
 ## Story Requirements
 
@@ -14,15 +14,15 @@ So that **I can find the type of product I'm looking for**.
 
 ### Acceptance Criteria
 
-- [ ] **Given** products and categories exist in Sanity
-- [ ] **When** a visitor navigates to the product catalog (`/products`)
-- [ ] **Then** the page displays all product categories with category images and names
-- [ ] **And** clicking a category navigates to the category page (`/categories/[slug]`)
-- [ ] **And** the category page displays products in that category with thumbnail image, name, and price
-- [ ] **And** minimum 6 products are shown per page, or all products if fewer exist in the category
-- [ ] **And** subcategories are navigable within parent categories
-- [ ] **And** the ProductGrid component arranges products: 1-column mobile, 2-column tablet, 3-4 column desktop
-- [ ] **And** pages use ISR with on-demand revalidation
+- [x] **Given** products and categories exist in Sanity
+- [x] **When** a visitor navigates to the product catalog (`/products`)
+- [x] **Then** the page displays all product categories with category images and names
+- [x] **And** clicking a category navigates to the category page (`/categories/[slug]`)
+- [x] **And** the category page displays products in that category with thumbnail image, name, and price
+- [x] **And** minimum 6 products are shown per page, or all products if fewer exist in the category
+- [x] **And** subcategories are navigable within parent categories
+- [x] **And** the ProductGrid component arranges products: 1-column mobile, 2-column tablet, 3-4 column desktop
+- [x] **And** pages use ISR with on-demand revalidation
 
 ---
 
@@ -57,18 +57,23 @@ So that **I can find the type of product I'm looking for**.
     Tailwind: `grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6`.
 
 ### File List
-- [ ] src/app/products/page.tsx
-- [ ] src/app/categories/[slug]/page.tsx
-- [ ] src/components/products/ProductGrid.tsx
+- [x] src/lib/sanity/queries.ts (modified - added category hierarchy + visibility-aware filters)
+- [x] src/test-setup.ts (modified - added query mocks)
+- [x] src/components/products/ProductGrid.tsx (new)
+- [x] src/components/products/ProductGrid.test.tsx (new)
+- [x] src/app/(site)/products/page.tsx (modified - top-level categories + subcategory links)
+- [x] src/app/(site)/products/products-catalog.test.tsx (new)
+- [x] src/app/(site)/categories/[slug]/page.tsx (modified - subcategory navigation + shared queries)
+- [x] src/app/(site)/categories/[slug]/category-page.test.tsx (new)
 
 ### Tasks / Subtasks
 
-- [ ] Define GROQ queries for Categories and Category Products
-- [ ] Create `ProductGrid` component
-- [ ] Implement Catalog Page (`/products`)
-- [ ] Implement Category Page (`/categories/[slug]`)
-- [ ] Implement `generateStaticParams` for Category Page
-- [ ] Verify Responsive Grid
+- [x] Define GROQ queries for Categories and Category Products
+- [x] Create `ProductGrid` component
+- [x] Implement Catalog Page (`/products`)
+- [x] Implement Category Page (`/categories/[slug]`)
+- [x] Implement `generateStaticParams` for Category Page
+- [x] Verify Responsive Grid
 
 ### Testing Requirements
 
@@ -88,5 +93,26 @@ So that **I can find the type of product I'm looking for**.
 5. For async Server Components: `const jsx = await ServerComponent(); render(<>{jsx}</>);`
 6. Run with: `npm run test:components`
 
+### Dev Agent Record
+
+**Implementation Plan:**
+- Added 3 shared GROQ queries: `getCategoryBySlugQuery`, `getProductsByCategorySlugQuery`, `getAllCategorySlugsQuery`
+- Created reusable `ProductGrid` component with responsive 4-column layout (1→2→3→4 breakpoints)
+- Built `/products` catalog page showing all categories with images, descriptions, and links
+- Refactored `/categories/[slug]` page to use shared queries and `ProductGrid` component
+- `getProductsByCategorySlugQuery` uses `category->slug.current == $slug` for direct slug-based querying
+
+**Completion Notes:**
+- All 6 tasks implemented and verified
+- 22 new tests added (7 ProductGrid + 7 Catalog Page + 8 Category Page)
+- Full regression suite: 115 tests passing, 0 regressions
+- Category page refactored from inline grid to reusable ProductGrid component
+- ISR configured via sanityFetch with tags ["category"] and ["product"]
+- generateStaticParams uses shared `getAllCategorySlugsQuery`
+- Subcategory navigation links added to catalog and category pages
+- Catalog now displays top-level categories with subcategory badges/links
+
 ### Change Log
 - **2026-02-07**: Story created.
+- **2026-02-07**: Story implemented - Added GROQ queries, ProductGrid component, Catalog page, refactored Category page. All tests pass (115/115).
+- **2026-02-07**: Review fixes - Added top-level category browse + subcategory navigation links.
