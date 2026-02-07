@@ -138,7 +138,8 @@ export const getSiteSettingsQuery = defineQuery(`*[_type == "siteSettings"][0] {
   }
 }`);
 
-export const searchProductsQuery = defineQuery(`*[_type == "product" && visibility == "public" && (title match $query || description match $query)] | order(title asc) [0...$limit] {
+// Plain string query — uses $searchTerm to avoid name conflict with sanityFetch's `query` param
+export const searchProductsQuery = `*[_type == "product" && visibility == "public" && (title match $searchTerm || description match $searchTerm)] | order(title asc) [0...$maxResults] {
   _id,
   title,
   slug,
@@ -150,7 +151,7 @@ export const searchProductsQuery = defineQuery(`*[_type == "product" && visibili
     title,
     slug
   }
-}`);
+}`;
 
 export const getAllPageSlugsQuery = defineQuery(`*[_type == "page"]{ "slug": slug.current }`);
 

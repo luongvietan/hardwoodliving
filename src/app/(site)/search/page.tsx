@@ -43,7 +43,7 @@ export default async function SearchPage({
       const searchTerm = `${query}*`;
       results = await sanityFetch<SearchProduct[]>({
         query: searchProductsQuery,
-        params: { query: searchTerm, limit: 20 },
+        params: { searchTerm, maxResults: 20 },
         tags: ["product"],
         revalidate: 0, // No cache for search results
       });
