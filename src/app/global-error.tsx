@@ -14,8 +14,8 @@ export default function GlobalError({
   }, [error]);
 
   return (
-    <html lang="en">
-      <body>
+    <html lang="en" style={{ colorScheme: "light" }}>
+      <body style={{ background: "#ffffff", color: "#171717" }}>
         <div
           style={{
             display: "flex",
@@ -26,6 +26,7 @@ export default function GlobalError({
             padding: "1rem",
             textAlign: "center",
             fontFamily: "system-ui, -apple-system, sans-serif",
+            background: "#ffffff",
           }}
         >
           <p

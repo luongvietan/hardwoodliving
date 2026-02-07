@@ -32,7 +32,7 @@ export default async function SiteLayout({
   })) || defaultSocialLinks.map((s) => ({ label: s.platform, href: s.url }));
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col bg-white text-gray-900">
       {/* Skip navigation link for keyboard/screen reader accessibility (WCAG 2.1 AA) */}
       <a
         href="#main-content"
