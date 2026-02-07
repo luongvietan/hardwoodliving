@@ -50,6 +50,20 @@ export default defineType({
             validation: (Rule) => Rule.required().min(0),
         }),
         defineField({
+            name: 'priceUnit',
+            title: 'Price Unit',
+            type: 'string',
+            options: {
+                list: [
+                    { title: 'per sq ft', value: '/ sq ft' },
+                    { title: 'per box', value: '/ box' },
+                    { title: 'per piece', value: '/ piece' },
+                    { title: 'per linear ft', value: '/ linear ft' },
+                ],
+            },
+            initialValue: '/ sq ft',
+        }),
+        defineField({
             name: 'images',
             title: 'Images',
             type: 'array',

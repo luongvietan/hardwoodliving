@@ -6,6 +6,7 @@ export const getProductsQuery = defineQuery(`*[_type == "product" && visibility 
   slug,
   description,
   price,
+  priceUnit,
   images,
   category->{
     title,
@@ -21,6 +22,7 @@ export const getProductBySlugQuery = defineQuery(`*[_type == "product" && slug.c
   description,
   specs,
   price,
+  priceUnit,
   images,
   category->{
     _id,
@@ -36,6 +38,7 @@ export const getFeaturedProductsQuery = defineQuery(`*[_type == "product" && isF
   title,
   slug,
   price,
+  priceUnit,
   images
 }`);
 
@@ -64,9 +67,11 @@ export const getHomepageQuery = defineQuery(`*[_type == "homepage"][0] {
     title,
     slug,
     price,
+    priceUnit,
     images
   },
   testimonials[]->{
+    _id,
     author,
     content,
     image
