@@ -1,8 +1,8 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
-// Routes that require authentication (trade user)
-const PROTECTED_ROUTES = ['/trades/dashboard']
+// Routes that require authentication (trade user or admin)
+const PROTECTED_ROUTES = ['/trades/dashboard', '/leads', '/api/export']
 
 export async function updateSession(request: NextRequest) {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL

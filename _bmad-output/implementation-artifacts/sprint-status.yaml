@@ -85,9 +85,9 @@ development_status:
   6-4-implement-isr-revalidation-via-sanity-webhook: done
   epic-6-retrospective: optional
 
-  epic-7: in-progress
-  7-1-build-admin-data-views-for-trades-and-inquiries: ready-for-dev
-  7-2-implement-filtering-sorting-and-data-export: ready-for-dev
+  epic-7: done
+  7-1-build-admin-data-views-for-trades-and-inquiries: done
+  7-2-implement-filtering-sorting-and-data-export: done
   epic-7-retrospective: optional
 
   epic-8: in-progress
