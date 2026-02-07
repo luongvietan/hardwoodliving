@@ -195,6 +195,12 @@ export const getVisibleProductBySlugQuery = defineQuery(`*[_type == "product" &&
   isFeatured
 }`);
 
+export const getTradesPageQuery = defineQuery(`*[_type == "page" && slug.current == "trades"][0] {
+  title,
+  body,
+  seo
+}`);
+
 export const getVisibleProductsByCategoryQuery = defineQuery(`*[_type == "product" && visibility in $visibility && category->slug.current == $category] | order(title asc) {
   _id,
   title,

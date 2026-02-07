@@ -71,11 +71,11 @@ development_status:
   4-3-add-cta-buttons-and-contact-information-display: done
   epic-4-retrospective: optional
 
-  epic-5: in-progress
-  5-1-build-trade-information-and-benefits-page: ready-for-dev
-  5-2-build-trade-registration-form-with-database-storage: ready-for-dev
-  5-3-implement-trade-user-authentication: ready-for-dev
-  5-4-implement-role-based-access-control: ready-for-dev
+  epic-5: done
+  5-1-build-trade-information-and-benefits-page: done
+  5-2-build-trade-registration-form-with-database-storage: done
+  5-3-implement-trade-user-authentication: done
+  5-4-implement-role-based-access-control: done
   epic-5-retrospective: optional
 
   epic-6: in-progress

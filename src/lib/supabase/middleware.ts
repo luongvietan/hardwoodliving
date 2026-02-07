@@ -1,6 +1,9 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
+// Routes that require authentication (trade user)
+const PROTECTED_ROUTES = ['/trades/dashboard']
+
 export async function updateSession(request: NextRequest) {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
@@ -44,7 +47,27 @@ export async function updateSession(request: NextRequest) {
   // issues with users being randomly logged out.
 
   // Refreshes expired auth tokens and stores them to cookies
-  await supabase.auth.getUser()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  // Route protection: redirect unauthenticated users away from protected routes
+  const { pathname } = request.nextUrl
+  const isProtectedRoute = PROTECTED_ROUTES.some(
+    (route) => pathname === route || pathname.startsWith(`${route}/`)
+  )
+
+  if (isProtectedRoute && !user) {
+    const loginUrl = request.nextUrl.clone()
+    loginUrl.pathname = '/trades/login'
+    return NextResponse.redirect(loginUrl)
+  }
+
+  // Redirect authenticated users away from login/register pages to dashboard
+  const isAuthRoute = pathname === '/trades/login' || pathname === '/trades/register'
+  if (isAuthRoute && user) {
+    const dashboardUrl = request.nextUrl.clone()
+    dashboardUrl.pathname = '/trades/dashboard'
+    return NextResponse.redirect(dashboardUrl)
+  }
 
   return supabaseResponse
 }

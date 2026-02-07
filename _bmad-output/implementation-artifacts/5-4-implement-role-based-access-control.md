@@ -2,7 +2,7 @@
 
 **Epic:** 5-Trade/Contractor Management
 **Story Key:** 5-4-implement-role-based-access-control
-**Status:** ready-for-dev
+**Status:** done
 
 ## Story Requirements
 
@@ -14,13 +14,13 @@ So that **regular users cannot see trade info and trade users cannot see admin i
 
 ### Acceptance Criteria
 
-- [ ] **Given** different user types (Public, Trade, Admin)
-- [ ] **When** a user attempts to access a protected route
-- [ ] **Then** Admin routes (`/admin`) require Sanity Admin authentication
-- [ ] **And** Trade Dashboard (`/trades/dashboard`) requires Supabase Authenticated User
-- [ ] **And** Wholesale Products require Supabase Authenticated User
-- [ ] **And** Public pages are accessible to everyone
-- [ ] **And** unauthorized access attempts redirect to the appropriate login page
+- [x] **Given** different user types (Public, Trade, Admin)
+- [x] **When** a user attempts to access a protected route
+- [x] **Then** Admin routes (`/admin`) require Sanity Admin authentication
+- [x] **And** Trade Dashboard (`/trades/dashboard`) requires Supabase Authenticated User
+- [x] **And** Wholesale Products require Supabase Authenticated User
+- [x] **And** Public pages are accessible to everyone
+- [x] **And** unauthorized access attempts redirect to the appropriate login page
 
 ---
 
@@ -49,10 +49,30 @@ So that **regular users cannot see trade info and trade users cannot see admin i
 
 ### Tasks / Subtasks
 
-- [ ] Update Middleware for Trade Routes
-- [ ] Verify Public Access to Catalog
-- [ ] Verify Restricted Access to Dashboard
-- [ ] Verify Admin layout (Sanity)
+- [x] Update Middleware for Trade Routes
+- [x] Verify Public Access to Catalog
+- [x] Verify Restricted Access to Dashboard
+- [x] Verify Admin layout (Sanity)
+
+### File List
+- [x] src/lib/supabase/middleware.ts (modified - added route protection logic)
+- [x] src/lib/supabase/middleware.test.ts (new - 10 tests)
+
+### Dev Agent Record
+
+**Implementation Plan:**
+- Updated Supabase middleware to check authentication for protected routes
+- PROTECTED_ROUTES array: /trades/dashboard (and sub-paths)
+- Unauthenticated users accessing protected routes → redirect to /trades/login
+- Authenticated users accessing auth pages (login/register) → redirect to /trades/dashboard
+- Admin routes (/admin) handled by Sanity's internal auth (no middleware blocking needed)
+- Public routes (/, /products, /trades, etc.) remain accessible to all
+- Wholesale product visibility already handled by getUserRole() from story 3-5
+
+**Completion Notes:**
+- 10 middleware tests pass (public access, protected redirect, auth page redirect, env checks)
+- Full regression suite: 289/289 tests pass
+- Three-tier access: Public (all visitors), Trade (authenticated Supabase users), Admin (Sanity users)
 
 ### Testing Requirements
 
@@ -72,5 +92,15 @@ So that **regular users cannot see trade info and trade users cannot see admin i
 5. For async Server Components: `const jsx = await ServerComponent(); render(<>{jsx}</>);`
 6. Run with: `npm run test:components`
 
+### Senior Developer Review (AI)
+- **Reviewer**: Viet An
+- **Date**: 2026-02-07
+- **Outcome**: Approved
+- All ACs verified. 10/10 middleware tests pass. Route protection correct.
+- **Note (L2)**: Middleware runs on /admin routes unnecessarily (minor perf). Deferred to future optimization.
+- **Note (L3)**: Wholesale product visibility uses query-level filtering (from story 3-5), not route protection. AC wording slightly inconsistent but implementation is correct.
+
 ### Change Log
 - **2026-02-07**: Story created.
+- **2026-02-07**: Implemented middleware route protection with 10 tests. Full regression: 289/289 pass.
+- **2026-02-07**: Code review passed — status → done. Full regression: 293/293 pass.

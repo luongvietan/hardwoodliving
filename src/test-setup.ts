@@ -40,6 +40,9 @@ vi.mock("next/navigation", () => ({
   notFound: () => {
     throw new Error("NEXT_NOT_FOUND");
   },
+  redirect: (url: string) => {
+    throw new Error(`NEXT_REDIRECT:${url}`);
+  },
 }));
 
 // ---------------------------------------------------------------------------
@@ -85,6 +88,7 @@ vi.mock("@/lib/sanity/queries", () => ({
   getVisibleProductsQuery: 'mock-visible-products-query',
   getVisibleProductBySlugQuery: 'mock-visible-product-by-slug-query',
   getVisibleProductsByCategoryQuery: 'mock-visible-products-by-category-query',
+  getTradesPageQuery: 'mock-trades-page-query',
 }));
 
 // ---------------------------------------------------------------------------

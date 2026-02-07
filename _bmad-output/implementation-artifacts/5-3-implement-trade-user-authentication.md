@@ -2,7 +2,7 @@
 
 **Epic:** 5-Trade/Contractor Management
 **Story Key:** 5-3-implement-trade-user-authentication
-**Status:** ready-for-dev
+**Status:** done
 
 ## Story Requirements
 
@@ -14,14 +14,14 @@ So that **I can view protected content and my profile**.
 
 ### Acceptance Criteria
 
-- [ ] **Given** a registered trade user
-- [ ] **When** they maximize the TradeLoginForm
-- [ ] **Then** they can enter email and password
-- [ ] **And** on submit, the system authenticates via Supabase Auth
-- [ ] **And** on success, they are redirected to the Trade Dashboard (`/trades/dashboard`)
-- [ ] **And** invalid credentials show an error message
-- [ ] **And** a "Logout" action is available in the dashboard
-- [ ] **And** protected routes (`/trades/dashboard`, `/products` wholesale view) require authentication
+- [x] **Given** a registered trade user
+- [x] **When** they maximize the TradeLoginForm
+- [x] **Then** they can enter email and password
+- [x] **And** on submit, the system authenticates via Supabase Auth
+- [x] **And** on success, they are redirected to the Trade Dashboard (`/trades/dashboard`)
+- [x] **And** invalid credentials show an error message
+- [x] **And** a "Logout" action is available in the dashboard
+- [x] **And** protected routes (`/trades/dashboard`, `/products` wholesale view) require authentication
 
 ---
 
@@ -58,19 +58,24 @@ So that **I can view protected content and my profile**.
     `supabase.auth.signOut`. Redirect to `/`.
 
 ### File List
-- [ ] src/components/forms/TradeLoginForm.tsx
-- [ ] src/app/trades/login/page.tsx
-- [ ] src/app/trades/dashboard/page.tsx
+- [x] src/components/forms/TradeLoginForm.tsx (new - login form component, uses shared FormField)
+- [x] src/components/forms/TradeLoginForm.test.tsx (new - 8 tests, improved useEffect mock)
+- [x] src/app/(site)/trades/login/page.tsx (new - login page)
+- [x] src/app/(site)/trades/dashboard/page.tsx (new - protected dashboard page, uses next/link)
+- [x] src/app/(site)/trades/dashboard/LogoutButton.tsx (new - logout button with error handling)
+- [x] src/app/(site)/trades/dashboard/error.tsx (new - error boundary for dashboard)
+- [x] src/app/(site)/trades/dashboard/dashboard-page.test.tsx (new - 9 tests)
+- [x] src/test-setup.ts (modified - added redirect mock)
 
 ### Tasks / Subtasks
 
-- [ ] Create `TradeLoginForm`
-- [ ] Implement `loginTrade` Action
-- [ ] Implement `logoutTrade` Action
-- [ ] Create Protected Dashboard Page
-- [ ] Verify Login Flow
-- [ ] Verify Logout Flow
-- [ ] Verify Middleware protection
+- [x] Create `TradeLoginForm`
+- [x] Implement `loginTrade` Action
+- [x] Implement `logoutTrade` Action
+- [x] Create Protected Dashboard Page
+- [x] Verify Login Flow
+- [x] Verify Logout Flow
+- [x] Verify Middleware protection
 
 ### Testing Requirements
 
@@ -90,5 +95,34 @@ So that **I can view protected content and my profile**.
 5. For async Server Components: `const jsx = await ServerComponent(); render(<>{jsx}</>);`
 6. Run with: `npm run test:components`
 
+### Dev Agent Record
+
+**Implementation Plan:**
+- Created TradeLoginForm client component with email/password fields
+- Login page at /trades/login with SEO metadata
+- Protected dashboard page at /trades/dashboard with auth check (redirects to login if unauthenticated)
+- Dashboard shows: user info, company, business type, account status badge, quick links
+- LogoutButton client component calls logoutTrade action and redirects to /
+- loginTrade and logoutTrade server actions already created in story 5-2
+- Added redirect mock to test-setup.ts for testing redirect behavior
+
+**Completion Notes:**
+- 17 new tests pass (8 login form + 9 dashboard)
+- Dashboard redirects unauthenticated users to /trades/login
+- Login form redirects to dashboard on success via router.push
+- Logout calls supabase.auth.signOut and redirects to /
+
+### Senior Developer Review (AI)
+- **Reviewer**: Viet An
+- **Date**: 2026-02-07
+- **Outcome**: Approved after fixes
+- **Fixes applied**:
+  - H3: Dashboard quick links now use next/link instead of plain <a> tags
+  - M2: useEffect mock in login form test improved (queueMicrotask instead of synchronous)
+  - M3: LogoutButton now shows error state when logout fails (was silent failure)
+  - M5: Added error.tsx boundary for dashboard route
+
 ### Change Log
 - **2026-02-07**: Story created.
+- **2026-02-07**: Implemented login form, login/dashboard pages, logout button, and 17 tests.
+- **2026-02-07**: Code review fixes — next/link, LogoutButton error handling, error boundary, test improvements. Status → done.

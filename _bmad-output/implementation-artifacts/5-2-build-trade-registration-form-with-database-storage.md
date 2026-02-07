@@ -2,7 +2,7 @@
 
 **Epic:** 5-Trade/Contractor Management
 **Story Key:** 5-2-build-trade-registration-form-with-database-storage
-**Status:** ready-for-dev
+**Status:** done
 
 ## Story Requirements
 
@@ -14,14 +14,14 @@ So that **I can access wholesale pricing and trade tools**.
 
 ### Acceptance Criteria
 
-- [ ] **Given** a visitor is on the Trades page (Story 5.1)
-- [ ] **When** they fill out the TradeRegistrationForm
-- [ ] **Then** the form captures: Name, Company Name, Business Type, Email, Phone, Password
-- [ ] **And** the form submits to a Server Action (`registerTrade`)
-- [ ] **And** the Server Action creates a user in Supabase Auth (for login)
-- [ ] **And** the Server Action creates a profile record in the Supabase `trades` table
-- [ ] **And** on success, the user is automatically logged in or redirected to the Trade Dashboard
-- [ ] **And** validation ensures email is unique and password meets complexity rules
+- [x] **Given** a visitor is on the Trades page (Story 5.1)
+- [x] **When** they fill out the TradeRegistrationForm
+- [x] **Then** the form captures: Name, Company Name, Business Type, Email, Phone, Password
+- [x] **And** the form submits to a Server Action (`registerTrade`)
+- [x] **And** the Server Action creates a user in Supabase Auth (for login)
+- [x] **And** the Server Action creates a profile record in the Supabase `trades` table
+- [x] **And** on success, the user is automatically logged in or redirected to the Trade Dashboard
+- [x] **And** validation ensures email is unique and password meets complexity rules
 
 ---
 
@@ -56,17 +56,22 @@ So that **I can access wholesale pricing and trade tools**.
     *PRD says "Register". Usually `signUp` returns session. `trades` table insert might need RLS policy: "Auth users can insert their own row".*
 
 ### File List
-- [ ] src/components/forms/TradeRegistrationForm.tsx
-- [ ] src/lib/actions/trades.ts
+- [x] src/components/forms/TradeRegistrationForm.tsx (new - registration form component)
+- [x] src/components/forms/TradeRegistrationForm.test.tsx (new - 15 tests)
+- [x] src/components/forms/FormField.tsx (new - shared SubmitButton, FieldError, getFieldError)
+- [x] src/lib/actions/trades.ts (new - registerTrade, loginTrade, logoutTrade server actions)
+- [x] src/lib/actions/trades.test.ts (new - 25 tests)
+- [x] src/lib/utils/rate-limit.ts (new - in-memory rate limiter for server actions)
+- [x] src/app/(site)/trades/register/page.tsx (new - registration page)
 
 ### Tasks / Subtasks
 
-- [ ] Create `TradeRegistrationForm`
-- [ ] Implement `registerTrade` Server Action
-- [ ] Connect Auth `signUp`
-- [ ] Connect DB `insert`
-- [ ] Handle Errors (Email taken, etc.)
-- [ ] Verify Redirect to Dashboard
+- [x] Create `TradeRegistrationForm`
+- [x] Implement `registerTrade` Server Action
+- [x] Connect Auth `signUp`
+- [x] Connect DB `insert`
+- [x] Handle Errors (Email taken, etc.)
+- [x] Verify Redirect to Dashboard
 
 ### Testing Requirements
 
@@ -86,5 +91,35 @@ So that **I can access wholesale pricing and trade tools**.
 5. For async Server Components: `const jsx = await ServerComponent(); render(<>{jsx}</>);`
 6. Run with: `npm run test:components`
 
+### Dev Agent Record
+
+**Implementation Plan:**
+- Created TradeRegistrationForm client component with fields: Name, Company, Business Type (select), Email, Phone, Password
+- Created registerTrade server action with Zod validation, Supabase auth.signUp, and trades table insert
+- Also created loginTrade and logoutTrade server actions (needed for stories 5-3)
+- Registration page at /trades/register with SEO metadata
+- Form shows success state with link to login after registration
+- Handles duplicate email, auth errors, and DB insert failures gracefully
+
+**Completion Notes:**
+- 36 new tests pass (15 form component + 21 server action)
+- Password validation: minimum 8 characters
+- Business types: General Contractor, Flooring Installer, Interior Designer, Architect, Builder/Developer, Property Manager, Renovation Specialist, Other
+- Trade profile insert failure doesn't block registration (graceful degradation)
+
+### Senior Developer Review (AI)
+- **Reviewer**: Viet An
+- **Date**: 2026-02-07
+- **Outcome**: Approved after fixes
+- **Fixes applied**:
+  - H1: Registration now auto-redirects to dashboard when Supabase creates a session (no email confirmation); shows verify email message otherwise
+  - H2: Password validation strengthened — requires uppercase, lowercase, and number (was min 8 only)
+  - H4: Email enumeration vulnerability fixed — auth errors return generic message
+  - M1: Extracted shared FormField components (SubmitButton, FieldError, getFieldError) to reduce duplication
+  - M4: Added in-memory rate limiting (5 reg/min, 10 login/min per IP)
+- Tests: 25 server action tests pass (was 21, +4 new for password rules, session redirect, rate limit)
+
 ### Change Log
 - **2026-02-07**: Story created.
+- **2026-02-07**: Implemented trade registration form, server actions (register/login/logout), and 36 tests.
+- **2026-02-07**: Code review fixes — auto-redirect, password complexity, email enumeration fix, shared components, rate limiting. Status → done.
