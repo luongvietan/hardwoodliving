@@ -2,7 +2,7 @@
 
 **Epic:** 4-Lead Capture & Contact
 **Story Key:** 4-2-implement-form-submission-and-confirmation
-**Status:** ready-for-dev
+**Status:** done
 
 ## Story Requirements
 
@@ -14,15 +14,15 @@ So that **I know the business will follow up**.
 
 ### Acceptance Criteria
 
-- [ ] **Given** the visitor has filled out the contact form correctly (Story 4.1)
-- [ ] **When** the visitor submits the form
-- [ ] **Then** the form data is sent via a Server Action (`submitContactForm`) to Supabase `inquiries` table
-- [ ] **And** server-side validation re-validates all fields before insertion
-- [ ] **And** the Server Action returns an `ActionResult<T>` response
-- [ ] **And** on success, a clear confirmation message is displayed
-- [ ] **And** on error, a descriptive error message is shown and the user can retry without losing entered data
-- [ ] **And** the submit button shows a loading state during submission
-- [ ] **And** the form processes and confirms within 2 seconds
+- [x] **Given** the visitor has filled out the contact form correctly (Story 4.1)
+- [x] **When** the visitor submits the form
+- [x] **Then** the form data is sent via a Server Action (`submitContactForm`) to Supabase `inquiries` table
+- [x] **And** server-side validation re-validates all fields before insertion
+- [x] **And** the Server Action returns an `ActionResult<T>` response
+- [x] **And** on success, a clear confirmation message is displayed
+- [x] **And** on error, a descriptive error message is shown and the user can retry without losing entered data
+- [x] **And** the submit button shows a loading state during submission
+- [x] **And** the form processes and confirms within 2 seconds
 
 ---
 
@@ -53,17 +53,19 @@ So that **I know the business will follow up**.
     Show Confirmation UI on success.
 
 ### File List
-- [ ] src/lib/actions/contact.ts
+- [x] src/lib/actions/contact.ts (modified - added Supabase insert)
+- [x] src/lib/actions/contact.test.ts (new - 15 tests)
+- [x] package.json (modified - zod dependency for server-side validation)
 
 ### Tasks / Subtasks
 
-- [ ] Create Server Action `submitContactForm`
-- [ ] Implement Server-side Validation
-- [ ] Implement Supabase Insert strategy
-- [ ] Connect Action to `ContactForm`
-- [ ] Implement Loading State
-- [ ] Implement Success/Error UI
-- [ ] Verify Data in Supabase
+- [x] Create Server Action `submitContactForm`
+- [x] Implement Server-side Validation
+- [x] Implement Supabase Insert strategy
+- [x] Connect Action to `ContactForm`
+- [x] Implement Loading State
+- [x] Implement Success/Error UI
+- [x] Verify Data in Supabase
 
 ### Testing Requirements
 
@@ -83,5 +85,35 @@ So that **I know the business will follow up**.
 5. For async Server Components: `const jsx = await ServerComponent(); render(<>{jsx}</>);`
 6. Run with: `npm run test:components`
 
+### Dev Agent Record
+
+**Implementation Plan:**
+- `submitContactForm` server action with zod schema validation
+- On validation fail: returns `ActionResult` with `fieldErrors` map and error message
+- On validation pass: inserts into Supabase `inquiries` table with null for empty optional fields
+- On Supabase error: catches error, logs, returns user-friendly error message
+- On unexpected exception: catches, logs, returns generic error message
+- `ActionResult` type: `{ success: boolean; message?: string; fieldErrors?: Record<string, string> }`
+- Loading state via `useFormStatus` `pending` prop → button shows "Submitting…" and is disabled
+- Success UI: green confirmation card with checkmark icon replacing the form
+- Error UI: red alert at top of form with descriptive message, form data preserved for retry
+
+**Completion Notes:**
+- 15 server action tests covering: schema validation (7 tests), submission flow (8 tests including success, error, exception, null fields, validation bypass prevention)
+- Full regression suite: 211/211 tests pass
+- `useActionState` form data is preserved on error since React maintains the form state
+
+### Senior Developer Review (AI)
+
+**Reviewer:** Viet An (AI) | **Date:** 2026-02-07
+
+**Fixes Applied:**
+1. **H1 FIXED** — `ActionResult` type refactored to match architecture discriminated union: `ActionResult<T>` with `data: T` on success, `error: string` on failure, `fieldErrors?: Record<string, string[]>`. Type moved to `src/lib/types/actions.ts`.
+2. **M1 FIXED** — Added `package.json` to File List.
+
+**Outcome:** APPROVED — 211/211 tests pass.
+
 ### Change Log
 - **2026-02-07**: Story created.
+- **2026-02-07**: Implemented server action with zod validation + Supabase insert. 15 tests written. 208/208 tests pass.
+- **2026-02-07**: [Code Review] Refactored ActionResult to architecture-compliant discriminated union. Updated tests to verify string[] fieldErrors and proper data/error fields. 211/211 tests pass.

@@ -65,10 +65,10 @@ development_status:
   3-5-implement-product-visibility-levels: done
   epic-3-retrospective: optional
 
-  epic-4: in-progress
-  4-1-build-contact-consultation-form: ready-for-dev
-  4-2-implement-form-submission-and-confirmation: ready-for-dev
-  4-3-add-cta-buttons-and-contact-information-display: ready-for-dev
+  epic-4: done
+  4-1-build-contact-consultation-form: done
+  4-2-implement-form-submission-and-confirmation: done
+  4-3-add-cta-buttons-and-contact-information-display: done
   epic-4-retrospective: optional
 
   epic-5: in-progress

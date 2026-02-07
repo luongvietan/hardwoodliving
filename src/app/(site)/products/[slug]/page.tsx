@@ -124,15 +124,15 @@ export default async function ProductPage({
           {/* CTA */}
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Link
-              href="/contact"
-              className="rounded-md bg-amber-700 px-6 py-3 text-center text-sm font-semibold text-white shadow-sm transition-colors hover:bg-amber-600"
+              href={`/contact?product=${encodeURIComponent(product.title)}`}
+              className="rounded-md bg-amber-700 px-6 py-3 text-center text-sm font-semibold text-white shadow-sm transition-colors hover:bg-amber-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500"
             >
-              Request a Quote
+              Get Consultation
             </Link>
             {product.category && (
               <Link
                 href={`/categories/${product.category.slug.current}`}
-                className="rounded-md border border-gray-300 bg-white px-6 py-3 text-center text-sm font-semibold text-gray-900 shadow-sm transition-colors hover:bg-gray-50"
+                className="rounded-md border border-gray-300 bg-white px-6 py-3 text-center text-sm font-semibold text-gray-900 shadow-sm transition-colors hover:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-500"
               >
                 View All {product.category.title}
               </Link>

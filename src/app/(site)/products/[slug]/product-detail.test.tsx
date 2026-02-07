@@ -119,11 +119,11 @@ describe("Product Detail Page", () => {
 
   // ── CTA buttons ────────────────────────────────────────────────────────
 
-  it("renders Request a Quote CTA linking to /contact", async () => {
+  it("renders Get Consultation CTA linking to /contact with product name", async () => {
     vi.mocked(sanityFetch).mockResolvedValueOnce(fullProduct);
     await renderProductPage();
-    const cta = screen.getByText("Request a Quote");
-    expect(cta.closest("a")).toHaveAttribute("href", "/contact");
+    const cta = screen.getByText("Get Consultation");
+    expect(cta.closest("a")).toHaveAttribute("href", `/contact?product=${encodeURIComponent("Premium Oak Plank")}`);
   });
 
   it("renders View All category CTA", async () => {
