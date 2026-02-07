@@ -85,3 +85,5 @@ export const getSiteSettingsQuery = defineQuery(`*[_type == "siteSettings"][0] {
   contactInfo,
   socialLinks
 }`);
+
+export const getAllPageSlugsQuery = defineQuery(`*[_type == "page"]{ "slug": slug.current }`);

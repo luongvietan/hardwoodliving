@@ -2,21 +2,18 @@ import type { Metadata } from "next";
 import Container from "@/components/layout/Container";
 import PortableText from "@/components/sanity/PortableText";
 import { sanityFetch } from "@/lib/sanity/fetch";
-import { getPageQuery } from "@/lib/sanity/queries";
-import { defineQuery } from "next-sanity";
+import { getPageQuery, getAllPageSlugsQuery } from "@/lib/sanity/queries";
+import { urlFor } from "@/lib/sanity/image";
+import type { SanityImageValue } from "@/lib/sanity/types";
 import { notFound } from "next/navigation";
-
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
-const getAllPageSlugsQuery = defineQuery(`*[_type == "page"]{ "slug": slug.current }`);
 
 interface PageData {
   title: string;
-  body?: any[];
+  body?: Record<string, unknown>[];
   seo?: {
     metaTitle?: string;
     metaDescription?: string;
-    openGraphImage?: any;
+    openGraphImage?: SanityImageValue;
   };
 }
 
@@ -40,10 +37,29 @@ export async function generateMetadata({
     tags: ["page"],
   });
   if (!page) return { title: "Page Not Found" };
-  return {
+
+  const metadata: Metadata = {
     title: page.seo?.metaTitle || page.title,
     description: page.seo?.metaDescription || undefined,
   };
+
+  if (page.seo?.openGraphImage?.asset?._ref) {
+    metadata.openGraph = {
+      images: [
+        {
+          url: urlFor(page.seo.openGraphImage)
+            .width(1200)
+            .height(630)
+            .auto("format")
+            .url(),
+          width: 1200,
+          height: 630,
+        },
+      ],
+    };
+  }
+
+  return metadata;
 }
 
 export default async function ContentPage({

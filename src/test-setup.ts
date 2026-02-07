@@ -37,6 +37,9 @@ vi.mock("next/navigation", () => ({
     prefetch: vi.fn(),
   }),
   useSearchParams: () => new URLSearchParams(),
+  notFound: () => {
+    throw new Error("NEXT_NOT_FOUND");
+  },
 }));
 
 // ---------------------------------------------------------------------------
@@ -67,4 +70,6 @@ vi.mock("@/lib/sanity/queries", () => ({
   getHomepageQuery: 'mock-homepage-query',
   getProductsQuery: 'mock-products-query',
   getFeaturedProductsQuery: 'mock-featured-query',
+  getPageQuery: 'mock-page-query',
+  getAllPageSlugsQuery: 'mock-all-page-slugs-query',
 }));
