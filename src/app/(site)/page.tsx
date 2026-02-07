@@ -1,35 +1,52 @@
 import type { SanityImageValue } from "@/lib/sanity/types";
 import HeroSection from "@/components/home/HeroSection";
 import IntroBlurb from "@/components/home/IntroBlurb";
+import CategoryHighlights from "@/components/home/CategoryHighlights";
 import FeaturedProducts from "@/components/home/FeaturedProducts";
+import CtaSection from "@/components/home/CtaSection";
 import Testimonials from "@/components/home/Testimonials";
 import JsonLd, { buildOrganizationJsonLd } from "@/components/seo/JsonLd";
 import { sanityFetch } from "@/lib/sanity/fetch";
 import { getHomepageQuery } from "@/lib/sanity/queries";
-import { urlFor } from "@/lib/sanity/image";
+import { getSiteSettings } from "@/lib/sanity/siteSettings";
 import { SITE_URL } from "@/lib/constants";
 
 interface HomepageData {
   hero?: {
     heading?: string;
     subheading?: string;
-    image?: SanityImageValue;
+    images?: SanityImageValue[];
     ctaLink?: string;
     ctaText?: string;
   };
+  introHeading?: string;
   introBlurb?: string;
+  categoryHighlights?: {
+    _id: string;
+    title?: string;
+    slug?: { current?: string };
+    description?: string;
+    image?: SanityImageValue;
+  }[];
   featuredProducts?: {
     _id: string;
-    title: string;
-    slug: { current: string };
-    price: number;
+    title?: string;
+    slug?: { current?: string };
+    price?: number;
     priceUnit?: string;
     images?: SanityImageValue[];
   }[];
+  ctaSection?: {
+    heading?: string;
+    text?: string;
+    image?: SanityImageValue;
+    linkText?: string;
+    linkUrl?: string;
+  };
   testimonials?: {
     _id: string;
-    author: string;
-    content: string;
+    author?: string;
+    content?: string;
     image?: SanityImageValue;
   }[];
 }
@@ -43,40 +60,48 @@ export default async function Home() {
     });
   } catch (error) {
     console.error("Failed to fetch homepage data:", error);
-    // Fall through with null data — components handle missing data gracefully
   }
 
-  // Build hero image URL from Sanity asset reference
-  const heroImageUrl = data?.hero?.image?.asset?._ref
-    ? urlFor(data.hero.image).width(1920).height(800).auto("format").url()
-    : null;
+  // Fetch siteName for JSON-LD from CMS
+  const settings = await getSiteSettings();
 
   return (
     <>
       {/* Organization Schema */}
       <JsonLd
         data={buildOrganizationJsonLd({
-          name: "Hardwood Living",
+          name: settings.siteName || "",
           url: SITE_URL,
-          description:
-            "Premium hardwood flooring, engineered wood, and luxury vinyl options for residential and commercial spaces across Canada.",
+          description: data?.introBlurb || "",
         })}
       />
 
-      {/* Hero Section */}
+      {/* Hero Section — slideshow with CMS images */}
       <HeroSection
         heading={data?.hero?.heading}
         subheading={data?.hero?.subheading}
-        imageUrl={heroImageUrl}
+        images={data?.hero?.images}
         ctaLink={data?.hero?.ctaLink}
         ctaText={data?.hero?.ctaText}
       />
 
       {/* Intro Blurb */}
-      <IntroBlurb text={data?.introBlurb} />
+      <IntroBlurb heading={data?.introHeading} text={data?.introBlurb} />
+
+      {/* Category Highlights Grid */}
+      <CategoryHighlights categories={data?.categoryHighlights} />
 
       {/* Featured Products */}
       <FeaturedProducts products={data?.featuredProducts} />
+
+      {/* CTA Section */}
+      <CtaSection
+        heading={data?.ctaSection?.heading}
+        text={data?.ctaSection?.text}
+        image={data?.ctaSection?.image}
+        linkText={data?.ctaSection?.linkText}
+        linkUrl={data?.ctaSection?.linkUrl}
+      />
 
       {/* Testimonials */}
       <Testimonials testimonials={data?.testimonials} />

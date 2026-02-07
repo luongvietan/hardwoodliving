@@ -81,19 +81,25 @@ export default async function ContentPage({
   if (!page) notFound();
 
   return (
-    <Container className="py-12">
-      <article className="mx-auto max-w-3xl">
-        <h1 className="mb-8 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-          {page.title}
-        </h1>
-        {page.body ? (
-          <div className="prose-content">
-            <PortableText value={page.body} />
-          </div>
-        ) : (
-          <p className="text-lg text-gray-600">Content coming soon.</p>
-        )}
-      </article>
-    </Container>
+    <>
+      {/* Page Header — Magna dark banner */}
+      <section className="bg-charcoal py-16">
+        <Container>
+          <h1 className="text-3xl font-bold uppercase tracking-wider text-white sm:text-4xl">
+            {page.title}
+          </h1>
+        </Container>
+      </section>
+
+      <Container className="py-12">
+        <article className="mx-auto max-w-3xl">
+          {page.body && (
+            <div className="prose-content">
+              <PortableText value={page.body} />
+            </div>
+          )}
+        </article>
+      </Container>
+    </>
   );
 }

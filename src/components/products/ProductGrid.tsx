@@ -37,10 +37,10 @@ export default function ProductGrid({
         <ProductCard
           key={product._id}
           title={product.title}
-          slug={product.slug}
+          slug={product.slug.current}
           price={product.price}
           priceUnit={product.priceUnit}
-          images={product.images}
+          image={product.images?.[0]}
         />
       ))}
     </div>

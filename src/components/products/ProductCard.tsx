@@ -4,42 +4,40 @@ import type { SanityImageValue } from "@/lib/sanity/types";
 import { urlFor } from "@/lib/sanity/image";
 
 interface ProductCardProps {
-  title: string;
-  slug: { current: string };
-  price: number;
+  title?: string;
+  slug?: string;
+  price?: number;
   priceUnit?: string;
-  images?: SanityImageValue[];
+  image?: SanityImageValue;
 }
 
 /**
- * Reusable product card component displaying a thumbnail image, title, and price.
+ * Reusable product card component (Magna-style).
+ * Displays a thumbnail image, title, and optional price.
  * Links to the product detail page at /products/[slug].
- * Handles missing images with a placeholder icon.
+ * All data from Sanity CMS — renders nothing if no slug.
  */
 export default function ProductCard({
   title,
   slug,
   price,
   priceUnit = "/ sq ft",
-  images,
+  image,
 }: ProductCardProps) {
-  const firstImage = images?.[0];
-  const hasImage = !!firstImage?.asset?._ref;
+  if (!slug) return null;
+
+  const hasImage = !!image?.asset?._ref;
 
   return (
     <Link
-      href={`/products/${slug.current}`}
-      className="group overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm transition-shadow hover:shadow-md"
+      href={`/products/${slug}`}
+      className="group overflow-hidden border border-gray-200 bg-white transition-shadow hover:shadow-lg"
     >
       <div className="relative aspect-[4/3] overflow-hidden bg-gray-100">
         {hasImage ? (
           <Image
-            src={urlFor(firstImage!)
-              .width(600)
-              .height(450)
-              .auto("format")
-              .url()}
-            alt={title}
+            src={urlFor(image!).width(600).height(450).auto("format").url()}
+            alt={title || ""}
             fill
             sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
             loading="lazy"
@@ -65,10 +63,12 @@ export default function ProductCard({
         )}
       </div>
       <div className="p-4">
-        <h3 className="text-lg font-semibold text-gray-900 group-hover:text-amber-900">
-          {title}
-        </h3>
-        {price > 0 && (
+        {title && (
+          <h3 className="text-base font-semibold text-charcoal-dark group-hover:text-accent-orange">
+            {title}
+          </h3>
+        )}
+        {price != null && price > 0 && (
           <p className="mt-1 text-sm text-gray-600">
             From ${price.toFixed(2)} {priceUnit}
           </p>

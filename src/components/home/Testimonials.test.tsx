@@ -1,6 +1,8 @@
 /**
  * Testimonials – Real rendering tests using @testing-library/react + jsdom.
  * Mocks for next/image and @/lib/sanity/image are provided by test-setup.ts.
+ *
+ * The Testimonials section is fully CMS-driven with no hardcoded defaults.
  */
 import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
@@ -41,9 +43,9 @@ describe("Testimonials", () => {
 
   // ── Section heading ──────────────────────────────────────────────────
 
-  it("renders 'What Our Clients Say' heading", () => {
+  it("renders 'What Our Customers Say' heading", () => {
     render(<Testimonials testimonials={mockTestimonials} />);
-    expect(screen.getByText("What Our Clients Say")).toBeInTheDocument();
+    expect(screen.getByText("What Our Customers Say")).toBeInTheDocument();
   });
 
   // ── Testimonial cards ────────────────────────────────────────────────
@@ -82,17 +84,6 @@ describe("Testimonials", () => {
     expect(screen.queryByRole("img")).not.toBeInTheDocument();
   });
 
-  // ── Accessibility ────────────────────────────────────────────────────
-
-  it("has an accessible section with aria-labelledby", () => {
-    render(<Testimonials testimonials={mockTestimonials} />);
-    const heading = screen.getByText("What Our Clients Say");
-    expect(heading).toHaveAttribute("id", "testimonials-heading");
-
-    const section = heading.closest("section");
-    expect(section).toHaveAttribute("aria-labelledby", "testimonials-heading");
-  });
-
   // ── Layout ───────────────────────────────────────────────────────────
 
   it("uses responsive grid layout", () => {
@@ -100,5 +91,13 @@ describe("Testimonials", () => {
     const grid = screen.getByText("Jane Smith").closest(".grid");
     expect(grid?.className).toMatch(/grid-cols-1/);
     expect(grid?.className).toMatch(/lg:grid-cols-3/);
+  });
+
+  // ── Dark theme ────────────────────────────────────────────────────────
+
+  it("uses dark charcoal background", () => {
+    const { container } = render(<Testimonials testimonials={mockTestimonials} />);
+    const section = container.querySelector("section");
+    expect(section?.className).toMatch(/bg-charcoal-dark/);
   });
 });

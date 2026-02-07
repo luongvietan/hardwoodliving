@@ -8,10 +8,10 @@ import ProductCard from "./ProductCard";
 
 const baseProps = {
   title: "Oak Hardwood Flooring",
-  slug: { current: "oak-hardwood-flooring" },
+  slug: "oak-hardwood-flooring",
   price: 5.99,
   priceUnit: "/ sq ft",
-  images: [{ asset: { _ref: "image-abc123", _type: "reference" as const } }],
+  image: { asset: { _ref: "image-abc123", _type: "reference" as const } },
 };
 
 describe("ProductCard", () => {
@@ -48,22 +48,24 @@ describe("ProductCard", () => {
 
   // ── Images ───────────────────────────────────────────────────────────
 
-  it("renders product image via urlFor when images are available", () => {
+  it("renders product image via urlFor when image is available", () => {
     render(<ProductCard {...baseProps} />);
     const img = screen.getByRole("img");
     expect(img).toHaveAttribute("alt", "Oak Hardwood Flooring");
     expect(img).toHaveAttribute("src", "https://cdn.sanity.io/mock-image.jpg");
   });
 
-  it("renders placeholder SVG when no images provided", () => {
-    render(<ProductCard {...baseProps} images={undefined} />);
+  it("renders placeholder SVG when no image provided", () => {
+    render(<ProductCard {...baseProps} image={undefined} />);
     // No <img> should exist — placeholder is an inline SVG
     expect(screen.queryByRole("img")).not.toBeInTheDocument();
   });
 
-  it("renders placeholder when images array is empty", () => {
-    render(<ProductCard {...baseProps} images={[]} />);
-    expect(screen.queryByRole("img")).not.toBeInTheDocument();
+  // ── Null slug ─────────────────────────────────────────────────────────
+
+  it("renders nothing when slug is undefined", () => {
+    const { container } = render(<ProductCard title="Test" />);
+    expect(container.innerHTML).toBe("");
   });
 
   // ── Price edge cases ─────────────────────────────────────────────────

@@ -78,8 +78,22 @@ export const getPageQuery = defineQuery(`*[_type == "page" && slug.current == $s
 }`);
 
 export const getHomepageQuery = defineQuery(`*[_type == "homepage"][0] {
-  hero,
+  hero {
+    heading,
+    subheading,
+    images,
+    ctaLink,
+    ctaText
+  },
+  introHeading,
   introBlurb,
+  categoryHighlights[]->{
+    _id,
+    title,
+    slug,
+    description,
+    image
+  },
   featuredProducts[]->{
     _id,
     title,
@@ -88,6 +102,7 @@ export const getHomepageQuery = defineQuery(`*[_type == "homepage"][0] {
     priceUnit,
     images
   },
+  ctaSection,
   testimonials[]->{
     _id,
     author,
@@ -99,9 +114,42 @@ export const getHomepageQuery = defineQuery(`*[_type == "homepage"][0] {
 export const getSiteSettingsQuery = defineQuery(`*[_type == "siteSettings"][0] {
   siteName,
   logo,
-  navigation,
-  contactInfo,
-  socialLinks
+  navigation[] {
+    _key,
+    title,
+    path,
+    position,
+    children[] {
+      _key,
+      title,
+      path
+    }
+  },
+  contactInfo {
+    email,
+    phone,
+    address,
+    tollFree
+  },
+  socialLinks[] {
+    _key,
+    platform,
+    url
+  }
+}`);
+
+export const searchProductsQuery = defineQuery(`*[_type == "product" && visibility == "public" && (title match $query || description match $query)] | order(title asc) [0...$limit] {
+  _id,
+  title,
+  slug,
+  description,
+  price,
+  priceUnit,
+  images,
+  category->{
+    title,
+    slug
+  }
 }`);
 
 export const getAllPageSlugsQuery = defineQuery(`*[_type == "page"]{ "slug": slug.current }`);

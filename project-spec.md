@@ -27,11 +27,13 @@ Per agreement, the project will utilize the following technologies:
 
 ## 3. Design Requirements (UI/UX)
 *   **Designer:** The Client (Romeo) will handle the design on Figma (as a suitable designer has not yet been found).
-*   **Reference Site:** [www.magnahardwoodfloors.com](http://www.magnahardwoodfloors.com) (Regarding structure and functionality).
+*   **Reference Site:** [www.magnahardwoodfloors.com](https://magnahardwoodfloors.com/) (Regarding structure, layout, and functionality).
+*   **Current Approach:** ⚠️ Since no official Figma design is available yet, the frontend will be **cloned from the reference site's layout and UI** ([magnahardwoodfloors.com](https://magnahardwoodfloors.com/)) with Hardwoodliving branding, content, and styling adjustments. Once an official Figma design is delivered, the UI will be updated to match.
 *   **Style:** Friendly, nature-oriented, non-generic, conveying a sense of exclusive service.
 *   **Developer Responsibilities:**
-    *   Consult on UI/UX if inconsistencies are found in the client's design.
-    *   Convert Figma designs to Next.js code (Pixel-perfect).
+    *   Clone layout/UI from the reference site as interim design.
+    *   Consult on UI/UX if inconsistencies are found.
+    *   When Figma designs are available: Convert Figma designs to Next.js code (Pixel-perfect).
 
 ## 4. Detailed Features (Functional Requirements)
 
@@ -115,38 +117,32 @@ The management system must be easy to use for the Admin (Romeo and 3rd party dat
     *   Supabase connection verified
     *   No blocking technical errors
 
-### Milestone 2 – CMS & Data Models
-*   **Amount:** $600
-*   **Duration:** ~1 week
+### Milestone 2 – CMS, Data Models & Frontend Pages Implementation
+*   **Amount:** $1,300
+*   **Duration:** ~2–2.5 weeks
+*   **Note:** ⚠️ Since no official Figma design has been provided yet, the frontend will be built by **cloning the layout and UI of the reference site [magnahardwoodfloors.com](https://magnahardwoodfloors.com/)** with Hardwoodliving branding and content. Once an official design is available, the UI can be refined accordingly.
 *   **Scope:**
-    *   Create content models: Pages, Products, Categories / subcategories, Trades users, Inquiries
-    *   Configure roles & permissions
-    *   Image upload configuration
-    *   Admin UI configuration
+    *   **CMS & Data Models:**
+        *   Create content models: Pages, Products, Categories / subcategories, Trades users, Inquiries
+        *   Configure roles & permissions
+        *   Image upload configuration
+        *   Admin UI configuration
+    *   **Frontend Pages:**
+        *   Implement frontend pages referencing the layout/structure of [magnahardwoodfloors.com](https://magnahardwoodfloors.com/): Homepage, Flooring listing page, Product detail page, Dynamic content pages
+        *   Responsive layout (desktop / tablet / mobile)
+        *   Basic SEO structure
 *   **Deliverables:**
-    *   Fully functional CMS
-    *   Admin can manage content & products
+    *   Fully functional CMS — Admin can manage content & products
+    *   Core website pages live on staging — Content rendered from CMS
 *   **Acceptance Criteria:**
     *   Admin can create/edit/delete: Pages, Products, Categories
     *   Images upload successfully
     *   No developer intervention needed for content management
-
-### Milestone 3 – Frontend Pages Implementation
-*   **Amount:** $700
-*   **Duration:** ~1–1.5 weeks
-*   **Scope:**
-    *   Implement frontend based on approved Figma: Homepage, Flooring listing page, Product detail page, Dynamic content pages
-    *   Responsive layout (desktop / tablet / mobile)
-    *   Basic SEO structure
-*   **Deliverables:**
-    *   Core website pages live on staging
-    *   Content rendered from CMS
-*   **Acceptance Criteria:**
     *   Pages display correctly on major browsers
     *   Responsive behavior confirmed
     *   Content loads dynamically from CMS
 
-### Milestone 4 – Trades Area & Lead Flows
+### Milestone 3 – Trades Area & Lead Flows
 *   **Amount:** $400
 *   **Duration:** ~1 week
 *   **Scope:**
@@ -163,7 +159,7 @@ The management system must be easy to use for the Admin (Romeo and 3rd party dat
     *   Inquiry submissions saved correctly
     *   Admin can view all submissions
 
-### Milestone 5 – QA, Polish & Production Launch
+### Milestone 4 – QA, Polish & Production Launch
 *   **Amount:** $300
 *   **Duration:** ~1 week (or buffer)
 *   **Scope:**

@@ -121,20 +121,20 @@ export default async function ProductPage({
 
       {/* Breadcrumb */}
       <nav aria-label="Breadcrumb" className="mb-6 flex items-center gap-2 text-sm text-gray-500">
-        <Link href="/" className="hover:text-amber-900">Home</Link>
+        <Link href="/" className="uppercase text-accent-orange hover:text-accent-orange-hover">Home</Link>
         <span>/</span>
         {product.category && (
           <>
             <Link
               href={`/categories/${product.category.slug.current}`}
-              className="hover:text-amber-900"
+              className="uppercase text-accent-orange hover:text-accent-orange-hover"
             >
               {product.category.title}
             </Link>
             <span>/</span>
           </>
         )}
-        <span className="text-gray-900">{product.title}</span>
+        <span className="font-medium text-gray-900">{product.title}</span>
       </nav>
 
       <div className="grid grid-cols-1 gap-10 lg:grid-cols-2">
@@ -144,7 +144,7 @@ export default async function ProductPage({
         {/* Product Info */}
         <div>
           {product.isFeatured && (
-            <span className="mb-3 inline-block rounded bg-amber-100 px-2.5 py-0.5 text-xs font-medium text-amber-800">
+            <span className="mb-3 inline-block bg-accent-orange px-2.5 py-0.5 text-xs font-bold uppercase tracking-wider text-white">
               Featured
             </span>
           )}
@@ -164,14 +164,14 @@ export default async function ProductPage({
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Link
               href={`/contact?product=${encodeURIComponent(product.title)}`}
-              className="rounded-md bg-amber-700 px-6 py-3 text-center text-sm font-semibold text-white shadow-sm transition-colors hover:bg-amber-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500"
+              className="bg-accent-orange px-6 py-3 text-center text-sm font-semibold uppercase tracking-wider text-white transition-colors hover:bg-accent-orange-hover"
             >
               Get Consultation
             </Link>
             {product.category && (
               <Link
                 href={`/categories/${product.category.slug.current}`}
-                className="rounded-md border border-gray-300 bg-white px-6 py-3 text-center text-sm font-semibold text-gray-900 shadow-sm transition-colors hover:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-500"
+                className="border border-charcoal px-6 py-3 text-center text-sm font-semibold uppercase tracking-wider text-charcoal-dark transition-colors hover:bg-charcoal hover:text-white"
               >
                 View All {product.category.title}
               </Link>

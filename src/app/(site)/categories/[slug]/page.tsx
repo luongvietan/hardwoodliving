@@ -144,7 +144,7 @@ export default async function CategoryPage({
       <JsonLd data={buildBreadcrumbJsonLd(breadcrumbItems)} />
 
       {/* Category Header */}
-      <section className="relative bg-gray-900 py-16">
+      <section className="relative bg-charcoal py-16">
         {category.image?.asset?._ref && (
           <Image
             src={urlFor(category.image).width(1920).height(400).auto("format").url()}
@@ -156,7 +156,7 @@ export default async function CategoryPage({
           />
         )}
         <Container className="relative z-10">
-          <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
+          <h1 className="text-3xl font-bold uppercase tracking-wider text-white sm:text-4xl">
             {category.title}
           </h1>
           {category.description && (
@@ -189,7 +189,7 @@ export default async function CategoryPage({
                 <Link
                   key={sub._id}
                   href={`/categories/${sub.slug.current}`}
-                  className="rounded-full bg-gray-100 px-3 py-1 text-sm font-medium text-gray-700 hover:bg-gray-200"
+                  className="bg-gray-100 px-3 py-1 text-sm font-medium text-gray-700 hover:bg-accent-orange hover:text-white"
                 >
                   {sub.title}
                 </Link>

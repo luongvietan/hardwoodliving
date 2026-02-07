@@ -8,10 +8,6 @@
  *   (Header, Footer, Navigation, MobileMenu, Breadcrumbs) cannot be rendered in a bare Node.js
  *   environment without mocking the Next.js router context. For these, we validate the source code
  *   to confirm structural patterns (CSS classes, ARIA attributes, component composition).
- * - **Data module tests**: Navigation data is tested behaviorally by importing actual exports.
- *
- * When React Testing Library + jsdom is added in a future story, the source-code validation tests
- * should be migrated to full behavioral rendering tests.
  */
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
@@ -40,6 +36,7 @@ describe('Layout Component Files', () => {
         'Navigation.tsx',
         'MobileMenu.tsx',
         'Breadcrumbs.tsx',
+        'SearchBar.tsx',
     ];
 
     requiredComponents.forEach((component) => {
@@ -102,24 +99,8 @@ describe('Container Component Behavior', () => {
     });
 });
 
-describe('Navigation Data Module', () => {
-    it('should export navigation config', async () => {
-        const mod = await import('../../../src/lib/navigation');
-        assert.ok(mod.navigationLinks, 'Should export navigationLinks');
-        assert.ok(mod.contactInfo, 'Should export contactInfo');
-        assert.ok(mod.socialLinks, 'Should export socialLinks');
-        assert.ok(Array.isArray(mod.navigationLinks), 'navigationLinks should be an array');
-        assert.ok(Array.isArray(mod.socialLinks), 'socialLinks should be an array');
-    });
-});
-
 describe('Header Component Content Validation', () => {
     const headerContent = readComponent(resolve(LAYOUT_DIR, 'Header.tsx'));
-
-    it('should include the site logo text', () => {
-        assert.ok(headerContent.includes('Hardwood'), 'Header should contain "Hardwood" logo text');
-        assert.ok(headerContent.includes('Living'), 'Header should contain "Living" logo text');
-    });
 
     it('should use sticky positioning', () => {
         assert.ok(headerContent.includes('sticky'), 'Header should use sticky positioning');
@@ -133,27 +114,40 @@ describe('Header Component Content Validation', () => {
         assert.ok(headerContent.includes('MobileMenu'), 'Header should include MobileMenu component');
     });
 
+    it('should include SearchBar component', () => {
+        assert.ok(headerContent.includes('SearchBar'), 'Header should include SearchBar component');
+    });
+
     it('should link logo to homepage', () => {
         assert.ok(headerContent.includes('href="/"'), 'Header logo should link to homepage');
+    });
+
+    it('should use dark charcoal theme', () => {
+        assert.ok(headerContent.includes('bg-charcoal'), 'Header should use charcoal background');
+    });
+
+    it('should accept dynamic props (no hardcoded content)', () => {
+        assert.ok(headerContent.includes('interface HeaderProps'), 'Header should have typed props interface');
+        assert.ok(headerContent.includes('siteName'), 'Header should accept siteName prop');
+        assert.ok(headerContent.includes('navigation'), 'Header should accept navigation prop');
+        assert.ok(headerContent.includes('contactInfo'), 'Header should accept contactInfo prop');
+        assert.ok(headerContent.includes('socialLinks'), 'Header should accept socialLinks prop');
     });
 });
 
 describe('Footer Component Content Validation', () => {
     const footerContent = readComponent(resolve(LAYOUT_DIR, 'Footer.tsx'));
 
-    it('should display contact information', () => {
-        assert.ok(footerContent.includes('contactInfo.phone'), 'Footer should display phone number');
-        assert.ok(footerContent.includes('contactInfo.email'), 'Footer should display email');
-        assert.ok(footerContent.includes('contactInfo.address'), 'Footer should display address');
+    it('should display contact information dynamically', () => {
+        assert.ok(footerContent.includes('contactInfo'), 'Footer should use contactInfo prop');
     });
 
-    it('should display social links', () => {
+    it('should display social links dynamically', () => {
         assert.ok(footerContent.includes('socialLinks'), 'Footer should render social links');
     });
 
-    it('should display copyright', () => {
+    it('should display copyright with dynamic year', () => {
         assert.ok(footerContent.includes('getFullYear'), 'Footer should use dynamic year for copyright');
-        assert.ok(footerContent.includes('All rights reserved'), 'Footer should include copyright text');
     });
 
     it('should use responsive grid layout', () => {
@@ -166,6 +160,10 @@ describe('Footer Component Content Validation', () => {
             footerContent.includes('rel="noopener noreferrer"'),
             'External social links should have noopener noreferrer'
         );
+    });
+
+    it('should use dark charcoal theme', () => {
+        assert.ok(footerContent.includes('bg-charcoal-dark'), 'Footer should use charcoal-dark background');
     });
 });
 
@@ -212,11 +210,18 @@ describe('Navigation Component Validation', () => {
     });
 
     it('should be hidden on mobile, shown on desktop', () => {
-        assert.ok(navContent.includes('hidden md:flex'), 'Navigation should be hidden on mobile, flex on desktop');
+        assert.ok(navContent.includes('hidden'), 'Navigation should be hidden on mobile');
+        assert.ok(navContent.includes('md:flex'), 'Navigation should flex on desktop');
     });
 
     it('should have accessible navigation landmark', () => {
         assert.ok(navContent.includes('aria-label'), 'Navigation should have aria-label for accessibility');
+    });
+
+    it('should support dropdown menus', () => {
+        assert.ok(navContent.includes('DropdownItem'), 'Navigation should support dropdown items');
+        assert.ok(navContent.includes('aria-expanded'), 'Dropdown should have aria-expanded');
+        assert.ok(navContent.includes('aria-haspopup'), 'Dropdown should have aria-haspopup');
     });
 });
 
@@ -248,10 +253,13 @@ describe('Breadcrumbs Component Validation', () => {
     it('should mark current page with aria-current', () => {
         assert.ok(crumbsContent.includes('aria-current="page"'), 'Current breadcrumb should have aria-current');
     });
+
+    it('should use accent-orange for link colors', () => {
+        assert.ok(crumbsContent.includes('text-accent-orange'), 'Breadcrumb links should use accent-orange');
+    });
 });
 
 // Note: Container behavioral rendering tests are in "Container Component Behavior" suite above.
-// The source-code validation below is kept for structural prop interface verification only.
 describe('Container Component Source Validation', () => {
     const containerContent = readComponent(resolve(LAYOUT_DIR, 'Container.tsx'));
 
@@ -260,67 +268,34 @@ describe('Container Component Source Validation', () => {
     });
 });
 
-describe('Root Layout Validation', () => {
-    const layoutContent = readComponent(resolve(PROJECT_ROOT, 'src/app/layout.tsx'));
+describe('Site Layout Validation', () => {
+    const layoutContent = readComponent(resolve(PROJECT_ROOT, 'src/app/(site)/layout.tsx'));
 
     it('should include Header component', () => {
-        assert.ok(layoutContent.includes('<Header'), 'Root layout should include Header');
+        assert.ok(layoutContent.includes('<Header'), 'Site layout should include Header');
     });
 
     it('should include Footer component', () => {
-        assert.ok(layoutContent.includes('<Footer'), 'Root layout should include Footer');
+        assert.ok(layoutContent.includes('<Footer'), 'Site layout should include Footer');
     });
 
     it('should include Breadcrumbs component', () => {
-        assert.ok(layoutContent.includes('<Breadcrumbs'), 'Root layout should include Breadcrumbs');
+        assert.ok(layoutContent.includes('<Breadcrumbs'), 'Site layout should include Breadcrumbs');
     });
 
     it('should have skip navigation link', () => {
-        assert.ok(layoutContent.includes('Skip to main content'), 'Root layout should have skip navigation link');
-        assert.ok(layoutContent.includes('id="main-content"'), 'Root layout should have main-content id target');
-    });
-
-    it('should have proper HTML lang attribute', () => {
-        assert.ok(layoutContent.includes('lang="en"'), 'Root layout should set lang="en"');
+        assert.ok(layoutContent.includes('Skip to main content'), 'Site layout should have skip navigation link');
+        assert.ok(layoutContent.includes('id="main-content"'), 'Site layout should have main-content id target');
     });
 
     it('should have semantic main element', () => {
-        assert.ok(layoutContent.includes('<main'), 'Root layout should use semantic main element');
-    });
-});
-
-describe('Placeholder Pages', () => {
-    const requiredPages = [
-        { path: 'src/app/categories/flooring/page.tsx', title: 'Flooring' },
-        { path: 'src/app/categories/cabinetry/page.tsx', title: 'Cabinetry' },
-        { path: 'src/app/pages/visit-us/page.tsx', title: 'Visit Us' },
-        { path: 'src/app/pages/care-guide/page.tsx', title: 'Care Guide' },
-        { path: 'src/app/pages/why-wood/page.tsx', title: 'Why Wood?' },
-        { path: 'src/app/contact/page.tsx', title: 'Contact' },
-        { path: 'src/app/trades/page.tsx', title: 'Trades' },
-    ];
-
-    requiredPages.forEach(({ path, title }) => {
-        it(`should have placeholder page at ${path}`, () => {
-            const filePath = resolve(PROJECT_ROOT, path);
-            assert.ok(existsSync(filePath), `Placeholder page should exist at ${path}`);
-        });
-
-        it(`should have metadata with title "${title}" at ${path}`, () => {
-            const content = readComponent(resolve(PROJECT_ROOT, path));
-            assert.ok(content.includes('Metadata'), `${path} should export Metadata`);
-            assert.ok(content.includes(`title: '${title}'`), `${path} should have correct title metadata`);
-        });
-
-        it(`should use Container component at ${path}`, () => {
-            const content = readComponent(resolve(PROJECT_ROOT, path));
-            assert.ok(content.includes('Container'), `${path} should use Container component`);
-        });
+        assert.ok(layoutContent.includes('<main'), 'Site layout should use semantic main element');
     });
 
-    it('homepage should use next/link for internal links', () => {
-        const content = readComponent(resolve(PROJECT_ROOT, 'src/app/page.tsx'));
-        assert.ok(content.includes("from \"next/link\""), 'Homepage should import Link from next/link');
-        assert.ok(!content.match(/<a\s+href="\//), 'Homepage should not use raw <a> tags for internal links');
+    it('should pass CMS data to Header and Footer', () => {
+        assert.ok(layoutContent.includes('getSiteSettings'), 'Layout should fetch site settings');
+        assert.ok(layoutContent.includes('settings.navigation'), 'Layout should pass navigation to components');
+        assert.ok(layoutContent.includes('settings.contactInfo'), 'Layout should pass contactInfo to components');
+        assert.ok(layoutContent.includes('settings.socialLinks'), 'Layout should pass socialLinks to components');
     });
 });

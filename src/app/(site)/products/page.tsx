@@ -104,18 +104,16 @@ export default async function ProductsCatalogPage({
   return (
     <>
       {/* Page Header */}
-      <section className="bg-gray-900 py-16">
+      <section className="bg-charcoal py-16">
         <Container>
-          <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
-            {activeCategoryData
-              ? activeCategoryData.title
-              : "Product Catalog"}
+          <h1 className="text-3xl font-bold uppercase tracking-wider text-white sm:text-4xl">
+            {activeCategoryData?.title || "Product Catalog"}
           </h1>
-          <p className="mt-4 max-w-2xl text-lg text-gray-300">
-            {activeCategoryData
-              ? activeCategoryData.description || `Browse our ${activeCategoryData.title} collection.`
-              : "Browse our complete range of premium hardwood flooring products by category."}
-          </p>
+          {activeCategoryData?.description && (
+            <p className="mt-4 max-w-2xl text-lg text-gray-300">
+              {activeCategoryData.description}
+            </p>
+          )}
         </Container>
       </section>
 
@@ -189,7 +187,7 @@ export default async function ProductsCatalogPage({
                       </Link>
                       <div className="p-4">
                         <Link href={`/categories/${category.slug.current}`}>
-                          <h2 className="text-lg font-semibold text-gray-900 group-hover:text-amber-900">
+                          <h2 className="text-lg font-semibold text-charcoal-dark group-hover:text-accent-orange">
                             {category.title}
                           </h2>
                         </Link>

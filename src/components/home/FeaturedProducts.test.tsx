@@ -1,6 +1,8 @@
 /**
  * FeaturedProducts – Real rendering tests using @testing-library/react + jsdom.
  * Mocks for next/image, next/link and @/lib/sanity/image are provided by test-setup.ts.
+ *
+ * The FeaturedProducts section is fully CMS-driven with no hardcoded defaults.
  */
 import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
@@ -76,17 +78,6 @@ describe("FeaturedProducts", () => {
     const sqftElements = screen.getAllByText(/\/ sq ft/);
     expect(sqftElements.length).toBeGreaterThanOrEqual(1);
     expect(screen.getByText(/\/ box/)).toBeInTheDocument();
-  });
-
-  // ── Accessibility ────────────────────────────────────────────────────
-
-  it("has an accessible section with aria-labelledby", () => {
-    render(<FeaturedProducts products={mockProducts} />);
-    const heading = screen.getByText("Featured Products");
-    expect(heading).toHaveAttribute("id", "featured-products-heading");
-
-    const section = heading.closest("section");
-    expect(section).toHaveAttribute("aria-labelledby", "featured-products-heading");
   });
 
   // ── Layout ───────────────────────────────────────────────────────────

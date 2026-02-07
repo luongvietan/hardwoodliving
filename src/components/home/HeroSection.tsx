@@ -1,83 +1,114 @@
-import Link from "next/link";
-import Image from "next/image";
-import Container from "@/components/layout/Container";
+'use client';
+
+import { useState, useEffect, useCallback } from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
+import type { SanityImageValue } from '@/lib/sanity/types';
+import { urlFor } from '@/lib/sanity/image';
 
 interface HeroSectionProps {
   heading?: string;
   subheading?: string;
-  imageUrl?: string | null;
+  images?: SanityImageValue[];
   ctaLink?: string;
   ctaText?: string;
 }
 
 /**
- * Hero section for the homepage with background image, heading, subheading, and CTA buttons.
- * Uses Next.js Image with priority for optimal LCP performance.
- * Falls back to gradient background and default text when CMS data is missing.
+ * Magna-style hero section with full-width image slideshow.
+ * Large centered text overlay (uppercase, white, bold).
+ * Auto-advances every 6 seconds with dot indicators.
+ * All content from Sanity CMS — renders nothing if no data.
  */
 export default function HeroSection({
-  heading: rawHeading,
-  subheading: rawSubheading,
-  imageUrl,
-  ctaLink: rawCtaLink,
-  ctaText: rawCtaText,
+  heading,
+  subheading,
+  images,
+  ctaLink,
+  ctaText,
 }: HeroSectionProps) {
-  const heading = rawHeading || "Premium Hardwood";
-  const subheading =
-    rawSubheading ||
-    "Discover our curated collection of hardwood flooring and cabinetry, crafted for residential and commercial spaces across Canada.";
-  const ctaLink = rawCtaLink || "/categories/flooring";
-  const ctaText = rawCtaText || "Browse Flooring";
+  const validImages = images?.filter((img) => img.asset?._ref) ?? [];
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const nextSlide = useCallback(() => {
+    if (validImages.length <= 1) return;
+    setCurrentIndex((prev) => (prev + 1) % validImages.length);
+  }, [validImages.length]);
+
+  // Auto-advance slideshow
+  useEffect(() => {
+    if (validImages.length <= 1) return;
+    const interval = setInterval(nextSlide, 6000);
+    return () => clearInterval(interval);
+  }, [nextSlide, validImages.length]);
+
+  // Don't render if no content at all
+  if (!heading && !subheading && validImages.length === 0) return null;
 
   return (
-    <section className="relative flex min-h-[60vh] items-center justify-center overflow-hidden bg-gray-900">
-      {imageUrl && (
-        <Image
-          src={imageUrl}
-          alt=""
-          role="presentation"
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover opacity-40"
-        />
+    <section className="relative flex min-h-[60vh] items-center justify-center overflow-hidden bg-charcoal-dark lg:min-h-[70vh]">
+      {/* Slideshow Images */}
+      {validImages.length > 0 &&
+        validImages.map((img, index) => (
+          <Image
+            key={img._key || index}
+            src={urlFor(img).width(1920).height(900).auto('format').url()}
+            alt={img.alt || heading || ''}
+            fill
+            priority={index === 0}
+            sizes="100vw"
+            className={`object-cover transition-opacity duration-1000 ${
+              index === currentIndex ? 'opacity-50' : 'opacity-0'
+            }`}
+          />
+        ))}
+
+      {/* Fallback gradient when no images */}
+      {validImages.length === 0 && (
+        <div className="absolute inset-0 bg-gradient-to-br from-charcoal-dark via-charcoal to-charcoal-dark" />
       )}
-      {!imageUrl && (
-        <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-amber-950 to-gray-900" />
-      )}
-      <Container className="relative z-10 py-24">
-        <div className="flex flex-col items-center justify-center gap-6 text-center">
-          <h1 className="text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
-            {heading.includes(" ") ? (
-              <>
-                {heading.split(" ").slice(0, -1).join(" ")}{" "}
-                <span className="text-amber-400">
-                  {heading.split(" ").slice(-1)}
-                </span>
-              </>
-            ) : (
-              <span className="text-amber-400">{heading}</span>
-            )}
+
+      {/* Text Overlay */}
+      <div className="relative z-10 px-4 py-24 text-center">
+        {heading && (
+          <h1 className="text-4xl font-bold uppercase tracking-wider text-white sm:text-5xl lg:text-6xl">
+            {heading}
           </h1>
-          <p className="max-w-2xl text-lg leading-8 text-gray-300">
+        )}
+        {subheading && (
+          <p className="mt-4 text-sm font-semibold uppercase tracking-[0.2em] text-gray-300 sm:text-base lg:text-lg">
             {subheading}
           </p>
-          <div className="flex flex-col gap-4 sm:flex-row">
-            <Link
-              href={ctaLink}
-              className="rounded-md bg-amber-700 px-6 py-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-amber-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500"
-            >
-              {ctaText}
-            </Link>
-            <Link
-              href="/contact"
-              className="rounded-md border border-white/30 bg-white/10 px-6 py-3 text-sm font-semibold text-white shadow-sm backdrop-blur-sm transition-colors hover:bg-white/20"
-            >
-              Contact Us
-            </Link>
-          </div>
+        )}
+        {ctaLink && ctaText && (
+          <Link
+            href={ctaLink}
+            className="mt-8 inline-block border border-white/50 bg-white/10 px-8 py-3 text-sm font-semibold uppercase tracking-wider text-white backdrop-blur-sm transition-colors hover:bg-white/20"
+          >
+            {ctaText}
+          </Link>
+        )}
+      </div>
+
+      {/* Slideshow Dots */}
+      {validImages.length > 1 && (
+        <div className="absolute bottom-6 left-1/2 z-10 flex -translate-x-1/2 gap-2">
+          {validImages.map((_, index) => (
+            <button
+              key={index}
+              type="button"
+              onClick={() => setCurrentIndex(index)}
+              className={`h-2 rounded-full transition-all ${
+                index === currentIndex
+                  ? 'w-8 bg-white'
+                  : 'w-2 bg-white/50 hover:bg-white/75'
+              }`}
+              aria-label={`Go to slide ${index + 1}`}
+              aria-current={index === currentIndex}
+            />
+          ))}
         </div>
-      </Container>
+      )}
     </section>
   );
 }

@@ -32,7 +32,7 @@ export default function Breadcrumbs() {
     <nav aria-label="Breadcrumb" className="py-3">
       <ol className="flex flex-wrap items-center gap-1 text-sm text-gray-500">
         <li>
-          <Link href="/" className="transition-colors hover:text-amber-900">
+          <Link href="/" className="uppercase text-accent-orange transition-colors hover:text-accent-orange-hover">
             Home
           </Link>
         </li>
@@ -46,7 +46,7 @@ export default function Breadcrumbs() {
                 {crumb.label}
               </span>
             ) : (
-              <Link href={crumb.href} className="transition-colors hover:text-amber-900">
+              <Link href={crumb.href} className="uppercase text-accent-orange transition-colors hover:text-accent-orange-hover">
                 {crumb.label}
               </Link>
             )}

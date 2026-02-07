@@ -2,21 +2,44 @@ import type { SanityImageValue } from "./types";
 import { sanityFetch } from "./fetch";
 import { getSiteSettingsQuery } from "./queries";
 
+export interface NavChild {
+  _key: string;
+  title: string;
+  path: string;
+}
+
+export interface NavItem {
+  _key: string;
+  title: string;
+  path?: string;
+  position: "left" | "right";
+  children?: NavChild[];
+}
+
+export interface ContactInfo {
+  email?: string;
+  phone?: string;
+  address?: string;
+  tollFree?: string;
+}
+
+export interface SocialLink {
+  _key: string;
+  platform: string;
+  url: string;
+}
+
 export interface SiteSettings {
   siteName?: string;
   logo?: SanityImageValue;
-  navigation?: { title: string; path: string; _key: string }[];
-  contactInfo?: {
-    email?: string;
-    phone?: string;
-    address?: string;
-  };
-  socialLinks?: { platform: string; url: string; _key: string }[];
+  navigation?: NavItem[];
+  contactInfo?: ContactInfo;
+  socialLinks?: SocialLink[];
 }
 
 /**
  * Fetch site settings from Sanity with caching.
- * Falls back to hardcoded defaults if CMS data is unavailable.
+ * All content is dynamic from CMS — no hardcoded fallbacks.
  */
 export async function getSiteSettings(): Promise<SiteSettings> {
   try {
@@ -29,26 +52,3 @@ export async function getSiteSettings(): Promise<SiteSettings> {
     return {};
   }
 }
-
-// Default fallbacks
-export const defaultNavigation = [
-  { title: "Flooring", path: "/categories/flooring" },
-  { title: "Cabinetry", path: "/categories/cabinetry" },
-  { title: "Visit Us", path: "/pages/visit-us" },
-  { title: "Care Guide", path: "/pages/care-guide" },
-  { title: "Why Wood?", path: "/pages/why-wood" },
-  { title: "Contact", path: "/contact" },
-  { title: "Trades", path: "/trades" },
-];
-
-export const defaultContactInfo = {
-  phone: "(604) 555-0123",
-  email: "info@hardwoodliving.ca",
-  address: "123 Timber Street, Vancouver, BC V6B 1A1",
-};
-
-export const defaultSocialLinks = [
-  { platform: "Facebook", url: "https://facebook.com/hardwoodliving" },
-  { platform: "Instagram", url: "https://instagram.com/hardwoodliving" },
-  { platform: "Pinterest", url: "https://pinterest.com/hardwoodliving" },
-];

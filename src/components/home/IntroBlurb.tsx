@@ -1,36 +1,33 @@
-import Container from "@/components/layout/Container";
-
 interface IntroBlurbProps {
   heading?: string;
   text?: string;
 }
 
 /**
- * Introductory text section for the homepage.
- * Displays an optional heading and a centered paragraph describing Hardwoodliving.
- * Renders nothing if no text is provided.
- * Uses aria-label for accessibility when no visible heading is present.
+ * Intro section displayed below the hero.
+ * Magna-style centered heading + text with orange accent line.
+ * All content from Sanity CMS — renders nothing if no data.
  */
 export default function IntroBlurb({ heading, text }: IntroBlurbProps) {
-  if (!text) {
-    return null;
-  }
+  if (!heading && !text) return null;
 
   return (
-    <section
-      aria-label={heading || "About Hardwoodliving"}
-      className="bg-white py-16"
-    >
-      <Container>
+    <section className="py-12 lg:py-16">
+      <div className="mx-auto max-w-3xl px-4 text-center">
         {heading && (
-          <h2 className="mb-6 text-center text-3xl font-bold tracking-tight text-gray-900">
-            {heading}
-          </h2>
+          <>
+            <h2 className="text-2xl font-bold text-charcoal-dark lg:text-3xl">
+              {heading}
+            </h2>
+            <div className="mx-auto mt-4 h-1 w-16 bg-accent-orange" />
+          </>
         )}
-        <p className="mx-auto max-w-3xl text-center text-lg leading-8 text-gray-600">
-          {text}
-        </p>
-      </Container>
+        {text && (
+          <p className="mt-6 text-base leading-relaxed text-gray-600 lg:text-lg">
+            {text}
+          </p>
+        )}
+      </div>
     </section>
   );
 }

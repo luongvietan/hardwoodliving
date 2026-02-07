@@ -1,5 +1,7 @@
 /**
  * IntroBlurb – Real rendering tests using @testing-library/react + jsdom.
+ *
+ * The IntroBlurb is fully CMS-driven with no hardcoded defaults.
  */
 import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
@@ -13,8 +15,8 @@ describe("IntroBlurb", () => {
     expect(container.innerHTML).toBe("");
   });
 
-  it("renders nothing when text is empty string", () => {
-    const { container } = render(<IntroBlurb text="" />);
+  it("renders nothing when both heading and text are empty", () => {
+    const { container } = render(<IntroBlurb heading="" text="" />);
     expect(container.innerHTML).toBe("");
   });
 
@@ -35,18 +37,10 @@ describe("IntroBlurb", () => {
     expect(screen.queryByRole("heading")).not.toBeInTheDocument();
   });
 
-  // ── Accessibility ────────────────────────────────────────────────────
-
-  it("uses heading as aria-label when heading provided", () => {
-    render(<IntroBlurb heading="Our Story" text="Some text" />);
-    const section = screen.getByText("Some text").closest("section");
-    expect(section).toHaveAttribute("aria-label", "Our Story");
-  });
-
-  it("falls back to 'About Hardwoodliving' aria-label when no heading", () => {
-    render(<IntroBlurb text="Some text" />);
-    const section = screen.getByText("Some text").closest("section");
-    expect(section).toHaveAttribute("aria-label", "About Hardwoodliving");
+  it("renders orange accent line under heading", () => {
+    const { container } = render(<IntroBlurb heading="Title" text="Text" />);
+    const accentLine = container.querySelector(".bg-accent-orange");
+    expect(accentLine).toBeInTheDocument();
   });
 
   // ── Structure ────────────────────────────────────────────────────────
