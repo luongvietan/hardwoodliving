@@ -7,35 +7,37 @@ interface Testimonial {
   author?: string;
   content?: string;
   image?: SanityImageValue;
+  role?: string;
 }
 
 interface TestimonialsProps {
+  heading?: string;
   testimonials?: Testimonial[];
 }
 
 /**
- * Testimonials section with Magna-style dark background.
- * Cards with author image, quote, and name.
- * All content from Sanity CMS — renders nothing if no data.
+ * Testimonials section — "What Our Customers Are Saying".
+ * Cards with quote, author, role. Content from Sanity.
  */
-export default function Testimonials({ testimonials }: TestimonialsProps) {
+export default function Testimonials({ heading, testimonials }: TestimonialsProps) {
   if (!testimonials || testimonials.length === 0) return null;
 
   return (
-    <section className="bg-charcoal-dark py-12 lg:py-16">
+    <section className="bg-charcoal-dark py-16 lg:py-20">
       <div className="mx-auto max-w-7xl px-4">
-        <h2 className="mb-8 text-center text-2xl font-bold uppercase tracking-wider text-white lg:text-3xl">
-          What Our Customers Say
+        <h2 className="section-heading-light mb-10">
+          {heading || 'What Our Customers Are Saying'}
         </h2>
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {testimonials.map((t) => (
             <div
               key={t._id}
-              className="rounded-lg border border-charcoal-light bg-charcoal p-6"
+              className="rounded-xl border border-stone-600/50 bg-charcoal p-6 shadow-lg"
             >
               {/* Quote Icon */}
               <svg
-                className="mb-4 h-8 w-8 text-accent-orange"
+                className="mb-4 h-8 w-8 opacity-90"
+                style={{ color: 'var(--color-accent-orange)' }}
                 fill="currentColor"
                 viewBox="0 0 24 24"
                 aria-hidden="true"
@@ -44,7 +46,7 @@ export default function Testimonials({ testimonials }: TestimonialsProps) {
               </svg>
 
               {t.content && (
-                <p className="mb-4 text-sm leading-relaxed text-gray-300">
+                <p className="mb-4 text-sm leading-relaxed text-stone-300">
                   {t.content}
                 </p>
               )}
@@ -59,11 +61,19 @@ export default function Testimonials({ testimonials }: TestimonialsProps) {
                     className="h-12 w-12 rounded-full object-cover"
                   />
                 )}
-                {t.author && (
-                  <span className="text-sm font-semibold text-accent-orange">
-                    {t.author}
-                  </span>
-                )}
+                <div>
+                  {t.author && (
+                    <span
+                      className="text-sm font-semibold"
+                      style={{ color: 'var(--color-accent-orange)' }}
+                    >
+                      {t.author}
+                    </span>
+                  )}
+                  {t.role && (
+                    <span className="block text-xs text-stone-400">{t.role}</span>
+                  )}
+                </div>
               </div>
             </div>
           ))}

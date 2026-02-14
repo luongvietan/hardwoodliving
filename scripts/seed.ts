@@ -179,20 +179,28 @@ async function main() {
         isFeatured: true,
     });
 
-    // 3. Create Testimonial
+    // 3. Create Testimonials (exact design copy)
     console.log('Creating testimonials...');
     const testimonial1 = await client.createOrReplace({
-        _id: 'testimonial-john-doe',
+        _id: 'testimonial-sarah-m-1',
         _type: 'testimonial',
-        author: 'John Doe',
-        content: 'Excellent service and quality products. The hardwood flooring transformed our home completely.',
+        author: 'Sarah M.',
+        role: 'Homeowner',
+        content: '"The showroom experience was incredible. The team helped us choose the perfect oak flooring for our living room. Absolutely love it!"',
     });
-
     const testimonial2 = await client.createOrReplace({
-        _id: 'testimonial-sarah-miller',
+        _id: 'testimonial-david-k',
         _type: 'testimonial',
-        author: 'Sarah Miller',
-        content: 'Very professional team. They helped us choose the perfect vinyl flooring for our kitchen renovation.',
+        author: 'David K.',
+        role: 'Interior Designer',
+        content: '"I always recommend this showroom to my clients. The quality and variety are unmatched, and the staff really understands design."',
+    });
+    const testimonial3 = await client.createOrReplace({
+        _id: 'testimonial-sarah-m-2',
+        _type: 'testimonial',
+        author: 'Sarah M.',
+        role: 'Homeowner',
+        content: '"From selection to installation, everything was seamless. Our new vinyl planks look stunning and are so easy to maintain!"',
     });
 
     // 4. Create Pages
@@ -278,8 +286,36 @@ async function main() {
     await client.createOrReplace({
         _id: 'siteSettings',
         _type: 'siteSettings',
-        siteName: 'Hardwood Living',
+        siteName: 'Hardfloor Showroom',
         navigation: [
+            {
+                _key: 'nav-book',
+                _type: 'navItem',
+                title: 'Book a Visit',
+                path: '/contact',
+                position: 'left',
+            },
+            {
+                _key: 'nav-collections',
+                _type: 'navItem',
+                title: 'Our Collections',
+                path: '/products',
+                position: 'left',
+            },
+            {
+                _key: 'nav-about',
+                _type: 'navItem',
+                title: 'About Us',
+                path: '/pages/visit-us',
+                position: 'right',
+            },
+            {
+                _key: 'nav-contact',
+                _type: 'navItem',
+                title: 'Contact',
+                path: '/contact',
+                position: 'right',
+            },
             {
                 _key: 'nav-products',
                 _type: 'navItem',
@@ -289,96 +325,153 @@ async function main() {
                     { _key: 'nav-products-hardwood', _type: 'navChild', title: 'Hardwood Flooring', path: '/categories/hardwood-flooring' },
                     { _key: 'nav-products-vinyl', _type: 'navChild', title: 'Luxury Vinyl', path: '/categories/luxury-vinyl' },
                     { _key: 'nav-products-laminate', _type: 'navChild', title: 'Laminate', path: '/categories/laminate' },
-                    { _key: 'nav-products-cabinetry', _type: 'navChild', title: 'Cabinetry', path: '/categories/cabinetry' },
-                    { _key: 'nav-products-all', _type: 'navChild', title: 'View All Products', path: '/products' },
+                    { _key: 'nav-products-all', _type: 'navChild', title: 'View All', path: '/products' },
                 ],
-            },
-            {
-                _key: 'nav-galleries',
-                _type: 'navItem',
-                title: 'Galleries',
-                path: '/pages/galleries',
-                position: 'left',
-            },
-            {
-                _key: 'nav-why-wood',
-                _type: 'navItem',
-                title: 'Why Wood?',
-                path: '/pages/why-wood',
-                position: 'right',
-            },
-            {
-                _key: 'nav-contact',
-                _type: 'navItem',
-                title: 'Contact Us',
-                path: '/contact',
-                position: 'right',
-            },
-            {
-                _key: 'nav-about',
-                _type: 'navItem',
-                title: 'About',
-                position: 'left',
-                children: [
-                    { _key: 'nav-about-visit', _type: 'navChild', title: 'Visit Us', path: '/pages/visit-us' },
-                    { _key: 'nav-about-care', _type: 'navChild', title: 'Care Guide', path: '/pages/care-guide' },
-                ],
-            },
-            {
-                _key: 'nav-trades',
-                _type: 'navItem',
-                title: 'Trades',
-                path: '/trades',
-                position: 'right',
             },
         ],
         contactInfo: {
-            email: 'info@hardwoodliving.ca',
-            phone: '(604) 555-0123',
-            tollFree: '1-800-555-0199',
-            address: '123 Timber Street, Vancouver, BC V6B 1A1',
+            email: 'info@hardwoodliving.com',
+            phone: '604 .726.5453',
+            address: '123 Flooring Avenue, Suite 100\nAmsterdam, Netherlands',
+            tollFree: '',
         },
+        footerTagline: 'Premium flooring solutions for homeowners, designers, and contractors since 2005.',
+        businessHours: 'Mon Fri: 9:00 18:00\nSat: 10:00 16:00',
+        footerPhone: '+31 (0)20 123 4567',
+        readyToFindHeading: 'Ready to Find Your Perfect Floor?',
+        readyToFindPrimaryText: 'Book Your Visit',
+        readyToFindSecondaryText: 'Request Info',
+        copyrightText: '© 2026 Hardfloor Showroom. All rights reserved.',
         socialLinks: [
             { _key: 'social-fb', _type: 'socialLink', platform: 'Facebook', url: 'https://facebook.com/hardwoodliving' },
             { _key: 'social-ig', _type: 'socialLink', platform: 'Instagram', url: 'https://instagram.com/hardwoodliving' },
         ],
     });
 
-    // 6. Create Homepage (Magna-style)
+    // 6. Create Homepage (100% design copy from hardfloor website desktop PDF)
     console.log('Creating Homepage...');
     await client.createOrReplace({
         _id: 'homepage',
         _type: 'homepage',
         hero: {
-            heading: 'Premium Canadian Distributor',
-            subheading: 'Of the finest quality hardwood, vinyl and laminate floors.',
-            images: [],  // Images need to be uploaded via Studio - empty array as placeholder
-            ctaLink: '/products',
-            ctaText: 'View All Products',
+            heading: 'Find Your Perfect Hardfloor',
+            subheading: 'Explore premium flooring options in person and get expert guidance for your home.',
+            images: [],
+            ctaLink: '/contact',
+            ctaText: 'Book a showroom visit',
+            cta2Link: '/contact',
+            cta2Text: 'Request a quote',
         },
-        introHeading: 'Welcome to Hardwood Living',
-        introBlurb: 'Discover our curated collection of hardwood flooring and cabinetry, crafted for residential and commercial spaces across Canada. We bring the finest quality products directly to you.',
-        categoryHighlights: [
-            { _type: 'reference', _ref: hardwoodCat._id, _key: 'ch-hardwood' },
-            { _type: 'reference', _ref: vinylCat._id, _key: 'ch-vinyl' },
-            { _type: 'reference', _ref: laminateCat._id, _key: 'ch-laminate' },
-            { _type: 'reference', _ref: cabinetCat._id, _key: 'ch-cabinetry' },
-        ],
-        featuredProducts: [
-            { _type: 'reference', _ref: 'product-oak-plank', _key: 'fp-1' },
-            { _type: 'reference', _ref: 'product-luxury-vinyl-tile', _key: 'fp-2' },
-            { _type: 'reference', _ref: 'product-luxury-laminate-falcon', _key: 'fp-3' },
-        ],
-        ctaSection: {
-            heading: 'View Our Products In Your Own Home',
-            text: 'Try our room-visualizing tool to see what our flooring would look like in your home. Simply open the product you want and explore the possibilities.',
-            linkText: 'View All',
-            linkUrl: '/products',
+        choosingSection: {
+            heading1: 'Choosing the Right Floor',
+            heading2: "Doesn't Have to Be Hard",
+            painPoints: [
+                'Too many options and no clear guidance',
+                "Photos online don't show true color or texture",
+                'Worry about picking the wrong style for the home',
+                'Concerns about durability, scratches, and maintenance',
+                'Uncertainty about what fits your budget',
+            ],
+            resultText: 'People delay decisions, feel stressed, and risk choosing flooring they\'ll regret.',
+            tagline: 'See It. Choose Confidently.',
+            solutionBullets: [
+                'Visit our showroom and explore real hardwood samples',
+                'Get personalized recommendations based on your space and lifestyle',
+                'Compare finishes, tones, and textures side by side',
+                'Learn what works best for pets, kids, and daily wear',
+                'Leave knowing you made the right choice with zero pressure',
+            ],
+            ctaText: 'Book a showroom visit',
+            ctaLink: '/contact',
         },
+        whatWeOffer: {
+            intro: 'Complete flooring solutions — installation, maintenance, and custom designs for every home.',
+            items: [
+                { title: 'Hardwood', description: 'Bring timeless elegance into your home with authentic natural wood floors built to last for generations.' },
+                { title: 'Engineered', description: 'Enjoy the beauty of real hardwood with added stability, making it ideal for modern homes and changing climates.' },
+                { title: 'Vinyl', description: 'A stylish, waterproof flooring option that stands up to busy families, pets, and everyday life with ease.' },
+                { title: 'Laminate', description: 'Get the look of hardwood at a budget friendly price, with durable performance made for high traffic spaces.' },
+                { title: 'Custom Floors', description: 'Create a one of a kind floor designed around your style, your space, and your exact project needs.' },
+                { title: 'Unfinished', description: 'Start with raw wood and customize the stain, tone, and finish to match your home perfectly.' },
+                { title: 'Adhesive', description: 'Professional installation starts here — high quality adhesives that ensure strong, long lasting results.' },
+                { title: 'Accessories', description: 'From trims to underlayment, find the essential finishing touches that make your flooring project complete.' },
+                { title: 'Coatings', description: 'Protect your investment with premium coatings that enhance durability, shine, and long term beauty.' },
+                { title: 'Lumber', description: 'Reliable, high quality lumber for flooring, construction, and custom woodworking projects.' },
+                { title: 'Home Decor', description: 'Elevate your space with carefully selected decor elements that pair beautifully with your flooring.' },
+                { title: 'Commercial', description: 'Durable flooring solutions designed to handle heavy traffic while maintaining a clean, professional look.' },
+            ],
+        },
+        ourSpecialty: {
+            intro: 'Everything you need from first visit to finished floor.',
+            items: [
+                { number: '01', title: 'Supply', description: 'Hardwoodliving offers a variety of hardwood and engineered flooring, with more wood, tile, vinyl, and remodeling products coming soon.' },
+                { number: '02', title: 'Installation', description: 'Floor installation is key to long lasting results. We provide expert, unbiased guidance to ensure a smooth, reliable, and beautiful finish.' },
+                { number: '03', title: 'Contracting', description: 'Expert installation recommendations and coordination with trusted professionals.' },
+                { number: '04', title: 'Maintenance', description: 'Tips and products to keep your floors looking pristine for years to come.' },
+            ],
+            ctaText: 'Book a showroom visit',
+            ctaLink: '/contact',
+        },
+        flooringGrades: {
+            heading: 'Flooring grades',
+            subheading: 'Handpicked materials for every style and space.',
+            grades: [
+                { name: 'Prime /AB', bullets: ['High-end grade', 'Even appearance', 'Few or no knots', 'Low sap wood', 'Center cut'] },
+                { name: 'Select /ABc', bullets: ['Select / & better', 'Small knots 5-10%', 'Color variations', 'Milling imperfect', 'Smooth, flat cut'] },
+                { name: 'Natural /ABcd', bullets: ['More character', 'More, larger knots', 'Sap wood, variety', 'Spots, streaks', 'Knot holes, splits'] },
+                { name: 'Rustic / Cd', bullets: ['Character', 'Knots, raw texture', 'Imperfections', 'Stains, split ends', 'Shattered pieces'] },
+            ],
+        },
+        lumberCuts: {
+            heading: 'Lumber cuts',
+            intro: 'Lumber & veneer cuts determine the core appearance of the floor boards, the length, performance, stability & price.',
+            cuts: [
+                { name: 'Plainsawn', description: 'Wood cut parallel to the growth rings (0°–45°) is called plainsawn in hardwoods and flatsawn in softwoods. It is stable in thickness but less stable in width.' },
+                { name: 'Riftsawn', description: 'Here\'s a shorter version of that text: Riftsawn (hardwoods) or bastard sawn (softwoods) lumber is cut so the growth rings form 30°–60° angles to the board\'s face.' },
+                { name: 'Quartersawn', description: 'Quartersawn (hardwoods) or vertical grain (softwoods) lumber is cut perpendicular to the growth rings (45°–90°). It\'s more stable in width but less stable in thickness.' },
+                { name: 'Livesawn', description: 'Live sawn wood is cut straight from log to board, showing the full range of grain patterns, width, and stability.' },
+            ],
+        },
+        limitedTimeOffer: {
+            heading: 'Special Offer Save on Selected Floors',
+            body: 'Book your showroom visit today and enjoy exclusive discounts on selected flooring collections. Limited-time offer — book your visit now before slots fill up!',
+            ctaText: 'Book a showroom visit',
+            ctaLink: '/contact',
+            cta2Text: 'Request a quote',
+            cta2Link: '/contact',
+        },
+        whyLoveUs: {
+            heading: "We've helped thousands create their dream spaces.",
+            items: [
+                { title: 'Premium Materials', description: 'We source only the highest quality flooring from trusted European and local brands.' },
+                { title: 'Expert Guidance', description: 'Our flooring specialists help you pick the perfect match for your lifestyle and taste..' },
+                { title: 'Seamless Experience', description: 'From selection to installation, we make the entire process effortless and enjoyable.' },
+                { title: 'Built to Last for Real Life', description: 'Durable design that keeps up with your everyday.' },
+            ],
+        },
+        ourWorksHeading: 'Our works',
+        faq: {
+            heading: "Have Questions? We've Got Answers",
+            items: [
+                { question: 'Do I need an appointment to visit the showroom?', answer: 'Walk ins are welcome, but we recommend booking an appointment so a specialist can be ready to assist you personally.' },
+                { question: 'Can I take samples home?', answer: '' },
+                { question: 'Where is the showroom located?', answer: '' },
+                { question: 'Do you offer installation services?', answer: '' },
+                { question: 'What are your payment options?', answer: '' },
+            ],
+        },
+        testimonialsHeading: 'What Our Customers Are Saying',
         testimonials: [
             { _type: 'reference', _ref: testimonial1._id, _key: 't-1' },
             { _type: 'reference', _ref: testimonial2._id, _key: 't-2' },
+            { _type: 'reference', _ref: testimonial3._id, _key: 't-3' },
         ],
+        bookVisitForm: {
+            heading: 'Book Your Showroom Visit',
+            subheading: 'Fill out the form below and our team will get back to you quickly. It only takes 30 seconds.',
+            primaryCtaText: 'Book a showroom visit',
+            secondaryCtaText: 'Request a quote',
+        },
     });
 
     console.log('Seed completed successfully!');

@@ -25,5 +25,11 @@ export default defineType({
             type: 'image',
             options: { hotspot: true },
         }),
+        defineField({
+            name: 'role',
+            title: 'Role / Title',
+            type: 'string',
+            description: 'e.g. "Homeowner", "Interior Designer"',
+        }),
     ],
 });

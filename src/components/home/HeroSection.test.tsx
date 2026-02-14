@@ -36,7 +36,7 @@ describe("HeroSection", () => {
 
   it("does NOT render CTA when ctaLink or ctaText is missing", () => {
     render(<HeroSection heading="Test" ctaText="Shop Now" />);
-    expect(screen.queryByText("Shop Now")?.closest("a")).toBeNull();
+    expect(screen.queryByText("Shop Now")?.closest("a")).toBeFalsy();
   });
 
   // ── Hero images (slideshow) ───────────────────────────────────────────
@@ -52,6 +52,34 @@ describe("HeroSection", () => {
     const { container } = render(<HeroSection heading="No Image Hero" />);
     const gradient = container.querySelector(".bg-gradient-to-br");
     expect(gradient).toBeInTheDocument();
+  });
+
+  it("renders second CTA when cta2Link and cta2Text provided", () => {
+    render(
+      <HeroSection
+        heading="Test"
+        ctaText="Book visit"
+        ctaLink="/contact"
+        cta2Text="Request a quote"
+        cta2Link="/contact"
+      />
+    );
+    expect(screen.getByText("Book visit").closest("a")).toHaveAttribute("href", "/contact");
+    const quoteLink = screen.getByText("Request a quote").closest("a");
+    expect(quoteLink).toHaveAttribute("href", "/contact");
+  });
+
+  it("renders contact strip when contactInfo has phone or email", () => {
+    render(
+      <HeroSection
+        heading="Test"
+        contactInfo={{ phone: "604.726.5453", email: "info@hardwoodliving.com" }}
+      />
+    );
+    const phoneLink = screen.getByText("604.726.5453").closest("a");
+    expect(phoneLink).toHaveAttribute("href", "tel:604.726.5453");
+    const emailLink = screen.getByText("info@hardwoodliving.com").closest("a");
+    expect(emailLink).toHaveAttribute("href", "mailto:info@hardwoodliving.com");
   });
 
   it("does NOT show slideshow dots for single image", () => {

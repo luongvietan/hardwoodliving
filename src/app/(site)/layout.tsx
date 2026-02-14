@@ -38,6 +38,13 @@ export default async function SiteLayout({
         logo={settings.logo}
         navigation={settings.navigation}
         contactInfo={settings.contactInfo}
+        footerTagline={settings.footerTagline}
+        businessHours={settings.businessHours}
+        footerPhone={settings.footerPhone}
+        readyToFindHeading={settings.readyToFindHeading}
+        readyToFindPrimaryText={settings.readyToFindPrimaryText}
+        readyToFindSecondaryText={settings.readyToFindSecondaryText}
+        copyrightText={settings.copyrightText}
         socialLinks={settings.socialLinks}
       />
     </div>

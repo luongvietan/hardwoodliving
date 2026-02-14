@@ -84,32 +84,76 @@ export const getHomepageQuery = defineQuery(`*[_type == "homepage"][0] {
     subheading,
     images,
     ctaLink,
-    ctaText
+    ctaText,
+    cta2Link,
+    cta2Text
   },
-  introHeading,
-  introBlurb,
-  categoryHighlights[]->{
-    _id,
-    title,
-    slug,
-    description,
-    image
+  choosingSection {
+    heading1,
+    heading2,
+    painPoints,
+    resultText,
+    tagline,
+    solutionBullets,
+    ctaText,
+    ctaLink
   },
-  featuredProducts[]->{
-    _id,
-    title,
-    slug,
-    price,
-    priceUnit,
-    images
+  whatWeOffer {
+    intro,
+    items[] { title, description }
   },
-  ctaSection,
+  ourSpecialty {
+    intro,
+    items[] { number, title, description },
+    ctaText,
+    ctaLink
+  },
+  flooringGrades {
+    heading,
+    subheading,
+    grades[] { name, bullets }
+  },
+  lumberCuts {
+    heading,
+    intro,
+    cuts[] { name, description }
+  },
+  limitedTimeOffer {
+    heading,
+    body,
+    ctaText,
+    ctaLink,
+    cta2Text,
+    cta2Link
+  },
+  whyLoveUs {
+    heading,
+    items[] { title, description }
+  },
+  ourWorksHeading,
+  faq {
+    heading,
+    items[] { question, answer }
+  },
+  testimonialsHeading,
   testimonials[]->{
     _id,
     author,
     content,
-    image
-  }
+    image,
+    role
+  },
+  bookVisitForm {
+    heading,
+    subheading,
+    primaryCtaText,
+    secondaryCtaText
+  },
+  introHeading,
+  introBlurb,
+  categoryHighlights[]->{ _id, title, slug, description, image },
+  featuredProducts[]->{ _id, title, slug, price, priceUnit, images },
+  ctaSection
 }`);
 
 export const getSiteSettingsQuery = defineQuery(`*[_type == "siteSettings"][0] {
@@ -132,6 +176,13 @@ export const getSiteSettingsQuery = defineQuery(`*[_type == "siteSettings"][0] {
     address,
     tollFree
   },
+  footerTagline,
+  businessHours,
+  footerPhone,
+  readyToFindHeading,
+  readyToFindPrimaryText,
+  readyToFindSecondaryText,
+  copyrightText,
   socialLinks[] {
     _key,
     platform,

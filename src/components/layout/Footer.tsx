@@ -10,6 +10,13 @@ interface FooterProps {
   logo?: SanityImageValue;
   navigation?: NavItem[];
   contactInfo?: ContactInfo;
+  footerTagline?: string;
+  businessHours?: string;
+  footerPhone?: string;
+  readyToFindHeading?: string;
+  readyToFindPrimaryText?: string;
+  readyToFindSecondaryText?: string;
+  copyrightText?: string;
   socialLinks?: SocialLink[];
 }
 
@@ -23,28 +30,65 @@ export default function Footer({
   logo,
   navigation,
   contactInfo,
+  footerTagline,
+  businessHours,
+  footerPhone,
+  readyToFindHeading,
+  readyToFindPrimaryText,
+  readyToFindSecondaryText,
+  copyrightText,
   socialLinks,
 }: FooterProps) {
   const currentYear = new Date().getFullYear();
   const hasLogo = !!logo?.asset?._ref;
   const nav = navigation ?? [];
   const social = socialLinks ?? [];
+  const displayPhone = footerPhone || contactInfo?.phone;
 
-  // Extract product-related nav items (items with children — like "Our Products")
   const productNav = nav.find(
     (item) => item.children && item.children.length > 0
   );
-
-  // Extract flat nav links (items without children)
   const quickLinks = nav.filter(
     (item) => item.path && (!item.children || item.children.length === 0)
   );
 
   return (
     <footer className="bg-charcoal-dark text-gray-300">
+      {/* Ready to Find Your Perfect Floor? — Book Your Visit | Request Info (raw design) */}
+      {(readyToFindHeading || readyToFindPrimaryText || readyToFindSecondaryText) && (
+        <div className="border-b border-charcoal-light">
+          <Container className="py-8">
+            <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center sm:gap-6">
+              {readyToFindHeading && (
+                <p className="text-lg font-semibold text-white">
+                  {readyToFindHeading}
+                </p>
+              )}
+              <div className="flex flex-wrap justify-center gap-3">
+                {readyToFindPrimaryText && (
+                  <Link
+                    href="/contact"
+                    className="btn-primary rounded-lg px-6 py-2.5"
+                  >
+                    {readyToFindPrimaryText}
+                  </Link>
+                )}
+                {readyToFindSecondaryText && (
+                  <Link
+                    href="/contact"
+                    className="rounded-lg border border-white/50 px-6 py-2.5 text-sm font-bold text-white transition-colors hover:bg-white/10"
+                  >
+                    {readyToFindSecondaryText}
+                  </Link>
+                )}
+              </div>
+            </div>
+          </Container>
+        </div>
+      )}
       <Container className="py-12">
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
-          {/* Logo Column */}
+          {/* Logo + Tagline Column (design: Hardfloor Showroom + tagline) */}
           <div>
             <Link href="/" className="inline-block">
               {hasLogo ? (
@@ -63,9 +107,35 @@ export default function Footer({
                 )
               )}
             </Link>
+            {footerTagline && (
+              <p className="mt-3 max-w-xs text-sm text-gray-400">
+                {footerTagline}
+              </p>
+            )}
           </div>
 
-          {/* Our Products Column */}
+          {/* Quick Links (design: Book a Visit, Our Collections, About Us, Contact) */}
+          {quickLinks.length > 0 && (
+            <div>
+              <h3 className="text-sm font-semibold uppercase tracking-wider text-white">
+                Quick Links
+              </h3>
+              <ul className="mt-4 space-y-2">
+                {quickLinks.map((link) => (
+                  <li key={link._key}>
+                    <Link
+                      href={link.path!}
+                      className="text-sm text-accent-orange transition-colors hover:text-accent-orange-light"
+                    >
+                      {link.title}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {/* Our Products / Collections */}
           {productNav && productNav.children && (
             <div>
               <h3 className="text-sm font-semibold uppercase tracking-wider text-white">
@@ -86,34 +156,28 @@ export default function Footer({
             </div>
           )}
 
-          {/* Links Column */}
-          {quickLinks.length > 0 && (
-            <div>
-              <h3 className="text-sm font-semibold uppercase tracking-wider text-white">
-                Links
-              </h3>
-              <ul className="mt-4 space-y-2">
-                {quickLinks.map((link) => (
-                  <li key={link._key}>
-                    <Link
-                      href={link.path!}
-                      className="text-sm text-accent-orange transition-colors hover:text-accent-orange-light"
-                    >
-                      {link.title}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          {/* Contact Column */}
+          {/* Contact + Address + Hours */}
           {contactInfo && (
             <div>
               <h3 className="text-sm font-semibold uppercase tracking-wider text-white">
                 Contact
               </h3>
               <div className="mt-4 space-y-3 text-sm">
+                {contactInfo?.address && (
+                  <p className="whitespace-pre-line text-gray-400">
+                    {contactInfo.address}
+                  </p>
+                )}
+                {displayPhone && (
+                  <p>
+                    <a
+                      href={`tel:${displayPhone.replace(/\s/g, '')}`}
+                      className="text-accent-orange hover:text-accent-orange-light"
+                    >
+                      {displayPhone}
+                    </a>
+                  </p>
+                )}
                 {contactInfo.tollFree && (
                   <p>
                     <span className="font-semibold text-white">Toll Free: </span>
@@ -127,7 +191,6 @@ export default function Footer({
                 )}
                 {contactInfo.email && (
                   <p>
-                    <span className="font-semibold text-white">Email: </span>
                     <a
                       href={`mailto:${contactInfo.email}`}
                       className="text-accent-orange hover:text-accent-orange-light"
@@ -136,26 +199,11 @@ export default function Footer({
                     </a>
                   </p>
                 )}
-                {contactInfo.address && (
-                  <div>
-                    <p className="whitespace-pre-line text-gray-400">
-                      {contactInfo.address}
-                    </p>
-                  </div>
-                )}
-                {contactInfo.phone && (
-                  <p>
-                    <span className="font-semibold text-white">Ph: </span>
-                    <a
-                      href={`tel:${contactInfo.phone}`}
-                      className="text-accent-orange hover:text-accent-orange-light"
-                    >
-                      {contactInfo.phone}
-                    </a>
+                {businessHours && (
+                  <p className="whitespace-pre-line text-gray-400">
+                    {businessHours}
                   </p>
                 )}
-
-                {/* Social Icons */}
                 {social.length > 0 && (
                   <div className="flex gap-3 pt-2">
                     {social.map((link) => (
@@ -178,11 +226,10 @@ export default function Footer({
         </div>
       </Container>
 
-      {/* Copyright Bar */}
       <div className="border-t border-charcoal-light">
         <Container className="py-4">
           <p className="text-center text-xs text-gray-500">
-            &copy; {currentYear} {siteName}
+            {copyrightText || `© ${currentYear} ${siteName}`}
           </p>
         </Container>
       </div>

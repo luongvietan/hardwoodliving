@@ -34,6 +34,13 @@ export interface SiteSettings {
   logo?: SanityImageValue;
   navigation?: NavItem[];
   contactInfo?: ContactInfo;
+  footerTagline?: string;
+  businessHours?: string;
+  footerPhone?: string;
+  readyToFindHeading?: string;
+  readyToFindPrimaryText?: string;
+  readyToFindSecondaryText?: string;
+  copyrightText?: string;
   socialLinks?: SocialLink[];
 }
 
