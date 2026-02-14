@@ -18,7 +18,7 @@ describe('Product Schema', () => {
 
     it('should have required fields', () => {
         const fieldNames = (product.fields as SchemaField[]).map((f) => f.name);
-        const expected = ['title', 'slug', 'description', 'specs', 'price', 'images', 'category', 'visibility', 'isFeatured'];
+        const expected = ['title', 'slug', 'description', 'specifications', 'specs', 'price', 'priceUnit', 'images', 'category', 'visibility', 'isFeatured'];
         expected.forEach(f => {
             assert.ok(fieldNames.includes(f), `Field ${f} should exist`);
         });

@@ -53,4 +53,40 @@ describe("ProductSpecs", () => {
     const { container } = render(<ProductSpecs specs={[]} />);
     expect(container.innerHTML).toBe("");
   });
+
+  it("renders structured specifications when provided", () => {
+    render(
+      <ProductSpecs
+        specifications={{
+          species: "W. Oak",
+          width: "7",
+          thickness: "5/8",
+        }}
+      />
+    );
+    expect(screen.getByText("Species")).toBeInTheDocument();
+    expect(screen.getByText("W. Oak")).toBeInTheDocument();
+    expect(screen.getByText("W")).toBeInTheDocument();
+    expect(screen.getByText("7")).toBeInTheDocument();
+    expect(screen.getByText("T")).toBeInTheDocument();
+    expect(screen.getByText("5/8")).toBeInTheDocument();
+  });
+
+  it("renders both specifications and legacy specs", () => {
+    render(
+      <ProductSpecs
+        specifications={{ species: "Oak" }}
+        specs={[{ _key: "x", label: "Custom", value: "Value" }]}
+      />
+    );
+    expect(screen.getByText("Species")).toBeInTheDocument();
+    expect(screen.getByText("Oak")).toBeInTheDocument();
+    expect(screen.getByText("Custom")).toBeInTheDocument();
+    expect(screen.getByText("Value")).toBeInTheDocument();
+  });
+
+  it("renders nothing when specifications is empty object and specs is empty", () => {
+    const { container } = render(<ProductSpecs specifications={{}} specs={[]} />);
+    expect(container.innerHTML).toBe("");
+  });
 });

@@ -3,7 +3,7 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import type { SanityImageValue } from "@/lib/sanity/types";
 import Container from "@/components/layout/Container";
-import ProductSpecs from "@/components/products/ProductSpecs";
+import ProductSpecs, { type ProductSpecifications } from "@/components/products/ProductSpecs";
 import ProductPrice from "@/components/products/ProductPrice";
 import JsonLd, { buildProductJsonLd, buildBreadcrumbJsonLd } from "@/components/seo/JsonLd";
 import { sanityFetch } from "@/lib/sanity/fetch";
@@ -24,6 +24,7 @@ interface Product {
   title: string;
   slug: { current: string };
   description?: string;
+  specifications?: ProductSpecifications | null;
   specs?: { label: string; value: string; _key: string }[];
   price: number;
   priceUnit?: string;
@@ -158,7 +159,7 @@ export default async function ProductPage({
             <p className="mt-6 leading-7 text-gray-700">{product.description}</p>
           )}
 
-          <ProductSpecs specs={product.specs} />
+          <ProductSpecs specifications={product.specifications} specs={product.specs} />
 
           {/* CTA */}
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">

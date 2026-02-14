@@ -100,6 +100,48 @@ async function main() {
         isFeatured: true,
     });
 
+    // Example: product with structured specifications (matches product detail card)
+    await client.createOrReplace({
+        _id: 'product-white-alaska',
+        _type: 'product',
+        title: 'White Alaska',
+        slug: { current: 'white-alaska', _type: 'slug' },
+        description: 'An elegant plank enhancing any room\'s accents contrast. Modern & ambient.',
+        price: 8.5,
+        priceUnit: '/ sq ft',
+        specifications: {
+            species: 'W. Oak',
+            width: '7',
+            thickness: '5/8',
+            length: '2-7',
+            prefinished: 'Urethane + Alum. Oxide',
+            surface: 'Wire Brush',
+            stain: 'White wash',
+            color: 'Translucent Grain Wht. Wsh.',
+            cut: 'Flat',
+            grade: 'Character (A, B, C, D)',
+            edge: 'Microbevel',
+            traffic: 'Medium / High',
+            application: 'Residential / Commercial',
+            installation: 'Glue, Nail',
+            pattern: 'Random',
+            source: 'N. America',
+            eco: 'Responsibly Harvested',
+            jankaRate: '2300',
+            radiantHeatRated: 'Yes (conditioned)',
+            airMoisture: '40-50%',
+            trimMoulding: 'Custom as needed',
+            stock: 'Inquire',
+            deliveryTime: 'Inquire',
+            sftPerBox: '32',
+            weightPerBox: '52Lb',
+            boxDimensions: '7\'x7"',
+        },
+        category: { _type: 'reference', _ref: hardwoodCat._id },
+        visibility: 'public',
+        isFeatured: false,
+    });
+
     await client.createOrReplace({
         _id: 'product-luxury-vinyl-tile',
         _type: 'product',

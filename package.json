@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "seed": "npx tsx scripts/seed.ts",
     "lint": "eslint",
     "test": "vitest run && node --import tsx --test tests/**/*.test.ts",
     "test:unit": "node --import tsx --test tests/**/*.test.ts",
