@@ -342,11 +342,11 @@ export const getVisibleProductsByCategoryAndTypeQuery = defineQuery(`*[_type == 
   isFeatured
 }`);
 
-/** Products in any of the given category slugs (category or descendants); optional $type filter */
+/** Products in any of the given category slugs (category or descendants); $type filter (pass "" for no type filter) */
 export const getVisibleProductsByCategoryAndDescendantsQuery = defineQuery(`*[_type == "product"
   && visibility in $visibility
   && category->slug.current in $categorySlugs
-  && (!defined($type) || category->slug.current == $type)
+  && ($type == "" || category->slug.current == $type)
 ] | order(title asc) {
   _id,
   title,

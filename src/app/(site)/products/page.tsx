@@ -100,7 +100,7 @@ export default async function ProductsCatalogPage({
       query: getVisibleProductsByCategoryAndDescendantsQuery,
       params: {
         categorySlugs,
-        type: activeTypeSlug ?? undefined,
+        type: activeTypeSlug ?? "",
         visibility,
       },
       tags: ["product"],

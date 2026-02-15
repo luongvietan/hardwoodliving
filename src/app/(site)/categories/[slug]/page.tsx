@@ -133,7 +133,7 @@ export default async function CategoryPage({
     query: getVisibleProductsByCategoryAndDescendantsQuery,
     params: {
       categorySlugs,
-      type: activeTypeSlug ?? undefined,
+      type: activeTypeSlug ?? "",
       visibility,
     },
     tags: ["product"],
