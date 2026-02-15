@@ -96,14 +96,15 @@ describe("Homepage", () => {
 
     // Hero
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Find Your Perfect Hardfloor");
-    expect(screen.getByText("Book Visit")).toBeInTheDocument();
+    const bookVisitLinks = screen.getAllByText("Book Visit");
+    expect(bookVisitLinks.length).toBeGreaterThanOrEqual(1);
 
     // Pain Points + Solution
     expect(screen.getByText(/Choosing the Right Floor/)).toBeInTheDocument();
     expect(screen.getByText(/See It. Choose Confidently/)).toBeInTheDocument();
 
-    // Core Collections (hardcoded from url-structure)
-    expect(screen.getByText("Core Collections")).toBeInTheDocument();
+    // Core Collections — section titled "What We Offer" (design)
+    expect(screen.getByText("What We Offer")).toBeInTheDocument();
     expect(screen.getByText("Hardwood")).toBeInTheDocument();
     expect(screen.getByText("Laminate")).toBeInTheDocument();
 
@@ -138,8 +139,8 @@ describe("Homepage", () => {
       .mockResolvedValueOnce(null); // getSiteSettingsQuery
     await renderHome();
 
-    // Core Collections always renders (from url-structure)
-    expect(screen.getByText("Core Collections")).toBeInTheDocument();
+    // Core Collections always renders (section "What We Offer")
+    expect(screen.getByText("What We Offer")).toBeInTheDocument();
     // Testimonials section only renders when testimonials exist
     expect(screen.queryByText("Absolutely beautiful flooring!")).not.toBeInTheDocument();
   });
@@ -150,8 +151,8 @@ describe("Homepage", () => {
       .mockResolvedValueOnce(null);
     await renderHome();
 
-    // Core Collections still renders (static content)
-    expect(screen.getByText("Core Collections")).toBeInTheDocument();
+    // Core Collections still renders (static content, "What We Offer")
+    expect(screen.getByText("What We Offer")).toBeInTheDocument();
   });
 
   // ── Hero section integration ─────────────────────────────────────────
@@ -162,8 +163,8 @@ describe("Homepage", () => {
       .mockResolvedValueOnce({ siteName: "Hardwood Living" });
     await renderHome();
 
-    const ctaLink = screen.getByText("Book Visit").closest("a");
-    expect(ctaLink).toHaveAttribute("href", "/contact");
+    const heroCta = screen.getByRole("link", { name: "Book Visit" });
+    expect(heroCta).toHaveAttribute("href", "/contact");
   });
 
   // ── Core Collections links ────────────────────────────────────────────
@@ -174,8 +175,10 @@ describe("Homepage", () => {
       .mockResolvedValueOnce({ siteName: "Hardwood Living" });
     await renderHome();
 
-    const hardwoodLink = screen.getByRole("link", { name: /Hardwood/i });
-    expect(hardwoodLink).toHaveAttribute("href", "/collections/hardwood");
+    const links = screen.getAllByRole("link");
+    const hardwoodLink = links.find((l) => l.getAttribute("href") === "/collections/hardwood");
+    expect(hardwoodLink).toBeDefined();
+    expect(hardwoodLink).toHaveTextContent("Hardwood");
   });
 
   // ── Partial data rendering ───────────────────────────────────────────
@@ -190,7 +193,7 @@ describe("Homepage", () => {
 
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Welcome");
     expect(screen.getByText("Hello world")).toBeInTheDocument();
-    expect(screen.getByText("Core Collections")).toBeInTheDocument();
+    expect(screen.getByText("What We Offer")).toBeInTheDocument();
     expect(screen.queryByText("Absolutely beautiful flooring!")).not.toBeInTheDocument();
   });
 });
