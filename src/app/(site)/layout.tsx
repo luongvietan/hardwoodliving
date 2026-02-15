@@ -42,6 +42,7 @@ export default async function SiteLayout({
         businessHours={settings.businessHours}
         footerPhone={settings.footerPhone}
         readyToFindHeading={settings.readyToFindHeading}
+        readyToFindSubheading={settings.readyToFindSubheading}
         readyToFindPrimaryText={settings.readyToFindPrimaryText}
         readyToFindSecondaryText={settings.readyToFindSecondaryText}
         copyrightText={settings.copyrightText}

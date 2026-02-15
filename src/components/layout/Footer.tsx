@@ -14,17 +14,56 @@ interface FooterProps {
   businessHours?: string;
   footerPhone?: string;
   readyToFindHeading?: string;
+  readyToFindSubheading?: string;
   readyToFindPrimaryText?: string;
   readyToFindSecondaryText?: string;
   copyrightText?: string;
   socialLinks?: SocialLink[];
 }
 
-/**
- * Magna-style footer with dark charcoal background.
- * 4-column layout: Logo | Product links | Quick links | Contact info
- * All data from Sanity CMS — no hardcoded content.
- */
+const DEFAULT_CTA_SUBHEADING = 'Limited showroom slots this week — book now!';
+
+/** Subtle oak-leaf pattern for CTA background */
+function LeafPattern() {
+  return (
+    <div className="pointer-events-none absolute inset-0 overflow-hidden opacity-[0.06]" aria-hidden>
+      <svg className="h-full w-full" viewBox="0 0 400 400" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <path
+            id="leaf"
+            d="M20 80 Q60 20 100 60 Q80 100 60 140 Q30 120 20 80"
+            fill="currentColor"
+          />
+        </defs>
+        <g fill="#1c1917">
+          {[0, 1, 2, 3, 4].map((i) => (
+            <use
+              key={i}
+              href="#leaf"
+              x={i * 90}
+              y={(i % 2) * 100}
+              width="80"
+              height="80"
+              transform={`rotate(${i * 25} ${i * 90 + 40} ${(i % 2) * 100 + 40})`}
+            />
+          ))}
+          {[0, 1, 2].map((i) => (
+            <use
+              key={`b-${i}`}
+              href="#leaf"
+              x={i * 120 + 50}
+              y={200 + (i % 2) * 80}
+              width="70"
+              height="70"
+              transform={`rotate(${-15 - i * 20} ${i * 120 + 85} ${200 + (i % 2) * 80 + 35})`}
+            />
+          ))}
+        </g>
+      </svg>
+    </div>
+  );
+}
+
 export default function Footer({
   siteName,
   logo,
@@ -34,6 +73,7 @@ export default function Footer({
   businessHours,
   footerPhone,
   readyToFindHeading,
+  readyToFindSubheading,
   readyToFindPrimaryText,
   readyToFindSecondaryText,
   copyrightText,
@@ -52,23 +92,34 @@ export default function Footer({
     (item) => item.path && (!item.children || item.children.length === 0)
   );
 
+  const showCta =
+    readyToFindHeading || readyToFindPrimaryText || readyToFindSecondaryText;
+
   return (
-    <footer className="bg-charcoal-dark text-gray-300">
-      {/* Ready to Find Your Perfect Floor? — Book Your Visit | Request Info (raw design) */}
-      {(readyToFindHeading || readyToFindPrimaryText || readyToFindSecondaryText) && (
-        <div className="border-b border-charcoal-light">
-          <Container className="py-8">
-            <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center sm:gap-6">
+    <footer className="text-stone-800">
+      {/* CTA — light beige, leaf motif, heading + subheading + 2 buttons */}
+      {showCta && (
+        <div className="relative bg-stone-100 py-14 lg:py-16">
+          <LeafPattern />
+          <Container className="relative">
+            <div className="mx-auto max-w-2xl text-center">
               {readyToFindHeading && (
-                <p className="text-lg font-semibold text-white">
+                <h2
+                  className="text-2xl font-bold text-stone-800 sm:text-3xl lg:text-4xl"
+                  style={{ fontFamily: 'var(--font-playfair), Georgia, serif' }}
+                >
                   {readyToFindHeading}
-                </p>
+                </h2>
               )}
-              <div className="flex flex-wrap justify-center gap-3">
+              <p className="mt-3 text-stone-600">
+                {readyToFindSubheading || DEFAULT_CTA_SUBHEADING}
+              </p>
+              <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
                 {readyToFindPrimaryText && (
                   <Link
                     href="/contact"
-                    className="btn-primary rounded-lg px-6 py-2.5"
+                    className="inline-flex items-center justify-center rounded-xl px-7 py-3.5 text-sm font-bold text-stone-900 transition-opacity hover:opacity-90 focus-visible:outline focus-visible:ring-2 focus-visible:ring-stone-400 focus-visible:ring-offset-2"
+                    style={{ backgroundColor: 'var(--color-hardfloor-green)' }}
                   >
                     {readyToFindPrimaryText}
                   </Link>
@@ -76,7 +127,7 @@ export default function Footer({
                 {readyToFindSecondaryText && (
                   <Link
                     href="/contact"
-                    className="rounded-lg border border-white/50 px-6 py-2.5 text-sm font-bold text-white transition-colors hover:bg-white/10"
+                    className="inline-flex items-center justify-center rounded-xl border-2 border-stone-700 bg-stone-50 px-7 py-3.5 text-sm font-bold text-stone-800 transition-colors hover:bg-stone-100 focus-visible:outline focus-visible:ring-2 focus-visible:ring-stone-400 focus-visible:ring-offset-2"
                   >
                     {readyToFindSecondaryText}
                   </Link>
@@ -86,154 +137,213 @@ export default function Footer({
           </Container>
         </div>
       )}
-      <Container className="py-12">
-        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
-          {/* Logo + Tagline Column (design: Hardfloor Showroom + tagline) */}
-          <div>
-            <Link href="/" className="inline-block">
-              {hasLogo ? (
-                <Image
-                  src={urlFor(logo!).width(160).height(120).auto('format').url()}
-                  alt={siteName || 'Logo'}
-                  width={160}
-                  height={120}
-                  className="h-auto max-h-[100px] w-auto brightness-0 invert"
-                />
-              ) : (
-                siteName && (
-                  <span className="text-xl font-bold tracking-tight text-white">
-                    {siteName}
-                  </span>
-                )
+
+      {/* Footer — dark brown, 3–4 columns, same items */}
+      <div
+        className="bg-[#1c1917] text-stone-200"
+        style={{ backgroundColor: 'var(--color-charcoal-dark)' }}
+      >
+        <Container className="py-12 lg:py-14">
+          <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4">
+            {/* Column 1: Logo + Tagline (Hardfloor Showroom) */}
+            <div>
+              <Link href="/" className="inline-block">
+                {hasLogo ? (
+                  <Image
+                    src={urlFor(logo!).width(160).height(120).auto('format').url()}
+                    alt={siteName || 'Logo'}
+                    width={160}
+                    height={120}
+                    className="h-auto max-h-[100px] w-auto brightness-0 invert opacity-95"
+                  />
+                ) : (
+                  siteName && (
+                    <span className="text-xl font-bold tracking-tight text-stone-100">
+                      {siteName}
+                    </span>
+                  )
+                )}
+              </Link>
+              {footerTagline && (
+                <p className="mt-4 max-w-xs text-sm leading-relaxed text-stone-400">
+                  {footerTagline}
+                </p>
               )}
-            </Link>
-            {footerTagline && (
-              <p className="mt-3 max-w-xs text-sm text-gray-400">
-                {footerTagline}
-              </p>
+            </div>
+
+            {/* Column 2: Quick Links */}
+            {quickLinks.length > 0 && (
+              <div>
+                <h3 className="text-base font-semibold tracking-tight text-stone-100">
+                  Quick Links
+                </h3>
+                <ul className="mt-4 space-y-3">
+                  {quickLinks.map((link) => (
+                    <li key={link._key}>
+                      <Link
+                        href={link.path!}
+                        className="text-sm text-stone-400 transition-colors hover:text-stone-200"
+                      >
+                        {link.title}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {/* Column 3: Our Products / Collections */}
+            {productNav && productNav.children && (
+              <div>
+                <h3 className="text-base font-semibold tracking-tight text-stone-100">
+                  {productNav.title}
+                </h3>
+                <ul className="mt-4 space-y-3">
+                  {productNav.children.map((child) => (
+                    <li key={child._key}>
+                      <Link
+                        href={child.path}
+                        className="text-sm text-stone-400 transition-colors hover:text-stone-200"
+                      >
+                        {child.title}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {/* Column 4: Contact — with map pin, phone, clock icons */}
+            {contactInfo && (
+              <div>
+                <h3 className="text-base font-semibold tracking-tight text-stone-100">
+                  Contact
+                </h3>
+                <div className="mt-4 space-y-4 text-sm text-stone-400">
+                  {contactInfo?.address && (
+                    <p className="flex gap-3">
+                      <span className="mt-0.5 shrink-0 text-stone-500" aria-hidden>
+                        <MapPinIcon />
+                      </span>
+                      <span className="whitespace-pre-line leading-relaxed">
+                        {contactInfo.address}
+                      </span>
+                    </p>
+                  )}
+                  {displayPhone && (
+                    <p className="flex items-center gap-3">
+                      <span className="shrink-0 text-stone-500" aria-hidden>
+                        <PhoneIcon />
+                      </span>
+                      <a
+                        href={`tel:${displayPhone.replace(/\s/g, '')}`}
+                        className="transition-colors hover:text-stone-200"
+                      >
+                        {displayPhone}
+                      </a>
+                    </p>
+                  )}
+                  {contactInfo.tollFree && (
+                    <p className="flex items-center gap-3">
+                      <span className="shrink-0 text-stone-500" aria-hidden>
+                        <PhoneIcon />
+                      </span>
+                      <a
+                        href={`tel:${contactInfo.tollFree}`}
+                        className="transition-colors hover:text-stone-200"
+                      >
+                        {contactInfo.tollFree}
+                      </a>
+                    </p>
+                  )}
+                  {contactInfo.email && (
+                    <p className="flex items-center gap-3">
+                      <span className="shrink-0 text-stone-500" aria-hidden>
+                        <MailIcon />
+                      </span>
+                      <a
+                        href={`mailto:${contactInfo.email}`}
+                        className="transition-colors hover:text-stone-200"
+                      >
+                        {contactInfo.email}
+                      </a>
+                    </p>
+                  )}
+                  {businessHours && (
+                    <p className="flex gap-3">
+                      <span className="mt-0.5 shrink-0 text-stone-500" aria-hidden>
+                        <ClockIcon />
+                      </span>
+                      <span className="whitespace-pre-line leading-relaxed">
+                        {businessHours}
+                      </span>
+                    </p>
+                  )}
+                  {social.length > 0 && (
+                    <div className="flex gap-4 pt-2">
+                      {social.map((link) => (
+                        <a
+                          key={link._key}
+                          href={link.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-stone-500 transition-colors hover:text-stone-300"
+                          aria-label={link.platform}
+                        >
+                          <FooterSocialIcon platform={link.platform} />
+                        </a>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
             )}
           </div>
-
-          {/* Quick Links (design: Book a Visit, Our Collections, About Us, Contact) */}
-          {quickLinks.length > 0 && (
-            <div>
-              <h3 className="text-sm font-semibold uppercase tracking-wider text-white">
-                Quick Links
-              </h3>
-              <ul className="mt-4 space-y-2">
-                {quickLinks.map((link) => (
-                  <li key={link._key}>
-                    <Link
-                      href={link.path!}
-                      className="text-sm text-accent-orange transition-colors hover:text-accent-orange-light"
-                    >
-                      {link.title}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          {/* Our Products / Collections */}
-          {productNav && productNav.children && (
-            <div>
-              <h3 className="text-sm font-semibold uppercase tracking-wider text-white">
-                {productNav.title}
-              </h3>
-              <ul className="mt-4 space-y-2">
-                {productNav.children.map((child) => (
-                  <li key={child._key}>
-                    <Link
-                      href={child.path}
-                      className="text-sm text-accent-orange transition-colors hover:text-accent-orange-light"
-                    >
-                      {child.title}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          {/* Contact + Address + Hours */}
-          {contactInfo && (
-            <div>
-              <h3 className="text-sm font-semibold uppercase tracking-wider text-white">
-                Contact
-              </h3>
-              <div className="mt-4 space-y-3 text-sm">
-                {contactInfo?.address && (
-                  <p className="whitespace-pre-line text-gray-400">
-                    {contactInfo.address}
-                  </p>
-                )}
-                {displayPhone && (
-                  <p>
-                    <a
-                      href={`tel:${displayPhone.replace(/\s/g, '')}`}
-                      className="text-accent-orange hover:text-accent-orange-light"
-                    >
-                      {displayPhone}
-                    </a>
-                  </p>
-                )}
-                {contactInfo.tollFree && (
-                  <p>
-                    <span className="font-semibold text-white">Toll Free: </span>
-                    <a
-                      href={`tel:${contactInfo.tollFree}`}
-                      className="text-accent-orange hover:text-accent-orange-light"
-                    >
-                      {contactInfo.tollFree}
-                    </a>
-                  </p>
-                )}
-                {contactInfo.email && (
-                  <p>
-                    <a
-                      href={`mailto:${contactInfo.email}`}
-                      className="text-accent-orange hover:text-accent-orange-light"
-                    >
-                      {contactInfo.email}
-                    </a>
-                  </p>
-                )}
-                {businessHours && (
-                  <p className="whitespace-pre-line text-gray-400">
-                    {businessHours}
-                  </p>
-                )}
-                {social.length > 0 && (
-                  <div className="flex gap-3 pt-2">
-                    {social.map((link) => (
-                      <a
-                        key={link._key}
-                        href={link.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-gray-400 transition-colors hover:text-white"
-                        aria-label={link.platform}
-                      >
-                        <FooterSocialIcon platform={link.platform} />
-                      </a>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
-        </div>
-      </Container>
-
-      <div className="border-t border-charcoal-light">
-        <Container className="py-4">
-          <p className="text-center text-xs text-gray-500">
-            {copyrightText || `© ${currentYear} ${siteName}`}
-          </p>
         </Container>
+
+        {/* Copyright — light brown line, centered text */}
+        <div className="border-t border-stone-600/80">
+          <Container className="py-5">
+            <p className="text-center text-sm text-stone-500">
+              {copyrightText || `© ${currentYear} ${siteName}. All rights reserved.`}
+            </p>
+          </Container>
+        </div>
       </div>
     </footer>
+  );
+}
+
+function MapPinIcon() {
+  return (
+    <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" aria-hidden>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+    </svg>
+  );
+}
+
+function PhoneIcon() {
+  return (
+    <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" aria-hidden>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" />
+    </svg>
+  );
+}
+
+function MailIcon() {
+  return (
+    <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" aria-hidden>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+    </svg>
+  );
+}
+
+function ClockIcon() {
+  return (
+    <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" aria-hidden>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
   );
 }
 

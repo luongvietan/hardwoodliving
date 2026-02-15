@@ -38,6 +38,7 @@ export interface SiteSettings {
   businessHours?: string;
   footerPhone?: string;
   readyToFindHeading?: string;
+  readyToFindSubheading?: string;
   readyToFindPrimaryText?: string;
   readyToFindSecondaryText?: string;
   copyrightText?: string;

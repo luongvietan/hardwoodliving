@@ -189,6 +189,7 @@ export const getSiteSettingsQuery = defineQuery(`*[_type == "siteSettings"][0] {
   businessHours,
   footerPhone,
   readyToFindHeading,
+  readyToFindSubheading,
   readyToFindPrimaryText,
   readyToFindSecondaryText,
   copyrightText,

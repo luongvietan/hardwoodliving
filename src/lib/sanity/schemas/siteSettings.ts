@@ -104,6 +104,12 @@ export default defineType({
             description: 'e.g. "Ready to Find Your Perfect Floor?"',
         }),
         defineField({
+            name: 'readyToFindSubheading',
+            title: 'Ready to Find CTA Subheading',
+            type: 'string',
+            description: 'e.g. "Limited showroom slots this week — book now!"',
+        }),
+        defineField({
             name: 'readyToFindPrimaryText',
             title: 'Ready to Find Primary Button',
             type: 'string',
