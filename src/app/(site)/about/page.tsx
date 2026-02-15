@@ -11,7 +11,7 @@ import { SITE_URL } from "@/lib/constants";
 import type { SanityImageValue } from "@/lib/sanity/types";
 
 interface HomepageAbout {
-  whyLoveUs?: { heading?: string; items?: { title?: string; description?: string }[] };
+  whyLoveUs?: { heading?: string; items?: { title?: string; description?: string; image?: SanityImageValue }[] };
   faq?: { heading?: string; items?: { question?: string; answer?: string }[] };
   testimonialsHeading?: string;
   testimonials?: {

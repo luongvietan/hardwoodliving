@@ -212,6 +212,7 @@ export default defineType({
                             fields: [
                                 defineField({ name: 'title', type: 'string', title: 'Title' }),
                                 defineField({ name: 'description', type: 'text', rows: 3, title: 'Description' }),
+                                defineField({ name: 'image', type: 'image', title: 'Image', options: { hotspot: true }, description: 'Optional photo (e.g. room with flooring)' }),
                             ],
                             preview: { select: { title: 'title' } },
                         },

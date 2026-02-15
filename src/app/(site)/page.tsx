@@ -56,7 +56,7 @@ interface HomepageData {
   };
   whyLoveUs?: {
     heading?: string;
-    items?: { title?: string; description?: string }[];
+    items?: { title?: string; description?: string; image?: SanityImageValue }[];
   };
   projectsPreview?: {
     heading?: string;

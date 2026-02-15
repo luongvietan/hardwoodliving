@@ -133,7 +133,7 @@ export const getHomepageQuery = defineQuery(`*[_type == "homepage"][0] {
   },
   whyLoveUs {
     heading,
-    items[] { title, description }
+    items[] { title, description, image }
   },
   ourWorksHeading,
   projectsPreview {
