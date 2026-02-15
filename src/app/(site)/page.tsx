@@ -25,8 +25,10 @@ interface HomepageData {
     heading2?: string;
     painPoints?: string[];
     resultText?: string;
+    image1?: SanityImageValue | null;
     tagline?: string;
     solutionBullets?: string[];
+    image2?: SanityImageValue | null;
     ctaText?: string;
     ctaLink?: string;
   };
@@ -141,8 +143,10 @@ export default async function Home() {
         heading2={data?.choosingSection?.heading2}
         painPoints={data?.choosingSection?.painPoints}
         resultText={data?.choosingSection?.resultText}
+        image1={data?.choosingSection?.image1}
         tagline={data?.choosingSection?.tagline}
         solutionBullets={data?.choosingSection?.solutionBullets}
+        image2={data?.choosingSection?.image2}
         ctaText={data?.choosingSection?.ctaText}
         ctaLink={data?.choosingSection?.ctaLink}
       />

@@ -82,8 +82,10 @@ export default async function WoodGuideSubpage({
           heading2={data?.choosingSection?.heading2 as string | undefined}
           painPoints={data?.choosingSection?.painPoints as string[] | undefined}
           resultText={data?.choosingSection?.resultText as string | undefined}
+          image1={data?.choosingSection?.image1 ?? undefined}
           tagline={data?.choosingSection?.tagline as string | undefined}
           solutionBullets={data?.choosingSection?.solutionBullets as string[] | undefined}
+          image2={data?.choosingSection?.image2 ?? undefined}
           ctaText={data?.choosingSection?.ctaText as string | undefined}
           ctaLink={data?.choosingSection?.ctaLink as string | undefined}
         />

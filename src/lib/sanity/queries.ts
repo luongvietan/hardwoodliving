@@ -93,8 +93,10 @@ export const getHomepageQuery = defineQuery(`*[_type == "homepage"][0] {
     heading2,
     painPoints,
     resultText,
+    image1,
     tagline,
     solutionBullets,
+    image2,
     ctaText,
     ctaLink
   },
