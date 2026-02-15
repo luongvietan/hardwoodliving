@@ -60,6 +60,52 @@ async function main() {
         description: 'Custom cabinetry solutions for kitchens and bathrooms.',
     });
 
+    const tileCat = await client.createOrReplace({
+        _id: 'category-tile',
+        _type: 'category',
+        title: 'Tile',
+        slug: { current: 'tile', _type: 'slug' },
+        description: 'Durable tile flooring for any space. Coming soon.',
+    });
+
+    const carpetTileCat = await client.createOrReplace({
+        _id: 'category-carpet-tile',
+        _type: 'category',
+        title: 'Carpet Tile',
+        slug: { current: 'carpet-tile', _type: 'slug' },
+        description: 'Modular carpet solutions for commercial and residential. Coming soon.',
+    });
+
+    // Commercial categories
+    await client.createOrReplace({
+        _id: 'category-acrylic-infused',
+        _type: 'category',
+        title: 'Acrylic Infused',
+        slug: { current: 'acrylic-infused', _type: 'slug' },
+        description: 'Premium acrylic-infused hardwood for commercial spaces.',
+    });
+    await client.createOrReplace({
+        _id: 'category-harbinger-vinyl',
+        _type: 'category',
+        title: 'Harbinger Vinyl',
+        slug: { current: 'harbinger-vinyl', _type: 'slug' },
+        description: 'Durable commercial vinyl flooring.',
+    });
+    await client.createOrReplace({
+        _id: 'category-dynoflex',
+        _type: 'category',
+        title: 'Dynoflex',
+        slug: { current: 'dynoflex', _type: 'slug' },
+        description: 'Flexible resilient commercial flooring.',
+    });
+    await client.createOrReplace({
+        _id: 'category-acoustiguard',
+        _type: 'category',
+        title: 'Acoustiguard',
+        slug: { current: 'acoustiguard', _type: 'slug' },
+        description: 'Sound-dampening commercial flooring.',
+    });
+
     // Subcategories
     await client.createOrReplace({
         _id: 'category-waterproof-laminate',
@@ -281,52 +327,106 @@ async function main() {
         },
     });
 
-    // 5. Create Site Settings (Magna-style navigation)
+    // 5. Create Site Settings (Magna-style navigation — per sitemap hierarchy)
     console.log('Creating Site Settings...');
     await client.createOrReplace({
         _id: 'siteSettings',
         _type: 'siteSettings',
         siteName: 'Hardfloor Showroom',
         navigation: [
-            {
-                _key: 'nav-book',
-                _type: 'navItem',
-                title: 'Book a Visit',
-                path: '/contact',
-                position: 'left',
-            },
+            // 1. Collections — SEO URLs
             {
                 _key: 'nav-collections',
                 _type: 'navItem',
-                title: 'Our Collections',
-                path: '/products',
+                title: 'Collections',
+                position: 'left',
+                children: [
+                    { _key: 'c-hw-unfin', _type: 'navChild', title: 'Hardwood — Unfinished', path: '/collections/hardwood/unfinished' },
+                    { _key: 'c-hw-prefin', _type: 'navChild', title: 'Hardwood — Prefinished', path: '/collections/hardwood/prefinished' },
+                    { _key: 'c-eng-unfin', _type: 'navChild', title: 'Engineered — Unfinished', path: '/collections/engineered/unfinished' },
+                    { _key: 'c-eng-prefin', _type: 'navChild', title: 'Engineered — Prefinished', path: '/collections/engineered/prefinished' },
+                    { _key: 'c-lvp-spc', _type: 'navChild', title: 'LVP — SPC', path: '/collections/luxury-vinyl-plank/spc' },
+                    { _key: 'c-lvp-wpc', _type: 'navChild', title: 'LVP — WPC', path: '/collections/luxury-vinyl-plank/wpc' },
+                    { _key: 'c-laminate', _type: 'navChild', title: 'Laminate', path: '/collections/laminate' },
+                    { _key: 'c-tile', _type: 'navChild', title: 'Tile', path: '/collections/tile' },
+                    { _key: 'c-carpet', _type: 'navChild', title: 'Carpet Tile', path: '/collections/carpet-tile' },
+                ],
+            },
+            // 2. Commercial — Vinyl, Specialty, Brands
+            {
+                _key: 'nav-commercial',
+                _type: 'navItem',
+                title: 'Commercial',
+                position: 'left',
+                children: [
+                    { _key: 'comm-vinyl', _type: 'navChild', title: 'Vinyl', path: '/commercial/vinyl' },
+                    { _key: 'comm-specialty', _type: 'navChild', title: 'Specialty', path: '/commercial/specialty' },
+                    { _key: 'comm-brands-harbinger', _type: 'navChild', title: 'Harbinger', path: '/commercial/brands/harbinger' },
+                    { _key: 'comm-brands-dynoflex', _type: 'navChild', title: 'Dynoflex', path: '/commercial/brands/dynoflex' },
+                    { _key: 'comm-brands-acoustiguard', _type: 'navChild', title: 'Acoustiguard', path: '/commercial/brands/acoustiguard' },
+                    { _key: 'comm-brands-acrylic', _type: 'navChild', title: 'Acrylic Infused', path: '/commercial/brands/acrylic-infused' },
+                ],
+            },
+            // 3. Custom Flooring — Custom Engineered, Stain, Dimensions
+            {
+                _key: 'nav-custom',
+                _type: 'navItem',
+                title: 'Custom Flooring',
+                position: 'left',
+                children: [
+                    { _key: 'custom-engineered', _type: 'navChild', title: 'Custom Engineered', path: '/custom-flooring/custom-engineered' },
+                    { _key: 'custom-stain', _type: 'navChild', title: 'Custom Stain', path: '/custom-flooring/custom-stain' },
+                    { _key: 'custom-dimensions', _type: 'navChild', title: 'Custom Dimensions', path: '/custom-flooring/custom-dimensions' },
+                ],
+            },
+            // 4. Accessories
+            {
+                _key: 'nav-accessories',
+                _type: 'navItem',
+                title: 'Accessories',
+                path: '/accessories',
                 position: 'left',
             },
+            // 5. Services — Installation, Sanding & Finishing, Maintenance
+            {
+                _key: 'nav-services',
+                _type: 'navItem',
+                title: 'Services',
+                position: 'left',
+                children: [
+                    { _key: 's-install', _type: 'navChild', title: 'Installation', path: '/services/installation' },
+                    { _key: 's-sanding', _type: 'navChild', title: 'Sanding & Finishing', path: '/services/sanding-finishing' },
+                    { _key: 's-maintenance', _type: 'navChild', title: 'Maintenance', path: '/services/maintenance' },
+                ],
+            },
+            // 6. Wood Guide — Lumber Cuts, Flooring Grades, Choosing Guide, Maintenance Guide
+            {
+                _key: 'nav-guide',
+                _type: 'navItem',
+                title: 'Wood Guide',
+                position: 'left',
+                children: [
+                    { _key: 'g-lumber', _type: 'navChild', title: 'Lumber Cuts', path: '/wood-guide/lumber-cuts' },
+                    { _key: 'g-grades', _type: 'navChild', title: 'Flooring Grades', path: '/wood-guide/flooring-grades' },
+                    { _key: 'g-choosing', _type: 'navChild', title: 'Choosing Guide', path: '/wood-guide/how-to-choose-flooring' },
+                    { _key: 'g-maintenance', _type: 'navChild', title: 'Maintenance Guide', path: '/wood-guide/floor-maintenance-guide' },
+                ],
+            },
+            // 7. Gallery
+            {
+                _key: 'nav-gallery',
+                _type: 'navItem',
+                title: 'Gallery',
+                path: '/gallery',
+                position: 'right',
+            },
+            // 8. About
             {
                 _key: 'nav-about',
                 _type: 'navItem',
-                title: 'About Us',
-                path: '/pages/visit-us',
+                title: 'About',
+                path: '/about',
                 position: 'right',
-            },
-            {
-                _key: 'nav-contact',
-                _type: 'navItem',
-                title: 'Contact',
-                path: '/contact',
-                position: 'right',
-            },
-            {
-                _key: 'nav-products',
-                _type: 'navItem',
-                title: 'Our Products',
-                position: 'left',
-                children: [
-                    { _key: 'nav-products-hardwood', _type: 'navChild', title: 'Hardwood Flooring', path: '/categories/hardwood-flooring' },
-                    { _key: 'nav-products-vinyl', _type: 'navChild', title: 'Luxury Vinyl', path: '/categories/luxury-vinyl' },
-                    { _key: 'nav-products-laminate', _type: 'navChild', title: 'Laminate', path: '/categories/laminate' },
-                    { _key: 'nav-products-all', _type: 'navChild', title: 'View All', path: '/products' },
-                ],
             },
         ],
         contactInfo: {

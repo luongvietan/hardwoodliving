@@ -50,6 +50,28 @@ const nextConfig: NextConfig = {
         destination: "/trades",
         permanent: true,
       },
+      // LVP alias → canonical
+      {
+        source: "/collections/lvp",
+        destination: "/collections/luxury-vinyl-plank",
+        permanent: true,
+      },
+      {
+        source: "/collections/lvp/:path*",
+        destination: "/collections/luxury-vinyl-plank/:path*",
+        permanent: true,
+      },
+      // Selecting Guide → Wood Guide (SEO rename)
+      {
+        source: "/selecting-guide",
+        destination: "/wood-guide",
+        permanent: true,
+      },
+      {
+        source: "/selecting-guide/:path*",
+        destination: "/wood-guide/:path*",
+        permanent: true,
+      },
     ];
   },
   // TODO: Add Content-Security-Policy headers (Architecture requirement)

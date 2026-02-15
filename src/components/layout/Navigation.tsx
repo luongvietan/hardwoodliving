@@ -15,11 +15,13 @@ interface NavigationProps {
  * Hidden on mobile (< md breakpoint), shown on tablet and desktop.
  * All navigation data from Sanity CMS.
  */
-export default function Navigation({ links }: NavigationProps) {
+export default function Navigation({ links, position }: NavigationProps) {
   if (!links || links.length === 0) return null;
 
+  const justify = position === 'left' ? 'justify-start' : 'justify-end';
+
   return (
-    <nav className="hidden items-center gap-1 md:flex" aria-label="Main navigation">
+    <nav className={`hidden items-center gap-0.5 md:flex md:flex-wrap ${justify}`} aria-label="Main navigation">
       {links.map((item) =>
         item.children && item.children.length > 0 ? (
           <DropdownItem key={item._key} item={item} />
@@ -28,7 +30,7 @@ export default function Navigation({ links }: NavigationProps) {
             <Link
               key={item._key}
               href={item.path}
-              className="px-3 py-2 text-sm font-semibold uppercase tracking-wider text-gray-200 transition-colors hover:text-accent-orange"
+              className="px-2.5 py-2 text-xs font-semibold uppercase tracking-wider text-gray-200 transition-colors hover:text-accent-orange sm:text-sm"
             >
               {item.title}
             </Link>
@@ -86,7 +88,7 @@ function DropdownItem({ item }: { item: NavItem }) {
       <button
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
-        className="flex items-center gap-1 px-3 py-2 text-sm font-semibold uppercase tracking-wider text-gray-200 transition-colors hover:text-accent-orange"
+        className="flex items-center gap-1 px-2.5 py-2 text-xs font-semibold uppercase tracking-wider text-gray-200 transition-colors hover:text-accent-orange sm:text-sm"
         aria-expanded={isOpen}
         aria-haspopup="true"
       >

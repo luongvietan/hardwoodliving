@@ -1,21 +1,14 @@
 import type { SanityImageValue } from "@/lib/sanity/types";
 import HeroSection from "@/components/home/HeroSection";
 import ChoosingSection from "@/components/home/ChoosingSection";
-import WhatWeOffer from "@/components/home/WhatWeOffer";
-import OurSpecialty from "@/components/home/OurSpecialty";
-import FlooringGrades from "@/components/home/FlooringGrades";
-import LumberCuts from "@/components/home/LumberCuts";
-import LimitedTimeOffer from "@/components/home/LimitedTimeOffer";
 import WhyLoveUs from "@/components/home/WhyLoveUs";
-import OurWorks from "@/components/home/OurWorks";
-import Faq from "@/components/home/Faq";
-import Testimonials from "@/components/home/Testimonials";
 import BookVisitForm from "@/components/home/BookVisitForm";
 import JsonLd, { buildOrganizationJsonLd } from "@/components/seo/JsonLd";
 import { sanityFetch } from "@/lib/sanity/fetch";
-import { getHomepageQuery } from "@/lib/sanity/queries";
+import { getHomepageQuery, getTopLevelCategoriesQuery } from "@/lib/sanity/queries";
 import { getSiteSettings } from "@/lib/sanity/siteSettings";
 import { SITE_URL } from "@/lib/constants";
+import Link from "next/link";
 
 interface HomepageData {
   hero?: {
@@ -90,6 +83,13 @@ interface HomepageData {
   };
 }
 
+interface CategoryBrief {
+  _id: string;
+  title?: string;
+  slug?: { current?: string };
+}
+
+/** Simplified landing page — hero, intro, browse collections CTA, why us, book visit */
 export default async function Home() {
   let data: HomepageData | null = null;
   try {
@@ -101,11 +101,19 @@ export default async function Home() {
     console.error("Failed to fetch homepage data:", error);
   }
 
-  const settings = await getSiteSettings();
+  const [settings, categories] = await Promise.all([
+    getSiteSettings(),
+    sanityFetch<CategoryBrief[] | null>({
+      query: getTopLevelCategoriesQuery,
+      tags: ["category"],
+    }),
+  ]);
+
   const description =
-    data?.whatWeOffer?.intro ||
     data?.choosingSection?.tagline ||
     "Premium flooring solutions for your home.";
+
+  const topCategories = categories ?? [];
 
   return (
     <>
@@ -139,57 +147,37 @@ export default async function Home() {
         ctaLink={data?.choosingSection?.ctaLink}
       />
 
-      <WhatWeOffer
-        intro={data?.whatWeOffer?.intro}
-        items={data?.whatWeOffer?.items}
-      />
-
-      <OurSpecialty
-        intro={data?.ourSpecialty?.intro}
-        items={data?.ourSpecialty?.items}
-        ctaText={data?.ourSpecialty?.ctaText}
-        ctaLink={data?.ourSpecialty?.ctaLink}
-      />
-
-      <FlooringGrades
-        heading={data?.flooringGrades?.heading}
-        subheading={data?.flooringGrades?.subheading}
-        grades={data?.flooringGrades?.grades}
-      />
-
-      <LumberCuts
-        heading={data?.lumberCuts?.heading}
-        intro={data?.lumberCuts?.intro}
-        cuts={data?.lumberCuts?.cuts}
-      />
-
-      <LimitedTimeOffer
-        heading={data?.limitedTimeOffer?.heading}
-        body={data?.limitedTimeOffer?.body}
-        ctaText={data?.limitedTimeOffer?.ctaText}
-        ctaLink={data?.limitedTimeOffer?.ctaLink}
-        cta2Text={data?.limitedTimeOffer?.cta2Text}
-        cta2Link={data?.limitedTimeOffer?.cta2Link}
-      />
+      {/* Browse Collections — quick links to main sections */}
+      <section className="bg-stone-50 py-12 lg:py-16">
+        <div className="mx-auto max-w-7xl px-4">
+          <h2 className="section-heading">Browse Our Collections</h2>
+          <p className="mx-auto mt-4 max-w-2xl text-center text-stone-600">
+            Explore hardwood, engineered, vinyl, laminate, and more. Find the
+            perfect floor for your space.
+          </p>
+          <div className="mt-8 flex flex-wrap justify-center gap-4">
+            <Link
+              href="/collections"
+              className="btn-primary rounded-lg px-6 py-3"
+            >
+              View All Collections
+            </Link>
+            {topCategories.slice(0, 4).map((cat) => (
+              <Link
+                key={cat._id}
+                href={`/categories/${cat.slug?.current ?? ""}`}
+                className="rounded-lg border border-charcoal/20 bg-white px-6 py-3 text-sm font-semibold text-charcoal transition-colors hover:border-accent-orange hover:bg-accent-orange/5 hover:text-accent-orange"
+              >
+                {cat.title}
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
 
       <WhyLoveUs
         heading={data?.whyLoveUs?.heading}
         items={data?.whyLoveUs?.items}
-      />
-
-      <OurWorks
-        heading={data?.ourWorksHeading}
-        subline={data?.whyLoveUs?.heading}
-      />
-
-      <Faq
-        heading={data?.faq?.heading}
-        items={data?.faq?.items}
-      />
-
-      <Testimonials
-        heading={data?.testimonialsHeading}
-        testimonials={data?.testimonials}
       />
 
       <BookVisitForm

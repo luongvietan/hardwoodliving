@@ -37,12 +37,34 @@ export default function Header({
 
   return (
     <header className="sticky top-0 z-40">
-      {/* Top Utility Bar */}
+      {/* Top Utility Bar — Logo + Social + Phone + Contact + Search + Login */}
       <div className="bg-charcoal-dark">
         <Container>
-          <div className="flex h-10 items-center justify-between text-sm">
-            {/* Left: Social + Phone + Contact */}
-            <div className="flex items-center gap-4">
+          <div className="flex h-14 min-h-[3.5rem] items-center justify-between gap-4 text-sm">
+            {/* Left: Logo */}
+            <Link
+              href="/"
+              className="shrink-0"
+              aria-label={`${siteName || 'Home'} - Home`}
+            >
+              {hasLogo ? (
+                <Image
+                  src={urlFor(logo!).width(120).height(48).auto('format').url()}
+                  alt={siteName || 'Logo'}
+                  width={120}
+                  height={48}
+                  priority
+                  className="h-8 w-auto sm:h-9"
+                />
+              ) : (
+                <span className="text-lg font-bold tracking-tight text-white">
+                  {siteName || ''}
+                </span>
+              )}
+            </Link>
+
+            {/* Center/Left: Social + Phone + Contact */}
+            <div className="flex flex-1 items-center gap-4">
               {/* Social Icons */}
               {social.map((link) => (
                 <a
@@ -94,36 +116,11 @@ export default function Header({
       {/* Main Navigation Bar */}
       <div className="bg-charcoal">
         <Container>
-          <div className="relative flex min-h-[80px] items-center justify-between">
+          <div className="relative flex min-h-[56px] items-center justify-between md:min-h-[60px]">
             {/* Left Navigation (desktop) */}
             <Navigation links={leftNav} position="left" />
 
-            {/* Centered Logo */}
-            <Link
-              href="/"
-              className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 md:static md:translate-x-0 md:translate-y-0 md:mx-auto"
-              aria-label={`${siteName || 'Home'} - Home`}
-            >
-              {hasLogo ? (
-                <Image
-                  src={urlFor(logo!).width(140).height(100).auto('format').url()}
-                  alt={siteName || 'Logo'}
-                  width={140}
-                  height={100}
-                  priority
-                  className="h-auto max-h-[70px] w-auto"
-                />
-              ) : (
-                <span className="text-2xl font-bold tracking-tight text-white">
-                  {siteName || ''}
-                </span>
-              )}
-            </Link>
-
-            {/* Right Navigation (desktop) */}
             <Navigation links={rightNav} position="right" />
-
-            {/* Mobile Menu Toggle */}
             <MobileMenu
               navigation={nav}
               contactInfo={contactInfo}
