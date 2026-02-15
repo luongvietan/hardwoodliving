@@ -20,45 +20,51 @@ async function renderHome() {
 
 const fullHomepageData = {
   hero: {
-    heading: "Premium Hardwood",
+    heading: "Find Your Perfect Hardfloor",
     subheading: "Discover our collection.",
     images: [{ _key: "img1", asset: { _ref: "img-hero", _type: "reference" as const } }],
-    ctaLink: "/products",
-    ctaText: "Shop Now",
+    ctaLink: "/contact",
+    ctaText: "Book Visit",
+    cta2Link: "/contact",
+    cta2Text: "Request Quote",
   },
-  introHeading: "Welcome to Hardwood Living",
-  introBlurb: "Welcome to Hardwoodliving, your premium hardwood destination.",
-  categoryHighlights: [
-    {
-      _id: "cat-1",
-      title: "Hardwood Flooring",
-      slug: { current: "hardwood-flooring" },
-      image: { asset: { _ref: "img-cat1", _type: "reference" as const } },
-    },
-  ],
-  featuredProducts: [
-    {
-      _id: "p1",
-      title: "Oak Flooring",
-      slug: { current: "oak-flooring" },
-      price: 5.99,
-      priceUnit: "/ sq ft",
-      images: [{ asset: { _ref: "img-p1", _type: "reference" as const } }],
-    },
-    {
-      _id: "p2",
-      title: "Maple Flooring",
-      slug: { current: "maple-flooring" },
-      price: 7.49,
-      images: [],
-    },
-  ],
-  ctaSection: {
-    heading: "View Our Products",
-    text: "Try our room visualizer.",
-    linkText: "View All",
-    linkUrl: "/products",
+  choosingSection: {
+    heading1: "Choosing the Right Floor",
+    heading2: "Doesn't Have to Be Hard",
+    painPoints: ["So many options", "Uncertain about quality"],
+    tagline: "See It. Choose Confidently.",
+    solutionBullets: ["Visit showroom", "Personalized guidance"],
   },
+  ourSpecialty: {
+    intro: "Full-service flooring solutions",
+    items: [
+      { number: "01", title: "Supply", description: "Quality materials" },
+      { number: "02", title: "Installation", description: "Expert install" },
+    ],
+  },
+  whyLoveUs: {
+    heading: "Why homeowners trust us",
+    items: [
+      { title: "Premium Quality", description: "Top-grade materials" },
+    ],
+  },
+  limitedTimeOffer: {
+    heading: "Limited Time Offer",
+    body: "Save on selected floors",
+    ctaText: "Claim Offer",
+    ctaLink: "/contact",
+  },
+  projectsPreview: {
+    heading: "Our Projects",
+    images: [{ asset: { _ref: "img-p1", _type: "reference" as const } }],
+  },
+  faq: {
+    heading: "Frequently Asked Questions",
+    items: [
+      { question: "How long does installation take?", answer: "Typically 1-3 days." },
+    ],
+  },
+  testimonialsHeading: "What Our Customers Are Saying",
   testimonials: [
     {
       _id: "t1",
@@ -67,6 +73,12 @@ const fullHomepageData = {
       image: { asset: { _ref: "img-t1", _type: "reference" as const } },
     },
   ],
+  bookVisitForm: {
+    heading: "Book Your Showroom Visit",
+    subheading: "Schedule a visit today",
+    primaryCtaText: "Book Visit",
+    secondaryCtaText: "Request Quote",
+  },
 };
 
 beforeEach(() => {
@@ -83,27 +95,39 @@ describe("Homepage", () => {
     await renderHome();
 
     // Hero
-    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Premium Hardwood");
-    expect(screen.getByText("Shop Now")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Find Your Perfect Hardfloor");
+    expect(screen.getByText("Book Visit")).toBeInTheDocument();
 
-    // Intro
-    expect(screen.getByText(/Welcome to Hardwoodliving/)).toBeInTheDocument();
-    expect(screen.getByText("Welcome to Hardwood Living")).toBeInTheDocument();
+    // Pain Points + Solution
+    expect(screen.getByText(/Choosing the Right Floor/)).toBeInTheDocument();
+    expect(screen.getByText(/See It. Choose Confidently/)).toBeInTheDocument();
 
-    // Category Highlights
-    expect(screen.getByText("Hardwood Flooring")).toBeInTheDocument();
+    // Core Collections (hardcoded from url-structure)
+    expect(screen.getByText("Core Collections")).toBeInTheDocument();
+    expect(screen.getByText("Hardwood")).toBeInTheDocument();
+    expect(screen.getByText("Laminate")).toBeInTheDocument();
 
-    // Featured Products
-    expect(screen.getByText("Featured Products")).toBeInTheDocument();
-    expect(screen.getByText("Oak Flooring")).toBeInTheDocument();
-    expect(screen.getByText("Maple Flooring")).toBeInTheDocument();
+    // Our Specialty
+    expect(screen.getByText("Our Specialty")).toBeInTheDocument();
+    expect(screen.getByText("Supply")).toBeInTheDocument();
 
-    // CTA Section
-    expect(screen.getByText("View Our Products")).toBeInTheDocument();
+    // Why Love Us
+    expect(screen.getByText("Why Homeowners & Designers Love Us")).toBeInTheDocument();
+    expect(screen.getByText("Premium Quality")).toBeInTheDocument();
+
+    // Limited Offer
+    expect(screen.getByText("Limited Time Offer")).toBeInTheDocument();
+    expect(screen.getByText("Claim Offer")).toBeInTheDocument();
 
     // Testimonials
-    expect(screen.getByText("What Our Customers Say")).toBeInTheDocument();
+    expect(screen.getByText("What Our Customers Are Saying")).toBeInTheDocument();
     expect(screen.getByText("Absolutely beautiful flooring!")).toBeInTheDocument();
+
+    // FAQ
+    expect(screen.getByText("Frequently Asked Questions")).toBeInTheDocument();
+
+    // Booking Form
+    expect(screen.getByText("Book Your Showroom Visit")).toBeInTheDocument();
   });
 
   // ── Graceful degradation (no data / fetch error) ─────────────────────
@@ -114,9 +138,10 @@ describe("Homepage", () => {
       .mockResolvedValueOnce(null); // getSiteSettingsQuery
     await renderHome();
 
-    // No hero, no sections — page renders without error
-    expect(screen.queryByText("Featured Products")).not.toBeInTheDocument();
-    expect(screen.queryByText("What Our Customers Say")).not.toBeInTheDocument();
+    // Core Collections always renders (from url-structure)
+    expect(screen.getByText("Core Collections")).toBeInTheDocument();
+    // Testimonials section only renders when testimonials exist
+    expect(screen.queryByText("Absolutely beautiful flooring!")).not.toBeInTheDocument();
   });
 
   it("renders gracefully when sanityFetch throws an error", async () => {
@@ -125,8 +150,8 @@ describe("Homepage", () => {
       .mockResolvedValueOnce(null);
     await renderHome();
 
-    // Optional sections don't render
-    expect(screen.queryByText("Featured Products")).not.toBeInTheDocument();
+    // Core Collections still renders (static content)
+    expect(screen.getByText("Core Collections")).toBeInTheDocument();
   });
 
   // ── Hero section integration ─────────────────────────────────────────
@@ -137,40 +162,35 @@ describe("Homepage", () => {
       .mockResolvedValueOnce({ siteName: "Hardwood Living" });
     await renderHome();
 
-    const ctaLink = screen.getByText("Shop Now").closest("a");
-    expect(ctaLink).toHaveAttribute("href", "/products");
+    const ctaLink = screen.getByText("Book Visit").closest("a");
+    expect(ctaLink).toHaveAttribute("href", "/contact");
   });
 
-  // ── Featured Products integration ────────────────────────────────────
+  // ── Core Collections links ────────────────────────────────────────────
 
-  it("links featured products to detail pages", async () => {
+  it("links core collections to /collections/*", async () => {
     vi.mocked(sanityFetch)
       .mockResolvedValueOnce(fullHomepageData)
       .mockResolvedValueOnce({ siteName: "Hardwood Living" });
     await renderHome();
 
-    const links = screen.getAllByRole("link");
-    const productLinks = links.filter((l) =>
-      l.getAttribute("href")?.startsWith("/products/")
-    );
-    expect(productLinks).toHaveLength(2);
-    expect(productLinks[0]).toHaveAttribute("href", "/products/oak-flooring");
+    const hardwoodLink = screen.getByRole("link", { name: /Hardwood/i });
+    expect(hardwoodLink).toHaveAttribute("href", "/collections/hardwood");
   });
 
   // ── Partial data rendering ───────────────────────────────────────────
 
-  it("renders only hero and intro when no products or testimonials", async () => {
+  it("renders hero and core collections when minimal data", async () => {
     vi.mocked(sanityFetch)
       .mockResolvedValueOnce({
-        hero: { heading: "Welcome" },
-        introBlurb: "Hello world",
+        hero: { heading: "Welcome", subheading: "Hello world" },
       })
       .mockResolvedValueOnce({ siteName: "Hardwood Living" });
     await renderHome();
 
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Welcome");
     expect(screen.getByText("Hello world")).toBeInTheDocument();
-    expect(screen.queryByText("Featured Products")).not.toBeInTheDocument();
-    expect(screen.queryByText("What Our Customers Say")).not.toBeInTheDocument();
+    expect(screen.getByText("Core Collections")).toBeInTheDocument();
+    expect(screen.queryByText("Absolutely beautiful flooring!")).not.toBeInTheDocument();
   });
 });

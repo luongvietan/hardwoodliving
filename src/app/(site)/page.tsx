@@ -1,14 +1,19 @@
 import type { SanityImageValue } from "@/lib/sanity/types";
 import HeroSection from "@/components/home/HeroSection";
 import ChoosingSection from "@/components/home/ChoosingSection";
+import CoreCollections from "@/components/home/CoreCollections";
+import OurSpecialty from "@/components/home/OurSpecialty";
 import WhyLoveUs from "@/components/home/WhyLoveUs";
+import ProjectsPreview from "@/components/home/ProjectsPreview";
+import LimitedTimeOffer from "@/components/home/LimitedTimeOffer";
+import Testimonials from "@/components/home/Testimonials";
+import Faq from "@/components/home/Faq";
 import BookVisitForm from "@/components/home/BookVisitForm";
 import JsonLd, { buildOrganizationJsonLd } from "@/components/seo/JsonLd";
 import { sanityFetch } from "@/lib/sanity/fetch";
-import { getHomepageQuery, getTopLevelCategoriesQuery } from "@/lib/sanity/queries";
+import { getHomepageQuery } from "@/lib/sanity/queries";
 import { getSiteSettings } from "@/lib/sanity/siteSettings";
 import { SITE_URL } from "@/lib/constants";
-import Link from "next/link";
 
 interface HomepageData {
   hero?: {
@@ -32,25 +37,11 @@ interface HomepageData {
     ctaText?: string;
     ctaLink?: string;
   };
-  whatWeOffer?: {
-    intro?: string;
-    items?: { title?: string; description?: string }[];
-  };
   ourSpecialty?: {
     intro?: string;
     items?: { number?: string; title?: string; description?: string }[];
     ctaText?: string;
     ctaLink?: string;
-  };
-  flooringGrades?: {
-    heading?: string;
-    subheading?: string;
-    grades?: { name?: string; bullets?: string[] }[];
-  };
-  lumberCuts?: {
-    heading?: string;
-    intro?: string;
-    cuts?: { name?: string; description?: string }[];
   };
   limitedTimeOffer?: {
     heading?: string;
@@ -64,7 +55,10 @@ interface HomepageData {
     heading?: string;
     items?: { title?: string; description?: string }[];
   };
-  ourWorksHeading?: string;
+  projectsPreview?: {
+    heading?: string;
+    images?: SanityImageValue[];
+  };
   faq?: {
     heading?: string;
     items?: { question?: string; answer?: string }[];
@@ -85,13 +79,7 @@ interface HomepageData {
   };
 }
 
-interface CategoryBrief {
-  _id: string;
-  title?: string;
-  slug?: { current?: string };
-}
-
-/** Simplified landing page — hero, intro, browse collections CTA, why us, book visit */
+/** Optimal homepage: Hero → Pain Points → Solution → Core Collections (4) → Specialty → Why Us → Projects → Limited Offer → Testimonials → FAQ (3) → Booking */
 export default async function Home() {
   let data: HomepageData | null = null;
   try {
@@ -103,19 +91,16 @@ export default async function Home() {
     console.error("Failed to fetch homepage data:", error);
   }
 
-  const [settings, categories] = await Promise.all([
+  const [settings] = await Promise.all([
     getSiteSettings(),
-    sanityFetch<CategoryBrief[] | null>({
-      query: getTopLevelCategoriesQuery,
-      tags: ["category"],
-    }),
   ]);
 
   const description =
     data?.choosingSection?.tagline ||
     "Premium flooring solutions for your home.";
 
-  const topCategories = categories ?? [];
+  const testimonials = (data?.testimonials ?? []).slice(0, 4);
+  const faqItems = (data?.faq?.items ?? []).slice(0, 3);
 
   return (
     <>
@@ -127,6 +112,7 @@ export default async function Home() {
         })}
       />
 
+      {/* 1. Hero — Find Your Perfect Hardfloor, 5.0 rating, 2 CTAs */}
       <HeroSection
         heading={data?.hero?.heading}
         subheading={data?.hero?.subheading}
@@ -138,6 +124,7 @@ export default async function Home() {
         contactInfo={settings.contactInfo}
       />
 
+      {/* 2. Pain Points + 3. Solution (See It. Choose Confidently.) */}
       <ChoosingSection
         heading1={data?.choosingSection?.heading1}
         heading2={data?.choosingSection?.heading2}
@@ -151,39 +138,51 @@ export default async function Home() {
         ctaLink={data?.choosingSection?.ctaLink}
       />
 
-      {/* Browse Collections — quick links to main sections */}
-      <section className="bg-stone-50 py-12 lg:py-16">
-        <div className="mx-auto max-w-7xl px-4">
-          <h2 className="section-heading">Browse Our Collections</h2>
-          <p className="mx-auto mt-4 max-w-2xl text-center text-stone-600">
-            Explore hardwood, engineered, vinyl, laminate, and more. Find the
-            perfect floor for your space.
-          </p>
-          <div className="mt-8 flex flex-wrap justify-center gap-4">
-            <Link
-              href="/collections"
-              className="btn-primary rounded-lg px-6 py-3"
-            >
-              View All Collections
-            </Link>
-            {topCategories.slice(0, 4).map((cat) => (
-              <Link
-                key={cat._id}
-                href={`/categories/${cat.slug?.current ?? ""}`}
-                className="rounded-lg border border-charcoal/20 bg-white px-6 py-3 text-sm font-semibold text-charcoal transition-colors hover:border-accent-orange hover:bg-accent-orange/5 hover:text-accent-orange"
-              >
-                {cat.title}
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* 4. Core Collections — Hardwood, Engineered, Luxury Vinyl, Laminate */}
+      <CoreCollections />
 
+      {/* 5. Our Specialty — Supply, Installation, Contracting, Maintenance (4 icon blocks) */}
+      <OurSpecialty
+        intro={data?.ourSpecialty?.intro}
+        items={data?.ourSpecialty?.items}
+        ctaText={data?.ourSpecialty?.ctaText}
+        ctaLink={data?.ourSpecialty?.ctaLink}
+      />
+
+      {/* 6. Why Choose Us — Premium / Expert / Seamless / Durable */}
       <WhyLoveUs
         heading={data?.whyLoveUs?.heading}
         items={data?.whyLoveUs?.items}
       />
 
+      {/* 7. Projects Preview — 3 images */}
+      <ProjectsPreview
+        heading={data?.projectsPreview?.heading}
+        images={data?.projectsPreview?.images}
+      />
+
+      {/* 8. Limited Time Offer — conversion booster */}
+      <LimitedTimeOffer
+        heading={data?.limitedTimeOffer?.heading}
+        body={data?.limitedTimeOffer?.body}
+        ctaText={data?.limitedTimeOffer?.ctaText}
+        ctaLink={data?.limitedTimeOffer?.ctaLink}
+        cta2Text={data?.limitedTimeOffer?.cta2Text}
+        cta2Link={data?.limitedTimeOffer?.cta2Link}
+      />
+
+      {/* 9. Testimonials — 3–4 best */}
+      <Testimonials
+        heading={data?.testimonialsHeading}
+        testimonials={testimonials}
+      />
+
+      {/* FAQ — 3 most popular questions */}
+      {faqItems.length > 0 && (
+        <Faq heading={data?.faq?.heading} items={faqItems} />
+      )}
+
+      {/* 10. Booking Form — bottom conversion */}
       <BookVisitForm
         heading={data?.bookVisitForm?.heading}
         subheading={data?.bookVisitForm?.subheading}

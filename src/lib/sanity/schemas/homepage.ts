@@ -38,6 +38,7 @@ export default defineType({
                     title: 'Pain Points (bullets)',
                     type: 'array',
                     of: [{ type: 'string' }],
+                    validation: (Rule) => Rule.max(4).warning('Keep 3–4 short bullets for emotional impact'),
                 }),
                 defineField({ name: 'resultText', title: 'Result Paragraph', type: 'text', rows: 2 }),
                 defineField({
@@ -53,6 +54,7 @@ export default defineType({
                     title: 'Solution Bullets',
                     type: 'array',
                     of: [{ type: 'string' }],
+                    validation: (Rule) => Rule.max(4).warning('Keep 3–4 short bullets (Visit showroom, Personalized guidance, Compare finishes, Zero pressure)'),
                 }),
                 defineField({
                     name: 'image2',
@@ -73,14 +75,22 @@ export default defineType({
                 defineField({ name: 'intro', title: 'Intro Paragraph', type: 'text', rows: 2 }),
                 defineField({
                     name: 'items',
-                    title: 'Offer Items',
+                    title: 'Core Collections (max 4 on homepage)',
                     type: 'array',
+                    validation: (Rule) =>
+                        Rule.max(4).warning('Homepage shows only 4: Hardwood, Engineered, Luxury Vinyl, Laminate'),
                     of: [
                         {
                             type: 'object',
                             fields: [
                                 defineField({ name: 'title', type: 'string', title: 'Title' }),
-                                defineField({ name: 'description', type: 'text', rows: 3, title: 'Description' }),
+                                defineField({ name: 'description', type: 'text', rows: 2, title: 'Description' }),
+                                defineField({
+                                    name: 'link',
+                                    type: 'string',
+                                    title: 'Link (e.g. /collections/hardwood)',
+                                    description: 'Optional collection URL',
+                                }),
                             ],
                             preview: { select: { title: 'title' } },
                         },
@@ -119,6 +129,7 @@ export default defineType({
             name: 'flooringGrades',
             title: 'Flooring Grades',
             type: 'object',
+            description: 'Content for /wood-guide/flooring-grades — not shown on homepage',
             fields: [
                 defineField({ name: 'heading', title: 'Section Heading', type: 'string' }),
                 defineField({ name: 'subheading', title: 'Subheading', type: 'string' }),
@@ -148,6 +159,7 @@ export default defineType({
             name: 'lumberCuts',
             title: 'Lumber Cuts',
             type: 'object',
+            description: 'Content for /wood-guide/lumber-cuts — not shown on homepage',
             fields: [
                 defineField({ name: 'heading', title: 'Section Heading', type: 'string' }),
                 defineField({ name: 'intro', title: 'Intro Paragraph', type: 'text', rows: 2 }),
@@ -211,15 +223,33 @@ export default defineType({
             description: 'e.g. "Our works"',
         }),
         defineField({
+            name: 'projectsPreview',
+            title: 'Projects Preview',
+            type: 'object',
+            description: '3 featured images linking to gallery',
+            fields: [
+                defineField({ name: 'heading', title: 'Heading', type: 'string' }),
+                defineField({
+                    name: 'images',
+                    title: 'Project Images (3)',
+                    type: 'array',
+                    validation: (Rule) => Rule.max(3),
+                    of: [{ type: 'image', options: { hotspot: true } }],
+                }),
+            ],
+        }),
+        defineField({
             name: 'faq',
             title: 'FAQ',
             type: 'object',
+            description: 'Keep only 3 most popular questions on homepage; rest go to FAQ page',
             fields: [
                 defineField({ name: 'heading', title: 'Section Heading', type: 'string' }),
                 defineField({
                     name: 'items',
-                    title: 'Questions & Answers',
+                    title: 'Questions & Answers (max 3 on homepage)',
                     type: 'array',
+                    validation: (Rule) => Rule.max(3).warning('Homepage shows only 3 most popular'),
                     of: [
                         {
                             type: 'object',
