@@ -31,8 +31,6 @@ export default function Header({
 }: HeaderProps) {
   const nav = navigation ?? [];
   const social = socialLinks ?? [];
-  const leftNav = nav.filter((item) => item.position === 'left');
-  const rightNav = nav.filter((item) => item.position === 'right');
   const hasLogo = !!logo?.asset?._ref;
 
   return (
@@ -116,11 +114,8 @@ export default function Header({
       {/* Main Navigation Bar */}
       <div className="bg-charcoal">
         <Container>
-          <div className="relative flex min-h-[56px] items-center justify-between md:min-h-[60px]">
-            {/* Left Navigation (desktop) */}
-            <Navigation links={leftNav} position="left" />
-
-            <Navigation links={rightNav} position="right" />
+          <div className="relative flex min-h-[56px] items-center md:min-h-[60px]">
+            <Navigation links={nav} />
             <MobileMenu
               navigation={nav}
               contactInfo={contactInfo}

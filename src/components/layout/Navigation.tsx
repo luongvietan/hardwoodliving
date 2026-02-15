@@ -6,22 +6,19 @@ import type { NavItem } from '@/lib/sanity/siteSettings';
 
 interface NavigationProps {
   links: NavItem[];
-  position: 'left' | 'right';
 }
 
 /**
- * Desktop navigation component for Magna-style split layout.
+ * Desktop navigation component — items evenly distributed across full width.
  * Supports dropdown menus for items with children.
  * Hidden on mobile (< md breakpoint), shown on tablet and desktop.
  * All navigation data from Sanity CMS.
  */
-export default function Navigation({ links, position }: NavigationProps) {
+export default function Navigation({ links }: NavigationProps) {
   if (!links || links.length === 0) return null;
 
-  const justify = position === 'left' ? 'justify-start' : 'justify-end';
-
   return (
-    <nav className={`hidden items-center gap-0.5 md:flex md:flex-wrap ${justify}`} aria-label="Main navigation">
+    <nav className="hidden w-full items-center justify-between gap-1 md:flex" aria-label="Main navigation">
       {links.map((item) =>
         item.children && item.children.length > 0 ? (
           <DropdownItem key={item._key} item={item} />

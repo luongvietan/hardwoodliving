@@ -58,7 +58,7 @@ export default async function ServicePage({
 }) {
   const { service } = await params;
   const info = SERVICE_CONTENT[service];
-  if (!info || !validSlugs.includes(service)) notFound();
+  if (!info) notFound();
 
   const breadcrumbItems = [
     { name: "Home", url: SITE_URL },

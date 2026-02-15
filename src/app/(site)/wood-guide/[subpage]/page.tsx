@@ -38,7 +38,7 @@ export default async function WoodGuideSubpage({
 }) {
   const { subpage } = await params;
   const page = WOOD_GUIDE_PAGES.find((p) => p.slug === subpage);
-  if (!page || !validSlugs.includes(subpage)) notFound();
+  if (!page) notFound();
 
   const data = await sanityFetch<{
     choosingSection?: Record<string, unknown>;

@@ -52,7 +52,7 @@ export default async function CustomFlooringSubpage({
 }) {
   const { subpage } = await params;
   const info = CONTENT[subpage];
-  if (!info || !validSlugs.includes(subpage)) notFound();
+  if (!info) notFound();
 
   const breadcrumbItems = [
     { name: "Home", url: SITE_URL },

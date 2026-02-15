@@ -49,7 +49,7 @@ export default async function CommercialSectionPage({
 }) {
   const { section } = await params;
   const info = SECTIONS[section];
-  if (!info || !validSections.includes(section)) notFound();
+  if (!info) notFound();
 
   const breadcrumbItems = [
     { name: "Home", url: SITE_URL },

@@ -47,7 +47,7 @@ export default async function GallerySectionPage({
 }) {
   const { section } = await params;
   const info = SECTION_CONTENT[section];
-  if (!info || !validSlugs.includes(section)) notFound();
+  if (!info) notFound();
 
   const breadcrumbItems = [
     { name: "Home", url: SITE_URL },
