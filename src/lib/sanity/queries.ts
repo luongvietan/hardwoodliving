@@ -121,8 +121,11 @@ export const getHomepageQuery = defineQuery(`*[_type == "homepage"][0] {
     cuts[] { name, description }
   },
   limitedTimeOffer {
+    badgeText,
     heading,
     body,
+    body2,
+    backgroundImage,
     ctaText,
     ctaLink,
     cta2Text,

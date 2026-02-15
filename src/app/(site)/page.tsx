@@ -44,8 +44,11 @@ interface HomepageData {
     ctaLink?: string;
   };
   limitedTimeOffer?: {
+    badgeText?: string;
     heading?: string;
     body?: string;
+    body2?: string;
+    backgroundImage?: SanityImageValue | null;
     ctaText?: string;
     ctaLink?: string;
     cta2Text?: string;
@@ -163,8 +166,11 @@ export default async function Home() {
 
       {/* 8. Limited Time Offer — conversion booster */}
       <LimitedTimeOffer
+        badgeText={data?.limitedTimeOffer?.badgeText}
         heading={data?.limitedTimeOffer?.heading}
         body={data?.limitedTimeOffer?.body}
+        body2={data?.limitedTimeOffer?.body2}
+        backgroundImage={data?.limitedTimeOffer?.backgroundImage}
         ctaText={data?.limitedTimeOffer?.ctaText}
         ctaLink={data?.limitedTimeOffer?.ctaLink}
         cta2Text={data?.limitedTimeOffer?.cta2Text}

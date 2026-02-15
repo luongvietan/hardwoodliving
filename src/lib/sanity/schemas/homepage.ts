@@ -185,8 +185,11 @@ export default defineType({
             title: 'Limited Time Offer',
             type: 'object',
             fields: [
+                defineField({ name: 'badgeText', title: 'Badge Text', type: 'string', description: 'e.g. "Limited Time Offer"' }),
                 defineField({ name: 'heading', title: 'Heading', type: 'string' }),
                 defineField({ name: 'body', title: 'Body Text', type: 'text', rows: 3 }),
+                defineField({ name: 'body2', title: 'Urgency Line', type: 'string', description: 'Optional second line e.g. "Limited-time offer – book your visit now!"' }),
+                defineField({ name: 'backgroundImage', title: 'Background Image', type: 'image', options: { hotspot: true }, description: 'Showroom/flooring image (blurred behind content)' }),
                 defineField({ name: 'ctaText', title: 'Primary CTA Text', type: 'string' }),
                 defineField({ name: 'ctaLink', title: 'Primary CTA URL', type: 'string' }),
                 defineField({ name: 'cta2Text', title: 'Secondary CTA Text', type: 'string' }),
