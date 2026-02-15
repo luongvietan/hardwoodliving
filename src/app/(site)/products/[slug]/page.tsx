@@ -148,7 +148,7 @@ export default async function ProductPage({
       >
         {/* Left column: image on top, product title & price & description below */}
         <div className="flex flex-col gap-6">
-          <div className="overflow-hidden rounded-lg border border-gray-200 bg-gray-50">
+          <div className="overflow-hidden rounded-xl border border-stone-200/90 bg-gradient-to-br from-stone-50 to-stone-100/80 p-4 shadow-sm sm:p-5">
             <ProductGallery images={product.images} productTitle={product.title} />
           </div>
           <div className="rounded-lg border border-gray-200 p-6">
