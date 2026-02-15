@@ -23,6 +23,13 @@ export default defineType({
             validation: (Rule) => Rule.required(),
         }),
         defineField({
+            name: 'parent',
+            title: 'Parent Page',
+            type: 'reference',
+            to: [{ type: 'page' }],
+            description: 'Optional parent page for nested URLs (e.g. /pages/about/team)',
+        }),
+        defineField({
             name: 'body',
             title: 'Body',
             type: 'array',

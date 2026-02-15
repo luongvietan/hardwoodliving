@@ -1,6 +1,9 @@
 import type { MetadataRoute } from "next";
 import { client } from "@/lib/sanity/client";
 import { SITE_URL } from "@/lib/constants";
+import { getAllCategorySlugsQuery, getAllPagesForPathResolutionQuery } from "@/lib/sanity/queries";
+import { sanityFetch } from "@/lib/sanity/fetch";
+import { getAllPagePathsWithIds, type PageForPath } from "@/lib/page-path";
 import {
   COLLECTION_MATERIALS,
   COMMERCIAL_SECTIONS,
@@ -17,13 +20,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     client.fetch<SitemapEntry[]>(
       `*[_type == "product" && visibility == "public"]{ "slug": slug.current, _updatedAt }`
     ),
-    client.fetch<SitemapEntry[]>(
-      `*[_type == "page"]{ "slug": slug.current, _updatedAt }`
-    ),
+    sanityFetch<PageForPath[]>({
+      query: getAllPagesForPathResolutionQuery,
+      tags: ["page"],
+    }),
+    sanityFetch<{ slug: string }[]>({ query: getAllCategorySlugsQuery, tags: ["category"] }),
   ]);
 
   const products = results[0].status === "fulfilled" ? results[0].value : [];
-  const pages = results[1].status === "fulfilled" ? results[1].value : [];
+  const allPagesForPathRaw = results[1].status === "fulfilled" ? results[1].value : null;
+  const allPagesForPath = Array.isArray(allPagesForPathRaw) ? allPagesForPathRaw : [];
+  const categoriesRaw = results[2].status === "fulfilled" ? results[2].value : null;
+  const categories = Array.isArray(categoriesRaw) ? categoriesRaw : [];
 
   const now = new Date();
 
@@ -108,11 +116,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8,
   }));
 
-  const contentPages: MetadataRoute.Sitemap = (pages || [])
-    .filter((p) => !["trades"].includes(p.slug))
-    .map((p) => ({
-      url: `${SITE_URL}/pages/${p.slug}`,
-      lastModified: new Date(p._updatedAt),
+  const categoryPages: MetadataRoute.Sitemap = (categories || []).map((c) => ({
+    url: `${SITE_URL}/categories/${c.slug}`,
+    lastModified: now,
+    changeFrequency: "weekly" as const,
+    priority: 0.8,
+  }));
+
+  const pagePathsWithIds = getAllPagePathsWithIds(allPagesForPath);
+  const updatedAtById = new Map(allPagesForPath.map((p) => [p._id, p._updatedAt]));
+  const contentPages: MetadataRoute.Sitemap = pagePathsWithIds
+    .filter(({ path }) => !(path.length === 1 && path[0] === "trades"))
+    .map(({ path, id }) => ({
+      url: `${SITE_URL}/pages/${path.join("/")}`,
+      lastModified: new Date(updatedAtById.get(id) ?? now),
       changeFrequency: "monthly" as const,
       priority: 0.5,
     }));
@@ -123,6 +140,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...commercialPages,
     ...subPages,
     ...productPages,
+    ...categoryPages,
     ...contentPages,
   ];
 }

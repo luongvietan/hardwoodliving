@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { SanityImageValue } from "@/lib/sanity/types";
 import Container from "@/components/layout/Container";
+import PortableText from "@/components/sanity/PortableText";
 import ProductGrid from "@/components/products/ProductGrid";
 import ProductFilter from "@/components/products/ProductFilter";
 import JsonLd, { buildBreadcrumbJsonLd } from "@/components/seo/JsonLd";
@@ -10,14 +11,16 @@ import { sanityFetch } from "@/lib/sanity/fetch";
 import { urlFor } from "@/lib/sanity/image";
 import {
   getCategoryBySlugQuery,
-  getVisibleProductsByCategoryAndTypeQuery,
+  getVisibleProductsByCategoryAndDescendantsQuery,
   getAllCategorySlugsQuery,
   getAllCategoriesQuery,
+  getAllCategoriesWithParentQuery,
   getSubcategoriesByParentSlugQuery,
 } from "@/lib/sanity/queries";
 import { getUserRole, getVisibilityOptions } from "@/lib/sanity/visibility";
 import { notFound } from "next/navigation";
 import { SITE_URL } from "@/lib/constants";
+import { flattenAncestors, getDescendantSlugs } from "@/lib/category-tree";
 
 interface Category {
   _id: string;
@@ -25,7 +28,8 @@ interface Category {
   slug: { current: string };
   description?: string;
   image?: SanityImageValue;
-  parent?: { _id: string; title: string; slug: { current: string } } | null;
+  body?: Record<string, unknown>[];
+  parent?: Category | null;
 }
 
 interface Product {
@@ -88,9 +92,13 @@ export default async function CategoryPage({
 
   if (!category) notFound();
 
-  const [allCategoriesRaw, subcategoriesRaw] = await Promise.all([
+  const [allCategoriesRaw, allWithParentRaw, subcategoriesRaw] = await Promise.all([
     sanityFetch<Category[] | null>({
       query: getAllCategoriesQuery,
+      tags: ["category"],
+    }),
+    sanityFetch<{ slug: string; parentSlug: string | null }[] | null>({
+      query: getAllCategoriesWithParentQuery,
       tags: ["category"],
     }),
     sanityFetch<Category[] | null>({
@@ -101,16 +109,20 @@ export default async function CategoryPage({
   ]);
 
   const allCategories = allCategoriesRaw ?? [];
+  const allWithParent = allWithParentRaw ?? [];
   const subcategories = subcategoriesRaw ?? [];
 
-  const defaultCategorySlug = category.parent?.slug.current ?? category.slug.current;
-  const defaultTypeSlug = category.parent ? category.slug.current : undefined;
+  const ancestorChain = flattenAncestors(category);
+  const descendantSlugs = getDescendantSlugs(category.slug.current, allWithParent);
+  const categorySlugs = [category.slug.current, ...descendantSlugs];
 
+  const defaultCategorySlug = ancestorChain.length > 0 ? ancestorChain[0].slug.current : category.slug.current;
+  const defaultTypeSlug = categoryFilterParam ? undefined : (category.parent ? category.slug.current : undefined);
   const activeCategorySlug = categoryFilterParam ?? defaultCategorySlug;
   const activeTypeSlug = typeFilterParam ?? defaultTypeSlug;
 
   const productTypeOptions = allCategories.filter(
-    (cat) => cat.parent?.slug.current === activeCategorySlug
+    (cat) => cat.parent?.slug?.current === activeCategorySlug
   );
 
   const role = await getUserRole();
@@ -118,23 +130,21 @@ export default async function CategoryPage({
   const revalidate = role === "public" ? 60 : 0;
 
   const products = await sanityFetch<Product[]>({
-    query: getVisibleProductsByCategoryAndTypeQuery,
+    query: getVisibleProductsByCategoryAndDescendantsQuery,
     params: {
-      category: activeCategorySlug ?? null,
-      type: activeTypeSlug ?? null,
+      categorySlugs,
+      type: activeTypeSlug ?? undefined,
       visibility,
     },
     tags: ["product"],
     revalidate,
   });
 
-  // Build breadcrumb items for JSON-LD
+  // Build breadcrumb items for JSON-LD (full ancestor chain)
   const breadcrumbItems = [
     { name: "Home", url: SITE_URL },
     { name: "Products", url: `${SITE_URL}/products` },
-    ...(category.parent
-      ? [{ name: category.parent.title, url: `${SITE_URL}/categories/${category.parent.slug.current}` }]
-      : []),
+    ...ancestorChain.map((a) => ({ name: a.title, url: `${SITE_URL}/categories/${a.slug.current}` })),
     { name: category.title, url: `${SITE_URL}/categories/${slug}` },
   ];
 
@@ -166,6 +176,16 @@ export default async function CategoryPage({
           )}
         </Container>
       </section>
+
+      {category.body && category.body.length > 0 && (
+        <Container className="py-12">
+          <article className="mx-auto max-w-3xl">
+            <div className="prose-content">
+              <PortableText value={category.body} />
+            </div>
+          </article>
+        </Container>
+      )}
 
       {/* Products Grid */}
       <Container className="py-12">

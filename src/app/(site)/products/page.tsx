@@ -9,10 +9,12 @@ import { sanityFetch } from "@/lib/sanity/fetch";
 import { urlFor } from "@/lib/sanity/image";
 import {
   getAllCategoriesQuery,
+  getAllCategoriesWithParentQuery,
   getTopLevelCategoriesQuery,
-  getVisibleProductsByCategoryAndTypeQuery,
+  getVisibleProductsByCategoryAndDescendantsQuery,
 } from "@/lib/sanity/queries";
 import { getUserRole, getVisibilityOptions } from "@/lib/sanity/visibility";
+import { getDescendantSlugs } from "@/lib/category-tree";
 
 interface Category {
   _id: string;
@@ -51,9 +53,13 @@ export default async function ProductsCatalogPage({
   const categoryFilter = typeof params.category === "string" ? params.category : undefined;
   const typeFilter = typeof params.type === "string" ? params.type : undefined;
 
-  const [allCategoriesRaw, topLevelCategoriesRaw] = await Promise.all([
+  const [allCategoriesRaw, allWithParentRaw, topLevelCategoriesRaw] = await Promise.all([
     sanityFetch<Category[] | null>({
       query: getAllCategoriesQuery,
+      tags: ["category"],
+    }),
+    sanityFetch<{ slug: string; parentSlug: string | null }[] | null>({
+      query: getAllCategoriesWithParentQuery,
       tags: ["category"],
     }),
     sanityFetch<Category[] | null>({
@@ -63,6 +69,7 @@ export default async function ProductsCatalogPage({
   ]);
 
   const allCategories = allCategoriesRaw ?? [];
+  const allWithParent = allWithParentRaw ?? [];
   const topLevelCategories = topLevelCategoriesRaw ?? [];
 
   const subcategories = allCategories.filter((category) => category.parent?.slug?.current);
@@ -78,17 +85,22 @@ export default async function ProductsCatalogPage({
     ? subcategories.filter((category) => category.parent?.slug.current === activeCategorySlug)
     : subcategories;
 
-  // Fetch products when filters are active (with visibility filtering)
+  // Fetch products when filters are active (category + all descendants)
   let filteredProducts: Product[] | null = null;
   if (activeCategorySlug || activeTypeSlug) {
     const role = await getUserRole();
     const visibility = getVisibilityOptions(role);
     const revalidate = role === "public" ? 60 : 0;
+    const categorySlugs = activeCategorySlug
+      ? [activeCategorySlug, ...getDescendantSlugs(activeCategorySlug, allWithParent)]
+      : activeTypeSlug
+        ? [activeTypeSlug]
+        : [];
     filteredProducts = await sanityFetch<Product[]>({
-      query: getVisibleProductsByCategoryAndTypeQuery,
+      query: getVisibleProductsByCategoryAndDescendantsQuery,
       params: {
-        category: activeCategorySlug ?? null,
-        type: activeTypeSlug ?? null,
+        categorySlugs,
+        type: activeTypeSlug ?? undefined,
         visibility,
       },
       tags: ["product"],

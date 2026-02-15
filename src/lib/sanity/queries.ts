@@ -217,17 +217,87 @@ export const searchProductsQuery = `*[_type == "product" && visibility == "publi
 
 export const getAllPageSlugsQuery = defineQuery(`*[_type == "page"]{ "slug": slug.current }`);
 
+/** Minimal page data for path resolution and listing; slug + parentRef for tree building */
+export const getAllPagesForPathResolutionQuery = defineQuery(`*[_type == "page"] {
+  _id,
+  title,
+  "slug": slug.current,
+  "parentRef": parent._ref,
+  _updatedAt
+}`);
+
+/** Full page content by id (for path-resolved page) */
+export const getPageByIdQuery = defineQuery(`*[_type == "page" && _id == $id][0] {
+  title,
+  body,
+  seo,
+  slug
+}`);
+
+// Ancestor chain: parent->parent->... (fixed depth 10) for breadcrumbs; flatten in app
 export const getCategoryBySlugQuery = defineQuery(`*[_type == "category" && slug.current == $slug][0] {
   _id,
   title,
   slug,
   description,
   image,
+  body,
   parent->{
     _id,
     title,
-    slug
+    slug,
+    parent->{
+      _id,
+      title,
+      slug,
+      parent->{
+        _id,
+        title,
+        slug,
+        parent->{
+          _id,
+          title,
+          slug,
+          parent->{
+            _id,
+            title,
+            slug,
+            parent->{
+              _id,
+              title,
+              slug,
+              parent->{
+                _id,
+                title,
+                slug,
+                parent->{
+                  _id,
+                  title,
+                  slug,
+                  parent->{
+                    _id,
+                    title,
+                    slug,
+                  parent->{
+                    _id,
+                    title,
+                    slug
+                  }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
   }
+}`);
+
+/** All categories with slug and parent slug for computing descendants in app */
+export const getAllCategoriesWithParentQuery = defineQuery(`*[_type == "category"] {
+  "slug": slug.current,
+  "parentSlug": parent->slug.current
 }`);
 
 export const getProductsByCategorySlugQuery = defineQuery(`*[_type == "product" && category->slug.current == $slug && visibility != "hidden"] | order(title asc) {
@@ -250,6 +320,32 @@ export const getPublicProductSlugsQuery = defineQuery(`*[_type == "product" && v
 export const getVisibleProductsByCategoryAndTypeQuery = defineQuery(`*[_type == "product"
   && visibility in $visibility
   && (!defined($category) || category->slug.current == $category || category->parent->slug.current == $category)
+  && (!defined($type) || category->slug.current == $type)
+] | order(title asc) {
+  _id,
+  title,
+  slug,
+  description,
+  price,
+  priceUnit,
+  images,
+  category->{
+    _id,
+    title,
+    slug,
+    parent->{
+      _id,
+      title,
+      slug
+    }
+  },
+  isFeatured
+}`);
+
+/** Products in any of the given category slugs (category or descendants); optional $type filter */
+export const getVisibleProductsByCategoryAndDescendantsQuery = defineQuery(`*[_type == "product"
+  && visibility in $visibility
+  && category->slug.current in $categorySlugs
   && (!defined($type) || category->slug.current == $type)
 ] | order(title asc) {
   _id,
