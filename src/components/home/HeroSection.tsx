@@ -32,6 +32,25 @@ function StarIcon({ className }: { className?: string }) {
   );
 }
 
+/** Phone icon for contact strip */
+function PhoneIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+    </svg>
+  );
+}
+
+/** Mail icon for contact strip */
+function MailIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+      <polyline points="22,6 12,13 2,6" />
+    </svg>
+  );
+}
+
 /**
  * Hero section with room imagery, centered headline/subheading,
  * social proof, dual CTAs, and optional contact strip (phone/email).
@@ -121,31 +140,51 @@ export default function HeroSection({
           </p>
         )}
 
-        {/* Social proof: 5K + stars + rating (design) */}
-        <div className="mt-5 flex flex-col items-center gap-1.5">
-          <div className="flex items-center gap-3">
-            <div className="flex -space-x-2">
-              {[1, 2, 3, 4].map((i) => (
-                <div
+        {/* Social proof: avatars + 5K | stars + rating (per design) */}
+        <div className="mt-5 flex flex-wrap items-center justify-center gap-6">
+          {/* Left group: overlapping avatars + 5K circle */}
+          <div className="flex items-center">
+            <div className="flex -space-x-3">
+              {[
+                'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=96&h=96&fit=crop&crop=face',
+                'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=96&h=96&fit=crop&crop=face',
+                'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=96&h=96&fit=crop&crop=face',
+                'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=96&h=96&fit=crop&crop=face',
+              ].map((src, i) => (
+                <Image
                   key={i}
-                  className="h-9 w-9 rounded-full border-2 border-white bg-stone-400 shadow-sm"
+                  src={src}
+                  alt=""
+                  width={40}
+                  height={40}
+                  className="h-10 w-10 shrink-0 rounded-full border-2 border-white object-cover shadow-sm"
                   aria-hidden
                 />
               ))}
-            </div>
-            <span
-              className="flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold"
-              style={{ backgroundColor: 'var(--color-accent-orange)', color: 'white' }}
-            >
-              5K
-            </span>
-            <div className="flex items-center gap-0.5" aria-hidden>
-              {[1, 2, 3, 4, 5].map((i) => (
-                <StarIcon key={i} className="h-5 w-5 text-amber-500" />
-              ))}
+              {/* 5K circle — overlaps last avatar, dark mocha */}
+              <span
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 border-white text-white shadow-sm"
+                style={{ backgroundColor: '#5c4033' }}
+              >
+                <span className="text-sm font-bold leading-none">
+                  5<span className="text-[10px] align-top">K</span>
+                </span>
+              </span>
             </div>
           </div>
-          <p className="text-sm font-medium text-stone-700">Rated 5.0/5.0 by users</p>
+          {/* Right group: stars + rating text */}
+          <div className="flex flex-col items-center gap-0.5">
+            <div className="flex items-center gap-0.5" aria-hidden>
+              {[1, 2, 3, 4, 5].map((i) => (
+                <StarIcon key={i} className="h-5 w-5 shrink-0 text-amber-700" />
+              ))}
+            </div>
+            <p className="text-sm font-medium text-stone-600">
+              <span className="font-normal">Rated </span>
+              <span className="font-semibold text-stone-700">5.0/5.0</span>
+              <span className="font-normal"> by users</span>
+            </p>
+          </div>
         </div>
 
         {/* Dual CTAs — design tokens */}
@@ -163,28 +202,58 @@ export default function HeroSection({
         </div>
       </div>
 
-      {/* Contact strip — bottom left: two panels with thin vertical divider (design) */}
+      {/* Contact strip — outer border frame + inner band with icons */}
       {hasContactStrip && (
-        <div className="absolute bottom-6 left-4 z-10 flex overflow-hidden rounded-lg shadow-md sm:left-6 lg:left-8">
-          {contactInfo?.phone && (
-            <a
-              href={`tel:${contactInfo.phone.replace(/\s/g, '')}`}
-              className="bg-white/95 px-4 py-3 text-sm font-medium text-stone-800 backdrop-blur-sm transition-colors hover:bg-white"
+        <div className="absolute bottom-0 left-0 z-10 w-full max-w-md">
+          {/* Viền ngoài: border + nền beige + padding */}
+          <div
+            className="border border-b-0 border-stone-200/80 bg-[#faf8f5] p-1.5 shadow-sm"
+            style={{
+              clipPath: 'polygon(0 0, calc(100% - 16px) 0, 100% 100%, 0 100%)',
+            }}
+          >
+            <div
+              className="overflow-hidden rounded-tr-md"
+              style={{
+                clipPath: 'polygon(0 0, calc(100% - 18px) 0, 100% 100%, 0 100%)',
+              }}
             >
-              {contactInfo.phone}
-            </a>
-          )}
-          {contactInfo?.phone && contactInfo?.email && (
-            <div className="w-px bg-gray-300/80" aria-hidden />
-          )}
-          {contactInfo?.email && (
-            <a
-              href={`mailto:${contactInfo.email}`}
-              className="bg-white/95 px-4 py-3 text-sm font-medium text-stone-800 backdrop-blur-sm transition-colors hover:bg-white"
-            >
-              {contactInfo.email}
-            </a>
-          )}
+              <div className="flex divide-x divide-stone-200/80">
+              {contactInfo?.phone && (
+                <a
+                  href={`tel:${contactInfo.phone.replace(/\s/g, '')}`}
+                  className="group flex flex-1 items-center justify-center gap-3 bg-white/95 px-5 py-4 text-stone-700 transition-colors hover:bg-stone-50 hover:text-stone-900 sm:gap-4 sm:px-6 sm:py-4"
+                  style={{
+                    clipPath: 'polygon(0 0, calc(100% - 20px) 0, calc(100% - 6px) 100%, 0 100%)',
+                  }}
+                >
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-stone-100 text-stone-600 transition-colors group-hover:bg-amber-100 group-hover:text-amber-800">
+                    <PhoneIcon className="h-4 w-4" />
+                  </span>
+                  <span className="text-left font-medium text-stone-800 sm:text-base [font-family:var(--font-playfair),Georgia,serif]">
+                    {contactInfo.phone}
+                  </span>
+                </a>
+              )}
+              {contactInfo?.email && (
+                <a
+                  href={`mailto:${contactInfo.email}`}
+                  className="group flex flex-1 items-center justify-center gap-3 bg-white/95 px-5 py-4 text-stone-700 transition-colors hover:bg-stone-50 hover:text-stone-900 sm:gap-4 sm:px-6 sm:py-4"
+                  style={{
+                    clipPath: 'polygon(10px 0, calc(100% - 12px) 0, 100% 100%, 20px 100%)',
+                  }}
+                >
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-stone-100 text-stone-600 transition-colors group-hover:bg-amber-100 group-hover:text-amber-800">
+                    <MailIcon className="h-4 w-4" />
+                  </span>
+                  <span className="truncate text-left text-sm font-medium text-stone-800 sm:text-base [font-family:var(--font-playfair),Georgia,serif]">
+                    {contactInfo.email}
+                  </span>
+                </a>
+              )}
+              </div>
+            </div>
+          </div>
         </div>
       )}
 
