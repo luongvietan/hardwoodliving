@@ -66,13 +66,15 @@ interface Spec {
 interface ProductSpecsProps {
   specifications?: ProductSpecifications | null;
   specs?: Spec[];
+  /** Section heading (e.g. "Product Specifications"). Default: "Specifications" */
+  title?: string;
 }
 
 /**
  * Displays product technical specifications: structured (specifications) first, then additional key-value specs.
  * Renders nothing if neither is provided.
  */
-export default function ProductSpecs({ specifications, specs }: ProductSpecsProps) {
+export default function ProductSpecs({ specifications, specs, title = "Specifications" }: ProductSpecsProps) {
   const structuredEntries =
     specifications &&
     (Object.entries(specifications).filter(
@@ -85,9 +87,9 @@ export default function ProductSpecs({ specifications, specs }: ProductSpecsProp
   if (!hasStructured && !hasLegacy) return null;
 
   return (
-    <div className="mt-8">
-      <h2 className="text-lg font-semibold text-gray-900">Specifications</h2>
-      <dl className="mt-3 divide-y divide-gray-200 border-t border-gray-200">
+    <div>
+      <h2 className="text-lg font-semibold text-gray-900">{title}</h2>
+      <dl className="mt-4 divide-y divide-gray-200 border-t border-gray-200 pt-1">
         {hasStructured &&
           structuredEntries!.map(([key, value]) => (
             <div key={key} className="flex justify-between py-3 text-sm">

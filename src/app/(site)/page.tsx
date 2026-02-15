@@ -1,5 +1,6 @@
 import type { SanityImageValue } from "@/lib/sanity/types";
 import HeroSection from "@/components/home/HeroSection";
+import AnimatedSection from "@/components/ui/AnimatedSection";
 import ChoosingSection from "@/components/home/ChoosingSection";
 import CoreCollections from "@/components/home/CoreCollections";
 import OurSpecialty from "@/components/home/OurSpecialty";
@@ -128,7 +129,8 @@ export default async function Home() {
       />
 
       {/* 2. Pain Points + 3. Solution (See It. Choose Confidently.) */}
-      <ChoosingSection
+      <AnimatedSection variant="fadeUp">
+        <ChoosingSection
         heading1={data?.choosingSection?.heading1}
         heading2={data?.choosingSection?.heading2}
         painPoints={data?.choosingSection?.painPoints}
@@ -140,32 +142,42 @@ export default async function Home() {
         ctaText={data?.choosingSection?.ctaText}
         ctaLink={data?.choosingSection?.ctaLink}
       />
+      </AnimatedSection>
 
       {/* 4. Core Collections — Hardwood, Engineered, Luxury Vinyl, Laminate */}
-      <CoreCollections />
+      <AnimatedSection variant="fadeUp">
+        <CoreCollections />
+      </AnimatedSection>
 
       {/* 5. Our Specialty — Supply, Installation, Contracting, Maintenance (4 icon blocks) */}
-      <OurSpecialty
+      <AnimatedSection variant="fadeUp">
+        <OurSpecialty
         intro={data?.ourSpecialty?.intro}
         items={data?.ourSpecialty?.items}
         ctaText={data?.ourSpecialty?.ctaText}
         ctaLink={data?.ourSpecialty?.ctaLink}
       />
+      </AnimatedSection>
 
       {/* 6. Why Choose Us — Premium / Expert / Seamless / Durable */}
-      <WhyLoveUs
+      <AnimatedSection variant="fadeUp">
+        <WhyLoveUs
         heading={data?.whyLoveUs?.heading}
         items={data?.whyLoveUs?.items}
       />
+      </AnimatedSection>
 
       {/* 7. Projects Preview — 3 images */}
-      <ProjectsPreview
+      <AnimatedSection variant="fadeUp">
+        <ProjectsPreview
         heading={data?.projectsPreview?.heading}
         images={data?.projectsPreview?.images}
       />
+      </AnimatedSection>
 
       {/* 8. Limited Time Offer — conversion booster */}
-      <LimitedTimeOffer
+      <AnimatedSection variant="fadeUp">
+        <LimitedTimeOffer
         badgeText={data?.limitedTimeOffer?.badgeText}
         heading={data?.limitedTimeOffer?.heading}
         body={data?.limitedTimeOffer?.body}
@@ -176,25 +188,32 @@ export default async function Home() {
         cta2Text={data?.limitedTimeOffer?.cta2Text}
         cta2Link={data?.limitedTimeOffer?.cta2Link}
       />
+      </AnimatedSection>
 
       {/* 9. Testimonials — 3–4 best */}
-      <Testimonials
+      <AnimatedSection variant="fadeUp">
+        <Testimonials
         heading={data?.testimonialsHeading}
         testimonials={testimonials}
       />
+      </AnimatedSection>
 
       {/* FAQ — 3 most popular questions */}
       {faqItems.length > 0 && (
-        <Faq heading={data?.faq?.heading} items={faqItems} />
+        <AnimatedSection variant="fadeUp">
+          <Faq heading={data?.faq?.heading} items={faqItems} />
+        </AnimatedSection>
       )}
 
       {/* 10. Booking Form — bottom conversion */}
-      <BookVisitForm
+      <AnimatedSection variant="fadeUp">
+        <BookVisitForm
         heading={data?.bookVisitForm?.heading}
         subheading={data?.bookVisitForm?.subheading}
         primaryCtaText={data?.bookVisitForm?.primaryCtaText}
         secondaryCtaText={data?.bookVisitForm?.secondaryCtaText}
       />
+      </AnimatedSection>
     </>
   );
 }

@@ -97,6 +97,10 @@ export default async function ProductPage({
     : undefined;
 
   // Build breadcrumb items for JSON-LD
+  const hasSpecs =
+    (product.specifications && Object.values(product.specifications).some((v) => v != null && String(v).trim() !== "")) ||
+    (product.specs && product.specs.length > 0);
+
   const breadcrumbItems = [
     { name: "Home", url: SITE_URL },
     { name: "Products", url: `${SITE_URL}/products` },
@@ -138,47 +142,59 @@ export default async function ProductPage({
         <span className="font-medium text-gray-900">{product.title}</span>
       </nav>
 
-      <div className="grid grid-cols-1 gap-10 lg:grid-cols-2">
-        {/* Product Image Gallery */}
-        <ProductGallery images={product.images} productTitle={product.title} />
-
-        {/* Product Info */}
-        <div>
-          {product.isFeatured && (
-            <span className="mb-3 inline-block bg-accent-orange px-2.5 py-0.5 text-xs font-bold uppercase tracking-wider text-white">
-              Featured
-            </span>
-          )}
-          <h1 className="text-3xl font-bold tracking-tight text-gray-900">
-            {product.title}
-          </h1>
-
-          <ProductPrice price={product.price} priceUnit={product.priceUnit} />
-
-          {product.description && (
-            <p className="mt-6 leading-7 text-gray-700">{product.description}</p>
-          )}
-
-          <ProductSpecs specifications={product.specifications} specs={product.specs} />
-
-          {/* CTA */}
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <Link
-              href={`/contact?product=${encodeURIComponent(product.title)}`}
-              className="bg-accent-orange px-6 py-3 text-center text-sm font-semibold uppercase tracking-wider text-white transition-colors hover:bg-accent-orange-hover"
-            >
-              Get Consultation
-            </Link>
-            {product.category && (
-              <Link
-                href={`/categories/${product.category.slug.current}`}
-                className="border border-charcoal px-6 py-3 text-center text-sm font-semibold uppercase tracking-wider text-charcoal-dark transition-colors hover:bg-charcoal hover:text-white"
-              >
-                View All {product.category.title}
-              </Link>
+      {/* Product details: left = image + title/price/description, right = specifications */}
+      <div
+        className={`grid gap-6 lg:items-stretch ${hasSpecs ? "grid-cols-1 lg:grid-cols-2" : "grid-cols-1"}`}
+      >
+        {/* Left column: image on top, product title & price & description below */}
+        <div className="flex flex-col gap-6">
+          <div className="overflow-hidden rounded-lg border border-gray-200 bg-gray-50">
+            <ProductGallery images={product.images} productTitle={product.title} />
+          </div>
+          <div className="rounded-lg border border-gray-200 p-6">
+            {product.isFeatured && (
+              <span className="mb-3 inline-block bg-accent-orange px-2.5 py-0.5 text-xs font-bold uppercase tracking-wider text-white">
+                Featured
+              </span>
             )}
+            <h1 className="text-2xl font-bold tracking-tight text-gray-900 md:text-3xl">
+              {product.title}
+            </h1>
+            <ProductPrice price={product.price} priceUnit={product.priceUnit} />
+            {product.description && (
+              <p className="mt-4 leading-7 text-gray-700">{product.description}</p>
+            )}
+            <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+              <Link
+                href={`/contact?product=${encodeURIComponent(product.title)}`}
+                className="bg-accent-orange px-6 py-3 text-center text-sm font-semibold uppercase tracking-wider text-white transition-colors hover:bg-accent-orange-hover"
+              >
+                Get Consultation
+              </Link>
+              {product.category && (
+                <Link
+                  href={`/categories/${product.category.slug.current}`}
+                  className="border border-charcoal px-6 py-3 text-center text-sm font-semibold uppercase tracking-wider text-charcoal-dark transition-colors hover:bg-charcoal hover:text-white"
+                >
+                  View All {product.category.title}
+                </Link>
+              )}
+            </div>
           </div>
         </div>
+
+        {/* Right column: Product Specifications (full height), only when specs exist */}
+        {hasSpecs ? (
+          <div className="lg:min-h-0">
+            <div className="h-full rounded-lg border border-gray-200 p-6">
+              <ProductSpecs
+                specifications={product.specifications}
+                specs={product.specs}
+                title="Product Specifications"
+              />
+            </div>
+          </div>
+        ) : null}
       </div>
     </Container>
   );

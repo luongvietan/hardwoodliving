@@ -64,13 +64,13 @@ describe("ProductGallery", () => {
     );
     const thumbnails = container.querySelectorAll("button");
 
-    // First thumbnail should be active by default
-    expect(thumbnails[0].className).toContain("ring-amber");
+    // First thumbnail should be active by default (orange accent border)
+    expect(thumbnails[0].className).toContain("accent-orange");
     expect(thumbnails[0]).toHaveAttribute("aria-pressed", "true");
 
     // Click second thumbnail
     fireEvent.click(thumbnails[1]);
-    expect(thumbnails[1].className).toContain("ring-amber");
+    expect(thumbnails[1].className).toContain("accent-orange");
     expect(thumbnails[1]).toHaveAttribute("aria-pressed", "true");
   });
 

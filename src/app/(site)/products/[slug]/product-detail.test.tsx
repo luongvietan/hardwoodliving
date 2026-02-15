@@ -68,7 +68,7 @@ describe("Product Detail Page", () => {
   it("renders product specifications via ProductSpecs component", async () => {
     vi.mocked(sanityFetch).mockResolvedValueOnce(fullProduct);
     await renderProductPage();
-    expect(screen.getByText("Specifications")).toBeInTheDocument();
+    expect(screen.getByText("Product Specifications")).toBeInTheDocument();
     expect(screen.getByText("Species")).toBeInTheDocument();
     expect(screen.getByText("Red Oak")).toBeInTheDocument();
     expect(screen.getByText("Thickness")).toBeInTheDocument();
@@ -154,7 +154,7 @@ describe("Product Detail Page", () => {
     const noSpecs = { ...fullProduct, specs: undefined };
     vi.mocked(sanityFetch).mockResolvedValueOnce(noSpecs);
     await renderProductPage();
-    expect(screen.queryByText("Specifications")).not.toBeInTheDocument();
+    expect(screen.queryByText("Product Specifications")).not.toBeInTheDocument();
   });
 
   it("renders without price when price is 0", async () => {

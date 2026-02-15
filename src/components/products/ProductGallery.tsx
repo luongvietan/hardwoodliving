@@ -5,8 +5,8 @@ import Image from "next/image";
 import type { SanityImageValue } from "@/lib/sanity/types";
 import { urlFor } from "@/lib/sanity/image";
 
-const LENS_SIZE = 160;
-const ZOOM_LEVEL = 2.2;
+const LENS_SIZE = 180;
+const ZOOM_LEVEL = 2.5;
 
 interface ProductGalleryProps {
   images?: SanityImageValue[];
@@ -40,8 +40,8 @@ export default function ProductGallery({
 
   if (validImages.length === 0) {
     return (
-      <div className="relative aspect-square overflow-hidden rounded-lg bg-gray-100">
-        <div className="flex h-full items-center justify-center text-gray-400">
+      <div className="relative aspect-square overflow-hidden rounded-lg border border-stone-200 bg-stone-50">
+        <div className="flex h-full items-center justify-center text-stone-400">
           <svg
             className="h-20 w-20"
             fill="none"
@@ -67,12 +67,48 @@ export default function ProductGallery({
   const clampedX = Math.max(LENS_SIZE / 2, Math.min(containerRect.width - LENS_SIZE / 2, mousePos.x));
   const clampedY = Math.max(LENS_SIZE / 2, Math.min(containerRect.height - LENS_SIZE / 2, mousePos.y));
 
+  const hasMultipleImages = validImages.length > 1;
+
   return (
-    <div role="region" aria-label={`${productTitle} image gallery`}>
+    <div
+      role="region"
+      aria-label={`${productTitle} image gallery`}
+      className={hasMultipleImages ? "flex flex-row gap-4 sm:gap-5" : ""}
+    >
+      {/* Thumbnails on the left (only when multiple images) */}
+      {hasMultipleImages && (
+        <div className="flex shrink-0 flex-col gap-2.5 sm:gap-3">
+          {validImages.map((img, index) => (
+            <button
+              key={img._key || index}
+              type="button"
+              onClick={() => setSelectedIndex(index)}
+              className={`relative aspect-square w-16 overflow-hidden rounded-lg border-2 bg-stone-100 transition-all sm:w-20 ${
+                index === selectedIndex
+                  ? "border-accent-orange ring-2 ring-accent-orange ring-offset-2 shadow-sm"
+                  : "border-stone-200 hover:border-stone-300"
+              }`}
+              aria-label={`View image ${index + 1} of ${validImages.length}`}
+              aria-pressed={index === selectedIndex}
+              aria-current={index === selectedIndex}
+            >
+              <Image
+                src={urlFor(img).width(200).height(200).auto("format").url()}
+                alt={img.alt || `${productTitle} - Detail ${index + 1}`}
+                fill
+                sizes="80px"
+                loading="lazy"
+                className="object-cover"
+              />
+            </button>
+          ))}
+        </div>
+      )}
+
       {/* Main Image with hover zoom */}
       <div
         ref={containerRef}
-        className="relative aspect-square overflow-hidden rounded-lg bg-gray-100 cursor-zoom-in"
+        className={`relative overflow-hidden rounded-lg border border-stone-200 bg-stone-50 shadow-sm cursor-zoom-in ${hasMultipleImages ? "min-w-0 flex-1 aspect-square" : "aspect-square"}`}
         onMouseEnter={() => setIsHovering(true)}
         onMouseLeave={() => setIsHovering(false)}
         onMouseMove={handleMouseMove}
@@ -88,7 +124,7 @@ export default function ProductGallery({
         {/* Hover magnifier lens */}
         {isHovering && (
           <div
-            className="pointer-events-none absolute z-10 rounded-full border-2 border-white/90 shadow-xl bg-white/5"
+            className="pointer-events-none absolute z-10 rounded-full border-2 border-white shadow-[0_4px_24px_rgba(0,0,0,0.2)]"
             style={{
               width: LENS_SIZE,
               height: LENS_SIZE,
@@ -103,36 +139,6 @@ export default function ProductGallery({
           />
         )}
       </div>
-
-      {/* Thumbnails (only show if more than 1 image) */}
-      {validImages.length > 1 && (
-        <div className="mt-4 grid grid-cols-4 gap-2 sm:grid-cols-5 md:grid-cols-6">
-          {validImages.map((img, index) => (
-            <button
-              key={img._key || index}
-              type="button"
-              onClick={() => setSelectedIndex(index)}
-              className={`relative aspect-square overflow-hidden rounded-md bg-gray-100 transition-all ${
-                index === selectedIndex
-                  ? "ring-2 ring-amber-600 ring-offset-1"
-                  : "ring-1 ring-gray-200 hover:ring-gray-400"
-              }`}
-              aria-label={`View image ${index + 1} of ${validImages.length}`}
-              aria-pressed={index === selectedIndex}
-              aria-current={index === selectedIndex}
-            >
-              <Image
-                src={urlFor(img).width(200).height(200).auto("format").url()}
-                alt={img.alt || `${productTitle} - Detail ${index + 1}`}
-                fill
-                sizes="(min-width: 1024px) 120px, 80px"
-                loading="lazy"
-                className="object-cover"
-              />
-            </button>
-          ))}
-        </div>
-      )}
     </div>
   );
 }

@@ -19,6 +19,8 @@
     "@sanity/vision": "^5.8.1",
     "@supabase/ssr": "^0.8.0",
     "@supabase/supabase-js": "^2.95.3",
+    "gsap": "^3.14.2",
+    "lenis": "^1.3.17",
     "next": "16.1.6",
     "next-sanity": "^12.1.0",
     "react": "19.2.3",

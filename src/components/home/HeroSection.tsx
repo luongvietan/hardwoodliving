@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
+import gsap from 'gsap';
 import Image from 'next/image';
 import Link from 'next/link';
 import type { SanityImageValue } from '@/lib/sanity/types';
@@ -48,6 +49,18 @@ export default function HeroSection({
 }: HeroSectionProps) {
   const validImages = images?.filter((img) => img.asset?._ref) ?? [];
   const [currentIndex, setCurrentIndex] = useState(0);
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = contentRef.current;
+    if (!el) return;
+    gsap.from(el, {
+      opacity: 0,
+      y: 30,
+      duration: 0.9,
+      ease: 'power3.out',
+    });
+  }, []);
 
   const nextSlide = useCallback(() => {
     if (validImages.length <= 1) return;
@@ -93,7 +106,10 @@ export default function HeroSection({
       />
 
       {/* Hero content — upper third of section, horizontally centered (per design) */}
-      <div className="relative z-10 flex min-h-[70vh] flex-col items-center justify-start px-4 pt-[min(26vh,7rem)] pb-24 text-center lg:min-h-[80vh] lg:pt-[min(28vh,9rem)]">
+      <div
+        ref={contentRef}
+        className="relative z-10 flex min-h-[70vh] flex-col items-center justify-start px-4 pt-[min(26vh,7rem)] pb-24 text-center lg:min-h-[80vh] lg:pt-[min(28vh,9rem)]"
+      >
         {heading && (
           <h1 className="font-serif text-4xl font-bold tracking-tight text-stone-900 sm:text-5xl lg:text-6xl xl:text-7xl [font-family:var(--font-playfair),Georgia,serif]">
             {heading}
