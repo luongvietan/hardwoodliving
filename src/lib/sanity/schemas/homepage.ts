@@ -11,8 +11,9 @@ export default defineType({
             title: 'Hero Section',
             type: 'object',
             fields: [
-                defineField({ name: 'heading', title: 'Heading', type: 'string' }),
-                defineField({ name: 'subheading', title: 'Subheading', type: 'text', rows: 2 }),
+                defineField({ name: 'heading', title: 'Heading', type: 'string', description: 'e.g. CRAFTED BY NATURE' }),
+                defineField({ name: 'subheading', title: 'Subheading Line 1', type: 'string', description: 'e.g. SELECT FLOORING, PERSONALIZED SERVICE' }),
+                defineField({ name: 'subheading2', title: 'Subheading Line 2', type: 'string', description: 'e.g. VISION TO REALITY' }),
                 defineField({
                     name: 'images',
                     title: 'Hero Slideshow Images',
@@ -24,6 +25,23 @@ export default defineType({
                 defineField({ name: 'ctaText', title: 'CTA Text (primary)', type: 'string' }),
                 defineField({ name: 'cta2Link', title: 'CTA 2 Link (secondary)', type: 'string' }),
                 defineField({ name: 'cta2Text', title: 'CTA 2 Text (secondary)', type: 'string' }),
+                defineField({
+                    name: 'categories',
+                    title: 'Hero Category Bar',
+                    type: 'array',
+                    description: 'Categories displayed in the bottom bar of hero section',
+                    validation: (Rule) => Rule.max(5).warning('Maximum 5 categories recommended'),
+                    of: [
+                        {
+                            type: 'object',
+                            fields: [
+                                defineField({ name: 'label', type: 'string', title: 'Label', validation: (Rule) => Rule.required() }),
+                                defineField({ name: 'link', type: 'string', title: 'Link URL', description: 'e.g. /collections/hardwood' }),
+                            ],
+                            preview: { select: { title: 'label', subtitle: 'link' } },
+                        },
+                    ],
+                }),
             ],
         }),
         defineField({

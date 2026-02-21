@@ -20,11 +20,13 @@ interface HomepageData {
   hero?: {
     heading?: string;
     subheading?: string;
+    subheading2?: string;
     images?: SanityImageValue[];
     ctaLink?: string;
     ctaText?: string;
     cta2Link?: string;
     cta2Text?: string;
+    categories?: { label: string; link?: string }[];
   };
   choosingSection?: {
     heading1?: string;
@@ -120,12 +122,17 @@ export default async function Home() {
       <HeroSection
         heading={data?.hero?.heading}
         subheading={data?.hero?.subheading}
+        subheading2={data?.hero?.subheading2}
         images={data?.hero?.images}
         ctaLink={data?.hero?.ctaLink}
         ctaText={data?.hero?.ctaText}
         cta2Link={data?.hero?.cta2Link}
         cta2Text={data?.hero?.cta2Text}
+        categories={data?.hero?.categories}
         contactInfo={settings.contactInfo}
+        siteName={settings.siteName}
+        logo={settings.logo}
+        navigation={settings.navigation}
       />
 
       {/* 2. Pain Points + 3. Solution (See It. Choose Confidently.) */}

@@ -82,11 +82,16 @@ export const getHomepageQuery = defineQuery(`*[_type == "homepage"][0] {
   hero {
     heading,
     subheading,
+    subheading2,
     images,
     ctaLink,
     ctaText,
     cta2Link,
-    cta2Text
+    cta2Text,
+    categories[] {
+      label,
+      link
+    }
   },
   choosingSection {
     heading1,

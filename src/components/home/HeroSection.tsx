@@ -1,281 +1,261 @@
 'use client';
 
-import { useState, useEffect, useCallback, useRef } from 'react';
-import gsap from 'gsap';
+import { useId } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import type { SanityImageValue } from '@/lib/sanity/types';
 import { urlFor } from '@/lib/sanity/image';
+import type { NavItem, ContactInfo } from '@/lib/sanity/siteSettings';
+import MobileMenu from '@/components/layout/MobileMenu';
 
 export interface HeroContactInfo {
   phone?: string;
   email?: string;
 }
 
+interface HeroCategory {
+  label: string;
+  link?: string;
+}
+
 interface HeroSectionProps {
   heading?: string;
   subheading?: string;
+  subheading2?: string;
   images?: SanityImageValue[];
   ctaLink?: string;
   ctaText?: string;
   cta2Link?: string;
   cta2Text?: string;
+  categories?: HeroCategory[];
   contactInfo?: HeroContactInfo;
+  siteName?: string;
+  logo?: SanityImageValue;
+  navigation?: NavItem[];
 }
 
-/** Gold star for rating display */
-function StarIcon({ className }: { className?: string }) {
+/** Stylized H icon for logo */
+function LogoHIcon({ className }: { className?: string }) {
   return (
-    <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+    <svg className={className} viewBox="0 0 32 32" fill="currentColor" aria-hidden="true">
+      <path d="M10 6v20h4V17h4v9h4V6h-4v9h-4V6h-4z" />
     </svg>
   );
 }
 
-/** Phone icon for contact strip */
-function PhoneIcon({ className }: { className?: string }) {
+/** Checkmark for category bar */
+function CheckIcon({ className }: { className?: string }) {
   return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-    </svg>
-  );
-}
-
-/** Mail icon for contact strip */
-function MailIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-      <polyline points="22,6 12,13 2,6" />
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
     </svg>
   );
 }
 
 /**
- * Hero section with room imagery, centered headline/subheading,
- * social proof, dual CTAs, and optional contact strip (phone/email).
- * Content from Sanity CMS; contact from site settings.
+ * Hero section: top utility bar (black), transparent main nav,
+ * centered hero content (dark brown headline, dual CTAs), dark category bar.
+ * Content synced with Sanity.
  */
 export default function HeroSection({
-  heading,
-  subheading,
+  heading = "CRAFTED BY NATURE",
+  subheading = "SELECT FLOORING, PERSONALIZED SERVICE",
+  subheading2 = "VISION TO REALITY",
   images,
-  ctaLink,
-  ctaText,
-  cta2Link,
-  cta2Text,
+  ctaLink = "/contact",
+  ctaText = "Book a Showroom Visit",
+  cta2Link = "/contact",
+  cta2Text = "Request More Info",
+  categories,
   contactInfo,
+  siteName = "HardwoodLiving",
+  logo,
+  navigation = [],
 }: HeroSectionProps) {
   const validImages = images?.filter((img) => img.asset?._ref) ?? [];
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const contentRef = useRef<HTMLDivElement>(null);
+  const heroImage = validImages.length > 0 ? validImages[0] : null;
+  const nav = navigation ?? [];
+  const hasLogo = !!logo?.asset?._ref;
 
-  useEffect(() => {
-    const el = contentRef.current;
-    if (!el) return;
-    gsap.from(el, {
-      opacity: 0,
-      y: 30,
-      duration: 0.9,
-      ease: 'power3.out',
-    });
-  }, []);
+  const defaultImageUrl =
+    'https://lh3.googleusercontent.com/aida-public/AB6AXuCodIDl2cGpofws4g7ZivY6eZ0bUUUMHDz5GjrajVd5WYHXEUQx-vg3wpE8joVSdNKb09O3APkN-UHQ4zOL3S45bORFtxhTSfrVo8KIpFEBYt9DSY6YlaMrs8ktw9Mpk5kM9ZgScqpgokIL0l_LgvKIBmA9q7dFQlCODKq18NZtWiEW4-LBILS1JyZnmmYGCp2A40S5VSD9ui60jyRZmn9qXF71UjUfiZq40Md0gIDXa-IWKy2VsrI2eRtgJK7-RVVWpVJAoKjYuT4';
 
-  const nextSlide = useCallback(() => {
-    if (validImages.length <= 1) return;
-    setCurrentIndex((prev) => (prev + 1) % validImages.length);
-  }, [validImages.length]);
+  const defaultCategories: HeroCategory[] = [
+    { label: 'Hardwoods', link: '/collections/hardwood' },
+    { label: 'Engineered', link: '/collections/engineered-hardwood' },
+    { label: 'Laminates', link: '/collections/laminate' },
+    { label: 'Vinyl', link: '/collections/luxury-vinyl-plank' },
+    { label: 'Mats', link: '/accessories' },
+  ];
 
-  useEffect(() => {
-    if (validImages.length <= 1) return;
-    const interval = setInterval(nextSlide, 6000);
-    return () => clearInterval(interval);
-  }, [nextSlide, validImages.length]);
-
-  if (!heading && !subheading && validImages.length === 0) return null;
-
-  const hasContactStrip = contactInfo?.phone || contactInfo?.email;
+  const heroCategories = categories?.length ? categories : defaultCategories;
+  const displayName = siteName ? `${siteName}®` : 'HARDWOODLIVING®';
+  const woodFilterId = `hero-cta-wood-${useId().replace(/:/g, '')}`;
 
   return (
-    <section className="relative flex min-h-[70vh] items-center justify-center overflow-hidden bg-stone-200 lg:min-h-[80vh]">
-      {/* Background images */}
-      {validImages.length > 0 &&
-        validImages.map((img, index) => (
+    <section className="relative flex min-h-screen w-full flex-col">
+      {/* Background image — overflow-hidden only here so sticky can work on section */}
+      <div className="absolute inset-0 z-0 overflow-hidden">
+        {heroImage ? (
           <Image
-            key={img._key || index}
-            src={urlFor(img).width(1920).height(1080).auto('format').url()}
-            alt={img.alt || heading || ''}
+            src={urlFor(heroImage).width(1920).height(1080).auto('format').url()}
+            alt={heading || 'Hero'}
             fill
-            priority={index === 0}
+            priority
             sizes="100vw"
-            className={`object-cover transition-opacity duration-1000 ${
-              index === currentIndex ? 'opacity-100' : 'opacity-0'
-            }`}
+            className="object-cover"
+            quality={90}
           />
-        ))}
-
-      {validImages.length === 0 && (
-        <div className="absolute inset-0 bg-gradient-to-br from-stone-300 via-stone-200 to-stone-400" />
-      )}
-
-      {/* Light overlay for readability (dark text on light) */}
-      <div
-        className="absolute inset-0 bg-white/50 lg:bg-white/40"
-        aria-hidden
-      />
-
-      {/* Hero content — upper third of section, horizontally centered (per design) */}
-      <div
-        ref={contentRef}
-        className="relative z-10 flex min-h-[70vh] flex-col items-center justify-start px-4 pt-[min(26vh,7rem)] pb-24 text-center lg:min-h-[80vh] lg:pt-[min(28vh,9rem)]"
-      >
-        {heading && (
-          <h1 className="font-serif text-4xl font-bold tracking-tight text-stone-900 sm:text-5xl lg:text-6xl xl:text-7xl [font-family:var(--font-playfair),Georgia,serif]">
-            {heading}
-          </h1>
+        ) : (
+          <Image
+            src={defaultImageUrl}
+            alt="Hero"
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover"
+            quality={90}
+          />
         )}
-        {subheading && (
-          <p className="mt-5 max-w-xl text-base text-stone-700 sm:text-lg lg:text-xl">
-            {subheading}
-          </p>
-        )}
-
-        {/* Social proof: avatars + 5K | stars + rating (per design) */}
-        <div className="mt-5 flex flex-wrap items-center justify-center gap-6">
-          {/* Left group: overlapping avatars + 5K circle */}
-          <div className="flex items-center">
-            <div className="flex -space-x-3">
-              {[
-                'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=96&h=96&fit=crop&crop=face',
-                'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=96&h=96&fit=crop&crop=face',
-                'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=96&h=96&fit=crop&crop=face',
-                'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=96&h=96&fit=crop&crop=face',
-              ].map((src, i) => (
-                <Image
-                  key={i}
-                  src={src}
-                  alt=""
-                  width={40}
-                  height={40}
-                  className="h-10 w-10 shrink-0 rounded-full border-2 border-white object-cover shadow-sm"
-                  aria-hidden
-                />
-              ))}
-              {/* 5K circle — overlaps last avatar, dark mocha */}
-              <span
-                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 border-white text-white shadow-sm"
-                style={{ backgroundColor: '#5c4033' }}
-              >
-                <span className="text-sm font-bold leading-none">
-                  5<span className="text-[10px] align-top">K</span>
-                </span>
-              </span>
-            </div>
-          </div>
-          {/* Right group: stars + rating text */}
-          <div className="flex flex-col items-center gap-0.5">
-            <div className="flex items-center gap-0.5" aria-hidden>
-              {[1, 2, 3, 4, 5].map((i) => (
-                <StarIcon key={i} className="h-5 w-5 shrink-0 text-amber-700" />
-              ))}
-            </div>
-            <p className="text-sm font-medium text-stone-600">
-              <span className="font-normal">Rated </span>
-              <span className="font-semibold text-stone-700">5.0/5.0</span>
-              <span className="font-normal"> by users</span>
-            </p>
-          </div>
-        </div>
-
-        {/* Dual CTAs — design tokens */}
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
-          {ctaLink && ctaText && (
-            <Link href={ctaLink} className="btn-primary">
-              {ctaText}
-            </Link>
-          )}
-          {cta2Link && cta2Text && (
-            <Link href={cta2Link} className="btn-secondary">
-              {cta2Text}
-            </Link>
-          )}
-        </div>
+        {/* Subtle overlay: lighter in center so dark headline is readable */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/40" aria-hidden="true" />
       </div>
 
-      {/* Contact strip — outer border frame + inner band with icons */}
-      {hasContactStrip && (
-        <div className="absolute bottom-0 left-0 z-10 w-full max-w-md">
-          {/* Viền ngoài: border + nền beige + padding */}
-          <div
-            className="border border-b-0 border-stone-200/80 bg-[#faf8f5] p-1.5 shadow-sm"
-            style={{
-              clipPath: 'polygon(0 0, calc(100% - 16px) 0, 100% 100%, 0 100%)',
-            }}
-          >
-            <div
-              className="overflow-hidden rounded-tr-md"
-              style={{
-                clipPath: 'polygon(0 0, calc(100% - 18px) 0, 100% 100%, 0 100%)',
-              }}
-            >
-              <div className="flex divide-x divide-stone-200/80">
+      {/* Fixed header: top bar + navbar stay visible when scrolling (fixed to viewport) */}
+      <div className="fixed left-0 right-0 top-0 z-50 w-full">
+        {/* Top utility bar — black, logo left, FAQ + phone + email right */}
+        <div className="w-full bg-black px-4 py-3 sm:px-6 md:px-16">
+          <div className="flex items-center justify-between gap-4 text-sm text-white">
+            <Link href="/" className="flex items-center gap-2 shrink-0" aria-label={`${siteName} - Home`}>
+              <LogoHIcon className="h-6 w-6 sm:h-7 sm:w-7" />
+              <span className="font-semibold uppercase tracking-tight">{displayName}</span>
+            </Link>
+            <div className="flex flex-wrap items-center justify-end gap-4 sm:gap-6">
+              <Link href="/wood-guide" className="hover:underline">
+                FAQ
+              </Link>
               {contactInfo?.phone && (
-                <a
-                  href={`tel:${contactInfo.phone.replace(/\s/g, '')}`}
-                  className="group flex flex-1 items-center justify-center gap-3 bg-white/95 px-5 py-4 text-stone-700 transition-colors hover:bg-stone-50 hover:text-stone-900 sm:gap-4 sm:px-6 sm:py-4"
-                  style={{
-                    clipPath: 'polygon(0 0, calc(100% - 20px) 0, calc(100% - 6px) 100%, 0 100%)',
-                  }}
-                >
-                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-stone-100 text-stone-600 transition-colors group-hover:bg-amber-100 group-hover:text-amber-800">
-                    <PhoneIcon className="h-4 w-4" />
-                  </span>
-                  <span className="text-left font-medium text-stone-800 sm:text-base [font-family:var(--font-playfair),Georgia,serif]">
-                    {contactInfo.phone}
-                  </span>
+                <a href={`tel:${contactInfo.phone.replace(/\D/g, '')}`} className="hover:underline">
+                  {contactInfo.phone}
                 </a>
               )}
               {contactInfo?.email && (
-                <a
-                  href={`mailto:${contactInfo.email}`}
-                  className="group flex flex-1 items-center justify-center gap-3 bg-white/95 px-5 py-4 text-stone-700 transition-colors hover:bg-stone-50 hover:text-stone-900 sm:gap-4 sm:px-6 sm:py-4"
-                  style={{
-                    clipPath: 'polygon(10px 0, calc(100% - 12px) 0, 100% 100%, 20px 100%)',
-                  }}
-                >
-                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-stone-100 text-stone-600 transition-colors group-hover:bg-amber-100 group-hover:text-amber-800">
-                    <MailIcon className="h-4 w-4" />
-                  </span>
-                  <span className="truncate text-left text-sm font-medium text-stone-800 sm:text-base [font-family:var(--font-playfair),Georgia,serif]">
-                    {contactInfo.email}
-                  </span>
+                <a href={`mailto:${contactInfo.email}`} className="hover:underline truncate max-w-[180px] sm:max-w-none">
+                  {contactInfo.email}
                 </a>
               )}
-              </div>
             </div>
           </div>
         </div>
-      )}
 
-      {/* Slideshow dots */}
-      {validImages.length > 1 && (
-        <div className="absolute bottom-6 left-1/2 z-10 flex -translate-x-1/2 gap-2">
-          {validImages.map((_, index) => (
-            <button
-              key={index}
-              type="button"
-              onClick={() => setCurrentIndex(index)}
-              className={`h-2 rounded-full transition-all ${
-                index === currentIndex
-                  ? 'w-8 bg-gray-800'
-                  : 'w-2 bg-gray-500/70 hover:bg-gray-600'
-              }`}
-              aria-label={`Go to slide ${index + 1}`}
-              aria-current={index === currentIndex}
-            />
-          ))}
+        {/* Main navbar — white bar, nav items spread evenly, bold text */}
+        <header className="w-full bg-white border-b border-stone-100">
+          <nav className="flex w-full items-center px-4 py-4 sm:px-8 md:px-16">
+            <ul className="hidden lg:flex flex-1 items-center justify-between text-[11px] xl:text-xs font-bold uppercase tracking-[0.12em] text-stone-700 [font-family:var(--font-playfair),Georgia,serif]">
+              {nav.map((item) => (
+                <li key={item._key}>
+                  <Link
+                    href={item.path || (item.children?.[0]?.path) || '#'}
+                    className="hover:text-stone-900 transition-colors whitespace-nowrap"
+                  >
+                    {item.title}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+
+            <div className="flex flex-1 justify-end lg:hidden">
+              <MobileMenu navigation={nav} contactInfo={contactInfo} />
+            </div>
+          </nav>
+        </header>
+      </div>
+
+      {/* Spacer so hero content is not hidden under fixed header (top bar + navbar height) */}
+      <div className="h-[7.25rem] shrink-0 md:h-[7.5rem]" aria-hidden="true" />
+
+      {/* Wood-grain SVG filter for primary CTA (template pattern) */}
+      <svg xmlns="http://www.w3.org/2000/svg" className="absolute h-0 w-0 overflow-hidden" aria-hidden="true">
+        <defs>
+          <filter id={woodFilterId} x="-30%" y="-30%" width="160%" height="160%">
+            <feTurbulence baseFrequency=".002 .02" numOctaves={9} result="n" />
+            <feDiffuseLighting surfaceScale={9} lightingColor="#BA8C63">
+              <feDistantLight elevation={60} azimuth={-90} />
+            </feDiffuseLighting>
+            <feDisplacementMap in2="n" scale={50} />
+          </filter>
+        </defs>
+      </svg>
+
+      {/* Hero content — centered, dark brown headline + two subheadings + CTAs */}
+      <div className="relative z-10 flex flex-1 flex-col items-center justify-center px-4 sm:px-8 md:px-16 pb-24 md:pb-32 text-center">
+        <div className="max-w-4xl">
+          <h1 className="mb-3 text-4xl font-bold uppercase leading-tight tracking-tight text-[#3d2e24] drop-shadow-sm sm:text-5xl md:mb-4 md:text-6xl lg:text-7xl [font-family:var(--font-playfair),Georgia,serif]">
+            {heading.split('\n').map((line, i, arr) => (
+              <span key={i}>
+                {line}
+                {i < arr.length - 1 && <br />}
+              </span>
+            ))}
+          </h1>
+          {subheading && (
+            <p className="text-sm font-semibold uppercase tracking-widest text-[#3d2e24] sm:text-base md:text-lg">
+              {subheading}
+            </p>
+          )}
+          {subheading2 && (
+            <p className="mt-1 text-xs font-medium uppercase tracking-widest text-[#3d2e24]/90 sm:text-sm md:mt-2 md:text-base">
+              {subheading2}
+            </p>
+          )}
+          <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row md:mt-10">
+            {ctaLink && ctaText && (
+              <div className="w-full min-w-[200px] overflow-hidden rounded-sm sm:w-auto">
+                <Link
+                  href={ctaLink}
+                  className="group relative flex w-full items-center justify-center rounded-sm px-8 py-4 text-center text-xs font-semibold uppercase tracking-widest text-white shadow-lg transition-transform hover:scale-[1.02] active:scale-[0.98]"
+                >
+                  {/* Wood texture: layer slightly larger so displacement still covers edges */}
+                  <span
+                    className="absolute -inset-[15%] rounded-sm bg-[#d97706] transition-colors group-hover:bg-[#b45309]"
+                    style={{ filter: `url(#${woodFilterId})` }}
+                    aria-hidden
+                  />
+                  <span className="relative z-10">{ctaText}</span>
+                </Link>
+              </div>
+            )}
+            {cta2Link && cta2Text && (
+              <Link
+                href={cta2Link}
+                className="w-full min-w-[200px] rounded-sm border-2 border-[#5d3a1a]/60 bg-white/95 px-8 py-4 text-center text-xs font-semibold uppercase tracking-widest text-[#3d2e24] transition-all hover:border-[#5d3a1a] hover:bg-white hover:scale-[1.02] active:scale-[0.98] sm:w-auto"
+              >
+                {cta2Text}
+              </Link>
+            )}
+          </div>
         </div>
-      )}
+      </div>
+
+      {/* Bottom category bar — dark strip, white text, checkmarks */}
+      <div className="relative z-10 w-full bg-[#2d2218]/90 py-5 shadow-lg backdrop-blur-sm md:py-6">
+        <div className="px-4 sm:px-8 md:px-16">
+          <div className="flex flex-wrap items-center justify-center gap-6 md:gap-10">
+            {heroCategories.map((category, index) => (
+              <Link
+                key={category.label || index}
+                href={category.link || '#'}
+                className="flex items-center gap-2 text-white transition-colors hover:text-amber-200"
+              >
+                <span className="text-xs font-medium uppercase tracking-widest sm:text-sm">
+                  {category.label}
+                </span>
+                <CheckIcon className="h-4 w-4 text-amber-300" />
+              </Link>
+            ))}
+          </div>
+        </div>
+      </div>
     </section>
   );
 }
