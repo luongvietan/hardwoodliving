@@ -15,6 +15,7 @@ import {
 } from "@/lib/sanity/queries";
 import { getUserRole, getVisibilityOptions } from "@/lib/sanity/visibility";
 import { getDescendantSlugs } from "@/lib/category-tree";
+import { SITE_URL } from "@/lib/constants";
 
 interface Category {
   _id: string;
