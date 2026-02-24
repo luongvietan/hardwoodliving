@@ -2,6 +2,8 @@
 
 The product schema maps 1-to-1 with the product detail card on the website (title, price, description, images, and all 25 structured specifications). This guide explains every way to add or update products in bulk.
 
+> **For the full CMS guide** (Homepage, Site Settings, Products, Categories, Pages, Testimonials), see [Sanity CMS User Guide](./sanity-cms-guide.md).
+
 ---
 
 ## Quick start

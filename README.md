@@ -1,5 +1,10 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Documentation
+
+- **[Sanity CMS User Guide](docs/sanity-cms-guide.md)** — Complete guide for managing content (Homepage, Products, Categories, Pages, Testimonials, Site Settings). Written for non-technical users.
+- **[Bulk Import Products](docs/bulk-import-products.md)** — How to import products from CSV.
+
 ## Getting Started
 
 First, run the development server:
