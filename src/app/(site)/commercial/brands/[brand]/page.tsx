@@ -61,7 +61,7 @@ export default async function CommercialBrandPage({
   const visibility = getVisibilityOptions(role);
   const products = await sanityFetch<Product[]>({
     query: getVisibleProductsByCategoryAndTypeQuery,
-    params: { category: categorySlug, type: null, visibility },
+    params: { category: categorySlug, materialType: "", type: null, visibility },
     tags: ["product"],
     revalidate: role === "public" ? 60 : 0,
   });
