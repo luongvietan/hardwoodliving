@@ -81,7 +81,7 @@ export default async function CollectionSubtypePage({
   const visibility = getVisibilityOptions(role);
   const products = await sanityFetch<Product[]>({
     query: getVisibleProductsByCategoryAndTypeQuery,
-    params: { category: mat.categorySlug, type: subtype, visibility },
+    params: { category: mat.categorySlug, materialType: mat.materialType, type: subtype, visibility },
     tags: ["product"],
     revalidate: role === "public" ? 60 : 0,
   });

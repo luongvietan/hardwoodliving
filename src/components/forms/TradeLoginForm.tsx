@@ -4,7 +4,7 @@ import { useActionState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { loginTrade } from "@/lib/actions/trades";
-import type { TradeLoginResult } from "@/lib/actions/trades";
+import type { TradeLoginResult } from "@/lib/actions/trades-schema";
 import { SubmitButton, FieldError, getFieldError } from "./FormField";
 
 // ---------------------------------------------------------------------------

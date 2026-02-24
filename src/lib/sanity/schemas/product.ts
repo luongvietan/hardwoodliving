@@ -1,4 +1,4 @@
-import { defineField, defineType } from 'sanity';
+import { defineField, defineType, defineArrayMember } from 'sanity';
 
 /** Structured product specs matching the product detail card (e.g. White Alaska). Used for bulk import and consistent display. */
 const productSpecificationsFields = [
@@ -39,16 +39,27 @@ export default defineType({
             title: 'title',
             categoryTitle: 'category.title',
             price: 'price',
+            salePrice: 'salePrice',
             priceUnit: 'priceUnit',
             visibility: 'visibility',
+            materialType: 'materialType',
+            isOnSale: 'isOnSale',
+            isCommercial: 'isCommercial',
             media: 'images.0',
         },
-        prepare({ title, categoryTitle, price, priceUnit, visibility, media }) {
-            const priceStr = price != null ? `$${price}${priceUnit ? ` ${priceUnit}` : ''}` : '';
-            const badge = visibility === 'wholesale' ? ' [Wholesale]' : visibility === 'hidden' ? ' [Hidden]' : '';
+        prepare({ title, categoryTitle, price, salePrice, priceUnit, visibility, materialType, isOnSale, isCommercial, media }) {
+            const displayPrice = isOnSale && salePrice != null ? salePrice : price;
+            const priceStr = displayPrice != null ? `$${displayPrice}${priceUnit ? ` ${priceUnit}` : ''}` : '';
+            const badges = [
+                visibility === 'wholesale' ? '[Wholesale]' : null,
+                visibility === 'hidden' ? '[Hidden]' : null,
+                isOnSale ? '[Sale]' : null,
+                isCommercial ? '[Commercial]' : null,
+            ].filter(Boolean).join(' ');
+            const material = materialType ? materialType.charAt(0).toUpperCase() + materialType.slice(1) : null;
             return {
-                title: `${title || 'Untitled'}${badge}`,
-                subtitle: [categoryTitle, priceStr].filter(Boolean).join(' — '),
+                title: `${title || 'Untitled'}${badges ? ' ' + badges : ''}`,
+                subtitle: [material || categoryTitle, priceStr].filter(Boolean).join(' — '),
                 media,
             };
         },
@@ -132,7 +143,85 @@ export default defineType({
             title: 'Category',
             type: 'reference',
             to: [{ type: 'category' }],
+            description: 'Sanity category document (used for /products and /categories pages).',
         }),
+
+        // ── Filter & navigation fields ─────────────────────────────────────
+        defineField({
+            name: 'materialType',
+            title: 'Material Type',
+            type: 'string',
+            description: 'Maps to the Collections nav. Controls which /collections/[type] page this product appears on.',
+            options: {
+                list: [
+                    { title: 'Hardwood', value: 'hardwood' },
+                    { title: 'Engineered Hardwood', value: 'engineered' },
+                    { title: 'Luxury Vinyl Plank (LVP)', value: 'luxury-vinyl-plank' },
+                    { title: 'Laminate', value: 'laminate' },
+                    { title: 'Tile', value: 'tile' },
+                    { title: 'Carpet Tile', value: 'carpet-tile' },
+                    { title: 'Accessories', value: 'accessories' },
+                    { title: 'Adhesive', value: 'adhesive' },
+                    { title: 'Coatings', value: 'coatings' },
+                    { title: 'Lumber', value: 'lumber' },
+                ],
+                layout: 'dropdown',
+            },
+        }),
+        defineField({
+            name: 'finish',
+            title: 'Finish',
+            type: 'string',
+            description: 'Prefinished or Unfinished — used for the hardwood/engineered subtypes filter.',
+            options: {
+                list: [
+                    { title: 'Prefinished', value: 'prefinished' },
+                    { title: 'Unfinished', value: 'unfinished' },
+                ],
+                layout: 'radio',
+            },
+        }),
+        defineField({
+            name: 'isCommercial',
+            title: 'Commercial Product',
+            type: 'boolean',
+            description: 'Show this product under the Commercial section.',
+            initialValue: false,
+        }),
+        defineField({
+            name: 'isOnSale',
+            title: 'On Sale',
+            type: 'boolean',
+            description: 'Show in the "On Sale" filter and nav.',
+            initialValue: false,
+        }),
+        defineField({
+            name: 'salePrice',
+            title: 'Sale Price',
+            type: 'number',
+            description: 'Discounted price (only shown when "On Sale" is enabled).',
+            validation: (Rule) => Rule.min(0),
+            hidden: ({ parent }) => !parent?.isOnSale,
+        }),
+        defineField({
+            name: 'isBestValue',
+            title: 'Best Value',
+            type: 'boolean',
+            description: 'Show in the "Best Value" collection.',
+            initialValue: false,
+        }),
+        defineField({
+            name: 'tags',
+            title: 'Tags',
+            type: 'array',
+            of: [defineArrayMember({ type: 'string' })],
+            options: {
+                layout: 'tags',
+            },
+            description: 'Free-form tags for flexible filtering (e.g. "waterproof", "pet-friendly", "wide-plank", "dark-tone").',
+        }),
+
+        // ── Visibility & merchandising ─────────────────────────────────────
         defineField({
             name: 'visibility',
             title: 'Visibility',
@@ -151,6 +240,12 @@ export default defineType({
             title: 'Featured',
             type: 'boolean',
             initialValue: false,
+        }),
+        defineField({
+            name: 'sortOrder',
+            title: 'Sort Order',
+            type: 'number',
+            description: 'Lower number = appears first in listings. Leave blank for alphabetical.',
         }),
     ],
 });

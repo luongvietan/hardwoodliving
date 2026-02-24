@@ -6,6 +6,8 @@ interface Product {
   title: string;
   slug: { current: string };
   price: number;
+  salePrice?: number | null;
+  isOnSale?: boolean;
   priceUnit?: string;
   images?: SanityImageValue[];
 }
@@ -39,6 +41,8 @@ export default function ProductGrid({
           title={product.title}
           slug={product.slug.current}
           price={product.price}
+          salePrice={product.salePrice}
+          isOnSale={product.isOnSale}
           priceUnit={product.priceUnit}
           image={product.images?.[0]}
         />

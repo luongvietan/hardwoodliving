@@ -1,13 +1,20 @@
 import { defineQuery } from "next-sanity";
 
-export const getProductsQuery = defineQuery(`*[_type == "product" && visibility != "hidden"] | order(title asc) {
+export const getProductsQuery = defineQuery(`*[_type == "product" && visibility != "hidden"] | order(coalesce(sortOrder, 9999) asc, title asc) {
   _id,
   title,
   slug,
   description,
   price,
+  salePrice,
   priceUnit,
   images,
+  materialType,
+  finish,
+  isCommercial,
+  isOnSale,
+  isBestValue,
+  tags,
   category->{
     title,
     slug
@@ -23,8 +30,15 @@ export const getProductBySlugQuery = defineQuery(`*[_type == "product" && slug.c
   specifications,
   specs,
   price,
+  salePrice,
   priceUnit,
   images,
+  materialType,
+  finish,
+  isCommercial,
+  isOnSale,
+  isBestValue,
+  tags,
   category->{
     _id,
     title,
@@ -206,14 +220,19 @@ export const getSiteSettingsQuery = defineQuery(`*[_type == "siteSettings"][0] {
 }`);
 
 // Plain string query — uses $searchTerm to avoid name conflict with sanityFetch's `query` param
-export const searchProductsQuery = `*[_type == "product" && visibility == "public" && (title match $searchTerm || description match $searchTerm)] | order(title asc) [0...$maxResults] {
+export const searchProductsQuery = `*[_type == "product" && visibility == "public" && (title match $searchTerm || description match $searchTerm || $searchTerm in tags)] | order(coalesce(sortOrder, 9999) asc, title asc) [0...$maxResults] {
   _id,
   title,
   slug,
   description,
   price,
+  salePrice,
   priceUnit,
   images,
+  materialType,
+  finish,
+  isOnSale,
+  tags,
   category->{
     title,
     slug
@@ -305,14 +324,24 @@ export const getAllCategoriesWithParentQuery = defineQuery(`*[_type == "category
   "parentSlug": parent->slug.current
 }`);
 
-export const getProductsByCategorySlugQuery = defineQuery(`*[_type == "product" && category->slug.current == $slug && visibility != "hidden"] | order(title asc) {
+/**
+ * @deprecated Use getVisibleProductsByCategoryAndDescendantsQuery instead.
+ * This query does NOT distinguish public vs wholesale — exposes wholesale products to public users.
+ */
+export const getProductsByCategorySlugQuery = defineQuery(`*[_type == "product" && category->slug.current == $slug && visibility != "hidden"] | order(coalesce(sortOrder, 9999) asc, title asc) {
   _id,
   title,
   slug,
   description,
   price,
+  salePrice,
   priceUnit,
   images,
+  materialType,
+  finish,
+  isOnSale,
+  isBestValue,
+  tags,
   isFeatured
 }`);
 
@@ -322,18 +351,33 @@ export const getAllProductSlugsQuery = defineQuery(`*[_type == "product" && visi
 
 export const getPublicProductSlugsQuery = defineQuery(`*[_type == "product" && visibility == "public"]{ "slug": slug.current }`);
 
+// Used by /collections/[material] and /collections/[material]/[subtype] pages.
+// $category: Sanity category slug (e.g. "hardwood-flooring") — matches category or parent category
+// $materialType: product.materialType value (e.g. "hardwood") — fallback match when category ref is not set
+// $type: subtype slug — matches product.finish (prefinished/unfinished) OR category->slug (spc/wpc)
 export const getVisibleProductsByCategoryAndTypeQuery = defineQuery(`*[_type == "product"
   && visibility in $visibility
-  && (!defined($category) || category->slug.current == $category || category->parent->slug.current == $category)
-  && (!defined($type) || category->slug.current == $type)
-] | order(title asc) {
+  && (
+    category->slug.current == $category
+    || category->parent->slug.current == $category
+    || ($materialType != "" && materialType == $materialType)
+  )
+  && ($type == null || $type == "" || finish == $type || category->slug.current == $type)
+] | order(coalesce(sortOrder, 9999) asc, title asc) {
   _id,
   title,
   slug,
   description,
   price,
+  salePrice,
   priceUnit,
   images,
+  materialType,
+  finish,
+  isCommercial,
+  isOnSale,
+  isBestValue,
+  tags,
   category->{
     _id,
     title,
@@ -352,14 +396,21 @@ export const getVisibleProductsByCategoryAndDescendantsQuery = defineQuery(`*[_t
   && visibility in $visibility
   && category->slug.current in $categorySlugs
   && ($type == "" || category->slug.current == $type)
-] | order(title asc) {
+] | order(coalesce(sortOrder, 9999) asc, title asc) {
   _id,
   title,
   slug,
   description,
   price,
+  salePrice,
   priceUnit,
   images,
+  materialType,
+  finish,
+  isCommercial,
+  isOnSale,
+  isBestValue,
+  tags,
   category->{
     _id,
     title,
@@ -374,14 +425,21 @@ export const getVisibleProductsByCategoryAndDescendantsQuery = defineQuery(`*[_t
 }`);
 
 // Visibility-aware queries: accept $visibility array parameter
-export const getVisibleProductsQuery = defineQuery(`*[_type == "product" && visibility in $visibility] | order(title asc) {
+export const getVisibleProductsQuery = defineQuery(`*[_type == "product" && visibility in $visibility] | order(coalesce(sortOrder, 9999) asc, title asc) {
   _id,
   title,
   slug,
   description,
   price,
+  salePrice,
   priceUnit,
   images,
+  materialType,
+  finish,
+  isCommercial,
+  isOnSale,
+  isBestValue,
+  tags,
   category->{
     title,
     slug
@@ -397,8 +455,15 @@ export const getVisibleProductBySlugQuery = defineQuery(`*[_type == "product" &&
   specifications,
   specs,
   price,
+  salePrice,
   priceUnit,
   images,
+  materialType,
+  finish,
+  isCommercial,
+  isOnSale,
+  isBestValue,
+  tags,
   category->{
     _id,
     title,
@@ -414,13 +479,118 @@ export const getTradesPageQuery = defineQuery(`*[_type == "page" && slug.current
   seo
 }`);
 
-export const getVisibleProductsByCategoryQuery = defineQuery(`*[_type == "product" && visibility in $visibility && category->slug.current == $category] | order(title asc) {
+export const getVisibleProductsByCategoryQuery = defineQuery(`*[_type == "product" && visibility in $visibility && category->slug.current == $category] | order(coalesce(sortOrder, 9999) asc, title asc) {
   _id,
   title,
   slug,
   description,
   price,
+  salePrice,
   priceUnit,
   images,
+  materialType,
+  finish,
+  isOnSale,
+  isBestValue,
+  tags,
+  isFeatured
+}`);
+
+/** Products by materialType — for /collections/[type] pages */
+export const getProductsByMaterialTypeQuery = defineQuery(`*[_type == "product"
+  && visibility in $visibility
+  && materialType == $materialType
+  && ($finish == "" || finish == $finish)
+] | order(coalesce(sortOrder, 9999) asc, title asc) {
+  _id,
+  title,
+  slug,
+  description,
+  price,
+  salePrice,
+  priceUnit,
+  images,
+  materialType,
+  finish,
+  isOnSale,
+  isBestValue,
+  tags,
+  category->{
+    _id,
+    title,
+    slug
+  },
+  isFeatured
+}`);
+
+/** On-sale products */
+export const getOnSaleProductsQuery = defineQuery(`*[_type == "product"
+  && visibility in $visibility
+  && isOnSale == true
+] | order(coalesce(sortOrder, 9999) asc, title asc) {
+  _id,
+  title,
+  slug,
+  description,
+  price,
+  salePrice,
+  priceUnit,
+  images,
+  materialType,
+  finish,
+  tags,
+  category->{
+    _id,
+    title,
+    slug
+  },
+  isFeatured
+}`);
+
+/** Best-value products */
+export const getBestValueProductsQuery = defineQuery(`*[_type == "product"
+  && visibility in $visibility
+  && isBestValue == true
+] | order(coalesce(sortOrder, 9999) asc, title asc) {
+  _id,
+  title,
+  slug,
+  description,
+  price,
+  salePrice,
+  priceUnit,
+  images,
+  materialType,
+  finish,
+  tags,
+  category->{
+    _id,
+    title,
+    slug
+  },
+  isFeatured
+}`);
+
+/** Commercial products */
+export const getCommercialProductsQuery = defineQuery(`*[_type == "product"
+  && visibility in $visibility
+  && isCommercial == true
+] | order(coalesce(sortOrder, 9999) asc, title asc) {
+  _id,
+  title,
+  slug,
+  description,
+  price,
+  salePrice,
+  priceUnit,
+  images,
+  materialType,
+  finish,
+  tags,
+  category->{
+    _id,
+    title,
+    slug
+  },
   isFeatured
 }`);

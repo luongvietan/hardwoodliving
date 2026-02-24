@@ -9,6 +9,7 @@ export const COLLECTION_MATERIALS = [
     title: "Hardwood",
     description: "Timeless elegance with authentic natural wood floors.",
     categorySlug: "hardwood-flooring",
+    materialType: "hardwood",
     subtypes: [
       { slug: "unfinished", title: "Unfinished" },
       { slug: "prefinished", title: "Prefinished" },
@@ -20,6 +21,7 @@ export const COLLECTION_MATERIALS = [
     title: "Engineered",
     description: "Real hardwood beauty with added stability for modern homes.",
     categorySlug: "engineered-hardwood",
+    materialType: "engineered",
     subtypes: [
       { slug: "unfinished", title: "Unfinished" },
       { slug: "prefinished", title: "Prefinished" },
@@ -32,6 +34,7 @@ export const COLLECTION_MATERIALS = [
     title: "Luxury Vinyl Plank",
     description: "Waterproof, stylish flooring for busy homes and pets.",
     categorySlug: "luxury-vinyl",
+    materialType: "luxury-vinyl-plank",
     subtypes: [
       { slug: "spc", title: "SPC" },
       { slug: "wpc", title: "WPC" },
@@ -43,6 +46,7 @@ export const COLLECTION_MATERIALS = [
     title: "Laminate",
     description: "The look of hardwood at a budget-friendly price.",
     categorySlug: "laminate",
+    materialType: "laminate",
     subtypes: [],
     indexable: true,
   },
@@ -51,16 +55,18 @@ export const COLLECTION_MATERIALS = [
     title: "Tile",
     description: "Durable tile flooring for any space.",
     categorySlug: "tile",
+    materialType: "tile",
     subtypes: [],
-    indexable: false, // hidden initially
+    indexable: false,
   },
   {
     slug: "carpet-tile",
     title: "Carpet Tile",
     description: "Modular carpet solutions for commercial and residential.",
     categorySlug: "carpet-tile",
+    materialType: "carpet-tile",
     subtypes: [],
-    indexable: false, // hidden initially
+    indexable: false,
   },
 ] as const;
 

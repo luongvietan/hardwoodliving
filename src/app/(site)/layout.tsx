@@ -1,4 +1,4 @@
-import ConditionalHeader from "@/components/layout/ConditionalHeader";
+import SiteHeader from "@/components/layout/SiteHeader";
 import Footer from "@/components/layout/Footer";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import Container from "@/components/layout/Container";
@@ -20,12 +20,10 @@ export default async function SiteLayout({
       >
         Skip to main content
       </a>
-      <ConditionalHeader
+      <SiteHeader
         siteName={settings.siteName}
-        logo={settings.logo}
         navigation={settings.navigation}
         contactInfo={settings.contactInfo}
-        socialLinks={settings.socialLinks}
       />
       <main id="main-content" className="flex-1 relative">
         <Container>

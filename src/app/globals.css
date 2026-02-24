@@ -32,6 +32,22 @@
   /* Hero section accent wood color */
   --accent-wood: #5d3a1a;
   --primary-overlay: rgba(0, 0, 0, 0.3);
+
+  /* ── Primitive: wood/text (hero & headings) ───────────────────────────────── */
+  --color-wood-text: #3d2e24;
+  --color-wood-text-muted: #3d2e24e6; /* 90% opacity */
+  --color-wood-bar: #2d2218;
+  --color-wood-light: #ba8c63; /* SVG filter / lighting */
+
+  /* ── Semantic: hero section tokens (reference primitives) ─────────────────── */
+  --hero-headline-color: var(--color-wood-text);
+  --hero-headline-muted: var(--color-wood-text-muted);
+  --hero-cta-primary-bg: var(--color-accent-orange-light);
+  --hero-cta-primary-bg-hover: var(--color-accent-orange);
+  --hero-cta-secondary-border: var(--accent-wood);
+  --hero-bar-bg: var(--color-wood-bar);
+  --hero-bar-text: #fff;
+  --hero-bar-icon: #fcd34d; /* amber-300 */
 }
 
 body {

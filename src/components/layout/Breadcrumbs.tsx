@@ -11,8 +11,12 @@ import { usePathname } from 'next/navigation';
 export default function Breadcrumbs() {
   const pathname = usePathname();
 
-  // Don't show breadcrumbs on home page or admin pages
-  if (pathname === '/' || pathname.startsWith('/admin')) {
+  // Don't show breadcrumbs on home page, admin pages, or pages that render their own breadcrumb
+  const hasOwnBreadcrumb =
+    /^\/products\/[^/]+$/.test(pathname) ||      // product detail
+    /^\/categories\/[^/]+$/.test(pathname);       // category page
+
+  if (pathname === '/' || pathname.startsWith('/admin') || hasOwnBreadcrumb) {
     return null;
   }
 

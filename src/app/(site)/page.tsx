@@ -132,7 +132,6 @@ export default async function Home() {
         contactInfo={settings.contactInfo}
         siteName={settings.siteName}
         logo={settings.logo}
-        navigation={settings.navigation}
       />
 
       {/* 2. Pain Points + 3. Solution (See It. Choose Confidently.) */}

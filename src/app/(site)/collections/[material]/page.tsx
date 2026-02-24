@@ -74,7 +74,7 @@ export default async function CollectionMaterialPage({
   const visibility = getVisibilityOptions(role);
   const products = await sanityFetch<Product[]>({
     query: getVisibleProductsByCategoryAndTypeQuery,
-    params: { category: mat.categorySlug, type: null, visibility },
+    params: { category: mat.categorySlug, materialType: mat.materialType, type: "", visibility },
     tags: ["product"],
     revalidate: role === "public" ? 60 : 0,
   });

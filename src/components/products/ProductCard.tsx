@@ -7,6 +7,8 @@ interface ProductCardProps {
   title?: string;
   slug?: string;
   price?: number;
+  salePrice?: number | null;
+  isOnSale?: boolean;
   priceUnit?: string;
   image?: SanityImageValue;
 }
@@ -21,12 +23,15 @@ export default function ProductCard({
   title,
   slug,
   price,
+  salePrice,
+  isOnSale,
   priceUnit = "/ sq ft",
   image,
 }: ProductCardProps) {
   if (!slug) return null;
 
   const hasImage = !!image?.asset?._ref;
+  const displayPrice = isOnSale && salePrice != null ? salePrice : price;
 
   return (
     <Link
@@ -68,11 +73,20 @@ export default function ProductCard({
             {title}
           </h3>
         )}
-        {price != null && price > 0 && (
-          <p className="mt-1 text-sm text-gray-600">
-            From ${price.toFixed(2)} {priceUnit}
-          </p>
-        )}
+        {displayPrice != null && displayPrice > 0 ? (
+          <div className="mt-1 flex items-baseline gap-2">
+            {isOnSale && salePrice != null && price != null && price > 0 && (
+              <span className="text-sm text-gray-400 line-through">
+                ${price.toFixed(2)}
+              </span>
+            )}
+            <span className={`text-sm ${isOnSale && salePrice != null ? "font-semibold text-accent-orange" : "text-gray-600"}`}>
+              From ${displayPrice.toFixed(2)} {priceUnit}
+            </span>
+          </div>
+        ) : displayPrice === 0 ? (
+          <p className="mt-1 text-sm text-gray-500">Contact for price</p>
+        ) : null}
       </div>
     </Link>
   );

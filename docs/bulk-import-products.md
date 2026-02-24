@@ -1,60 +1,201 @@
-# Thêm sản phẩm hàng loạt (Bulk Import Products)
+# Bulk Import Products
 
-Schema sản phẩm đã được đồng bộ với thẻ chi tiết sản phẩm trên website (tên, giá, mô tả, ảnh lớn, và toàn bộ thông số kỹ thuật). Dưới đây là các cách để thêm/cập nhật thông tin sản phẩm hàng loạt.
+The product schema maps 1-to-1 with the product detail card on the website (title, price, description, images, and all 25 structured specifications). This guide explains every way to add or update products in bulk.
 
-## 1. Cấu trúc dữ liệu sản phẩm (đồng bộ với ảnh chi tiết)
+---
 
-- **Thông tin cơ bản:** `title`, `description`, `price`, `priceUnit`, `images`
-- **Thông số kỹ thuật (structured):** Species, W, T, L, Prefinished, Surface, Stain, Color, Cut, Grade, Edge, Traffic, Application, Installation, Pattern, Source, Eco, Janka Rate, Radiant heat rated, Air moisture, Trim & moulding, Stock, Delivery time, Sft/box, Weight/box, Box dimensions
-- **Bổ sung:** `specs` (mảng key-value) cho các thuộc tính tùy chỉnh không nằm trong danh sách trên.
+## Quick start
 
-## 2. Cách thêm sản phẩm hàng loạt
+```bash
+# 1. Copy the template and fill in your data
+cp scripts/products-bulk-template.csv scripts/my-products.csv
 
-### Cách A: Sanity Studio (từng sản phẩm hoặc vài sản phẩm)
+# 2. Preview — no data is written
+npm run import:products -- scripts/my-products.csv --dry-run
 
-1. Vào **Sanity Studio** (admin) → **Product**.
-2. Tạo document mới, điền **Product specifications** (khối thông số) và các trường còn lại.
-3. Phù hợp khi số lượng ít hoặc cần chỉnh từng sản phẩm.
+# 3. Import for real (you will be asked to confirm)
+npm run import:products -- scripts/my-products.csv
+```
 
-### Cách B: CSV + script import (khuyến nghị cho hàng loạt)
+---
 
-1. **Chuẩn bị file CSV** theo template `scripts/products-bulk-template.csv`:
-   - Cột: `title`, `slug`, `description`, `price`, `priceUnit`, `categoryId`, `species`, `width`, `thickness`, … (đúng tên cột trong template).
-   - Một dòng = một sản phẩm; để trống nếu không có giá trị.
-2. **Chạy script import** (cần implement script đọc CSV và gọi Sanity API với `createOrReplace` hoặc `create`), ví dụ:
-   ```bash
-   npx ts-node scripts/import-products-from-csv.ts scripts/products-bulk.csv
-   ```
-3. **Category:** trong CSV dùng `categoryId` = `_id` của category trong Sanity (ví dụ `category-hardwood`). Tạo sẵn category trong Studio hoặc trong seed.
+## CSV format
 
-### Cách C: Mở rộng seed (scripts/seed.ts)
+Each row = one product. See **`scripts/products-bulk-template.csv`** for a working example.
 
-- Thêm nhiều block `client.createOrReplace({ _type: 'product', ... })` với đầy đủ `specifications` (và `specs` nếu cần).
-- Chạy:
-  ```bash
-  npx ts-node scripts/seed.ts
-  ```
-- Phù hợp khi dữ liệu nằm trong code và cần deploy/seed lại môi trường.
+### Required columns
 
-### Cách D: Sanity CLI / API từ Excel hoặc Google Sheet
+| Column | Type | Notes |
+|--------|------|-------|
+| `title` | string | Product name, max 150 chars |
+| `price` | number | Must be ≥ 0 |
 
-1. Xuất dữ liệu từ Excel/Google Sheet ra **CSV** (cột trùng với template).
-2. Dùng script tương tự Cách B để đọc CSV và gửi lên Sanity qua API (token ghi trong `.env.local`).
+### Core columns
 
-## 3. Template CSV
+| Column | Type | Notes |
+|--------|------|-------|
+| `slug` | string | URL slug — auto-generated from `title` if blank |
+| `description` | string | Short description, max 500 chars |
+| `priceUnit` | string | `/ sq ft` · `/ box` · `/ piece` · `/ linear ft` |
+| `categoryId` | string | Sanity `_id` of the category (e.g. `category-hardwood`) |
+| `visibility` | string | `public` (default) · `wholesale` · `hidden` |
+| `isFeatured` | boolean | `true` or `false` (default `false`) |
 
-File mẫu: **`scripts/products-bulk-template.csv`**. Các cột tương ứng với schema:
+### Image column
 
-- `title`, `slug`, `description`, `price`, `priceUnit`, `categoryId`
-- `species`, `width`, `thickness`, `length`, `prefinished`, `surface`, `stain`, `color`, `cut`, `grade`, `edge`, `traffic`, `application`, `installation`, `pattern`, `source`, `eco`, `jankaRate`, `radiantHeatRated`, `airMoisture`, `trimMoulding`, `stock`, `deliveryTime`, `sftPerBox`, `weightPerBox`, `boxDimensions`
-- `visibility` (public | wholesale | hidden), `isFeatured` (true | false)
+| Column | Format | Example |
+|--------|--------|---------|
+| `image_urls` | Pipe-separated public URLs | `https://cdn.example.com/img1.jpg\|https://cdn.example.com/img2.jpg` |
 
-Ảnh sản phẩm vẫn cần upload trong Sanity Studio (hoặc qua Asset API) rồi gắn vào document; CSV chỉ nên chứa URL hoặc path nếu script của bạn hỗ trợ upload từ URL.
+- URLs are downloaded and uploaded to Sanity as native assets.
+- The **first URL** becomes the primary (hero) image.
+- Add as many images as needed — just separate them with `|`.
+- Leave blank to skip images and add them later in Studio.
+- Supported formats: JPEG, PNG, WebP, AVIF, GIF, TIFF, SVG.
 
-## 4. Lưu ý
+### Specification columns (all optional — leave blank if not applicable)
 
-- **Slug:** mỗi sản phẩm cần `slug` duy nhất (thường từ `title`).
-- **Category:** phải tồn tại trong dataset (tạo trước bằng Studio hoặc seed).
-- **Token:** script ghi dữ liệu cần `SANITY_API_WRITE_TOKEN` trong `.env.local`.
+| Column | Example value |
+|--------|--------------|
+| `species` | `W. Oak` |
+| `width` | `7` |
+| `thickness` | `5/8` |
+| `length` | `2-7` |
+| `prefinished` | `Urethane + Alum. Oxide` |
+| `surface` | `Wire Brush` |
+| `stain` | `White wash` |
+| `color` | `Translucent Grain Wht. Wsh.` |
+| `cut` | `Flat` |
+| `grade` | `Character (A, B, C, D)` |
+| `edge` | `Microbevel` |
+| `traffic` | `Medium / High` |
+| `application` | `Residential / Commercial` |
+| `installation` | `Glue, Nail` |
+| `pattern` | `Random` |
+| `source` | `N. America` |
+| `eco` | `Responsibly Harvested` |
+| `jankaRate` | `2300` |
+| `radiantHeatRated` | `Yes (conditioned)` |
+| `airMoisture` | `40-50%` |
+| `trimMoulding` | `Custom as needed` |
+| `stock` | `In stock` |
+| `deliveryTime` | `3-5 days` |
+| `sftPerBox` | `32` |
+| `weightPerBox` | `52Lb` |
+| `boxDimensions` | `7'x7"` |
 
-Sau khi import, trang chi tiết sản phẩm sẽ hiển thị đúng **Product specifications** và **Additional specifications** (specs) như trên thẻ chi tiết đã đồng bộ.
+---
+
+## Import script options
+
+```
+npx tsx scripts/import-products-from-csv.ts <csv-file> [options]
+```
+
+| Option | Description |
+|--------|-------------|
+| _(none)_ | Full import — products + images |
+| `--dry-run` | Preview only, nothing is written to Sanity |
+| `--skip-images` | Import product data only, skip image uploads |
+
+### Example output
+
+```
+📄  CSV loaded: 12 row(s) from "my-products.csv"
+🖼   Rows with image_urls: 10
+✅  Valid products: 12  |  Skipped: 0
+
+📋  Preview (first 5):
+   • [product-white-alaska]  "White Alaska"  $8.5  category: category-hardwood  specs: 25  images: 2  visibility: public
+   • [product-dark-walnut]   "Dark Walnut"   $12   category: category-hardwood  specs: 18  images: 1  visibility: public
+   …
+
+⚠️   This will createOrReplace 12 product(s) in Sanity (production / abc123) + upload images for 10 product(s).
+    Continue? [y/N] y
+
+🚀  Importing 12 product(s)…
+
+  ✅  [1/12]  "White Alaska"
+      📷  Uploading 2 image(s) for "White Alaska"…
+         ✅  [1/2]  https://cdn.example.com/white-alaska-1.jpg
+         ✅  [2/2]  https://cdn.example.com/white-alaska-2.jpg
+  ✅  [2/12]  "Dark Walnut"  (1 image(s))
+  …
+
+─────────────────────────────────────────
+✅  Success: 12   ❌  Failed: 0
+
+🎉  Import complete!
+```
+
+---
+
+## Setup
+
+### 1. Get a Sanity write token
+
+1. Go to [sanity.io/manage](https://sanity.io/manage) → your project → **API** → **Tokens**
+2. Click **Add API token** → name it `Import Script` → role **Editor** → **Save**
+3. Copy the token
+
+### 2. Add to `.env.local`
+
+```env
+SANITY_API_WRITE_TOKEN=sk...your-token-here
+```
+
+### 3. Ensure categories exist
+
+Categories must exist in Sanity before you reference them in `categoryId`. Create them via Studio or run:
+
+```bash
+npm run seed
+```
+
+---
+
+## Default category IDs (from seed.ts)
+
+| Category | `categoryId` value |
+|----------|--------------------|
+| Hardwood Flooring | `category-hardwood` |
+| Luxury Vinyl | `category-vinyl` |
+| Laminate | `category-laminate` |
+| Engineered Hardwood | `category-engineered-hardwood` |
+| Waterproof Laminate | `category-waterproof-laminate` |
+| Cabinetry | `category-cabinetry` |
+| Tile | `category-tile` |
+| Carpet Tile | `category-carpet-tile` |
+
+To find the `_id` of a custom category, open Studio → Vision tool and run:
+
+```groq
+*[_type == "category"]{ _id, title }
+```
+
+---
+
+## Other import methods
+
+### Sanity Studio (manual, one at a time)
+
+Go to `/admin` → **Product** → **New document**. Best for small batches or when you need fine-grained control over each product.
+
+### Extend seed.ts (code-based, for dev/staging)
+
+Add `client.createOrReplace({ _type: 'product', ... })` blocks to `scripts/seed.ts` and run:
+
+```bash
+npm run seed
+```
+
+Best when product data lives in code and you need to re-seed environments.
+
+---
+
+## Notes
+
+- The script uses `createOrReplace` — re-running the same CSV will **update** existing products (matched by `_id = product-{slug}`).
+- Images are uploaded sequentially per product to keep output readable.
+- Sanity deduplicates assets by content hash — uploading the same image twice does not create a duplicate asset.
+- A failed image upload does **not** abort the product import — the product is saved without that image and a warning is printed.

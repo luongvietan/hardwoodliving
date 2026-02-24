@@ -8,7 +8,7 @@ import ProductPrice from "@/components/products/ProductPrice";
 import JsonLd, { buildProductJsonLd, buildBreadcrumbJsonLd } from "@/components/seo/JsonLd";
 import { sanityFetch } from "@/lib/sanity/fetch";
 import { urlFor } from "@/lib/sanity/image";
-import { getVisibleProductBySlugQuery, getPublicProductSlugsQuery } from "@/lib/sanity/queries";
+import { getVisibleProductBySlugQuery, getPublicProductSlugsQuery, getAllProductSlugsQuery } from "@/lib/sanity/queries";
 import { getUserRole, getVisibilityOptions } from "@/lib/sanity/visibility";
 import { notFound } from "next/navigation";
 import { SITE_URL } from "@/lib/constants";
@@ -39,8 +39,9 @@ interface Product {
 }
 
 export async function generateStaticParams() {
+  // Pre-render all non-hidden products (public + wholesale) so trade users get fast ISR pages
   const products = await sanityFetch<{ slug: string }[]>({
-    query: getPublicProductSlugsQuery,
+    query: getAllProductSlugsQuery,
     tags: ["product"],
   });
   return products.map((p) => ({ slug: p.slug }));
@@ -125,21 +126,41 @@ export default async function ProductPage({
       <JsonLd data={buildBreadcrumbJsonLd(breadcrumbItems)} />
 
       {/* Breadcrumb */}
-      <nav aria-label="Breadcrumb" className="mb-6 flex items-center gap-2 text-sm text-gray-500">
-        <Link href="/" className="uppercase text-accent-orange hover:text-accent-orange-hover">Home</Link>
-        <span>/</span>
-        {product.category && (
-          <>
-            <Link
-              href={`/categories/${product.category.slug.current}`}
-              className="uppercase text-accent-orange hover:text-accent-orange-hover"
-            >
-              {product.category.title}
+      <nav aria-label="Breadcrumb" className="mb-6">
+        <ol className="flex flex-wrap items-center gap-1 text-sm text-gray-500">
+          <li>
+            <Link href="/" className="uppercase text-accent-orange transition-colors hover:text-accent-orange-hover">
+              Home
             </Link>
-            <span>/</span>
-          </>
-        )}
-        <span className="font-medium text-gray-900">{product.title}</span>
+          </li>
+          <li className="flex items-center gap-1">
+            <svg className="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" aria-hidden="true">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+            </svg>
+            <Link href="/products" className="uppercase text-accent-orange transition-colors hover:text-accent-orange-hover">
+              Products
+            </Link>
+          </li>
+          {product.category && (
+            <li className="flex items-center gap-1">
+              <svg className="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+              </svg>
+              <Link
+                href={`/categories/${product.category.slug.current}`}
+                className="uppercase text-accent-orange transition-colors hover:text-accent-orange-hover"
+              >
+                {product.category.title}
+              </Link>
+            </li>
+          )}
+          <li className="flex items-center gap-1">
+            <svg className="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" aria-hidden="true">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+            </svg>
+            <span className="font-medium text-gray-900" aria-current="page">{product.title}</span>
+          </li>
+        </ol>
       </nav>
 
       {/* Product details: left = image + title/price/description, right = specifications */}

@@ -116,7 +116,12 @@ export default async function CategoryPage({
   const descendantSlugs = getDescendantSlugs(category.slug.current, allWithParent);
   const categorySlugs = [category.slug.current, ...descendantSlugs];
 
-  const defaultCategorySlug = ancestorChain.length > 0 ? ancestorChain[0].slug.current : category.slug.current;
+  // Root ancestor = ancestorChain[0] (array is root→immediate parent order)
+  // If this category has a parent, the top-level category is the root ancestor (or parent if depth=1)
+  // activeCategorySlug drives the category filter pill; activeTypeSlug drives the subtype pill
+  const rootAncestor = ancestorChain.length > 0 ? ancestorChain[0] : null;
+  const defaultCategorySlug = rootAncestor ? rootAncestor.slug.current : category.slug.current;
+  // defaultTypeSlug: if viewing a subcategory, pre-select it as the active type
   const defaultTypeSlug = categoryFilterParam ? undefined : (category.parent ? category.slug.current : undefined);
   const activeCategorySlug = categoryFilterParam ?? defaultCategorySlug;
   const activeTypeSlug = typeFilterParam ?? defaultTypeSlug;

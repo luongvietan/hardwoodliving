@@ -75,6 +75,13 @@ const mockSubcategories = [
   mockAllCategories[2],
 ];
 
+// Flat parent-slug map for getDescendantSlugs (getAllCategoriesWithParentQuery)
+const mockAllWithParent = [
+  { slug: "hardwood-flooring", parentSlug: null },
+  { slug: "engineered-wood", parentSlug: null },
+  { slug: "wide-plank", parentSlug: "hardwood-flooring" },
+];
+
 beforeEach(() => {
   vi.mocked(sanityFetch).mockReset();
 });
@@ -84,10 +91,11 @@ describe("Category Page", () => {
 
   it("renders category title as heading", async () => {
     vi.mocked(sanityFetch)
-      .mockResolvedValueOnce(mockCategory) // category
-      .mockResolvedValueOnce(mockAllCategories) // all categories
-      .mockResolvedValueOnce(mockSubcategories) // subcategories
-      .mockResolvedValueOnce(mockProducts); // products
+      .mockResolvedValueOnce(mockCategory)       // getCategoryBySlugQuery
+      .mockResolvedValueOnce(mockAllCategories)  // getAllCategoriesQuery (Promise.all[0])
+      .mockResolvedValueOnce(mockAllWithParent)  // getAllCategoriesWithParentQuery (Promise.all[1])
+      .mockResolvedValueOnce(mockSubcategories)  // getSubcategoriesByParentSlugQuery (Promise.all[2])
+      .mockResolvedValueOnce(mockProducts);      // getVisibleProductsByCategoryAndDescendantsQuery
     await renderCategoryPage();
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Hardwood Flooring");
   });
@@ -96,6 +104,7 @@ describe("Category Page", () => {
     vi.mocked(sanityFetch)
       .mockResolvedValueOnce(mockCategory)
       .mockResolvedValueOnce(mockAllCategories)
+      .mockResolvedValueOnce(mockAllWithParent)
       .mockResolvedValueOnce(mockSubcategories)
       .mockResolvedValueOnce(mockProducts);
     await renderCategoryPage();
@@ -106,6 +115,7 @@ describe("Category Page", () => {
     vi.mocked(sanityFetch)
       .mockResolvedValueOnce(mockCategory)
       .mockResolvedValueOnce(mockAllCategories)
+      .mockResolvedValueOnce(mockAllWithParent)
       .mockResolvedValueOnce(mockSubcategories)
       .mockResolvedValueOnce(mockProducts);
     await renderCategoryPage();
@@ -117,6 +127,7 @@ describe("Category Page", () => {
     vi.mocked(sanityFetch)
       .mockResolvedValueOnce(mockCategory)
       .mockResolvedValueOnce(mockAllCategories)
+      .mockResolvedValueOnce(mockAllWithParent)
       .mockResolvedValueOnce(mockSubcategories)
       .mockResolvedValueOnce(mockProducts);
     await renderCategoryPage();
@@ -132,6 +143,7 @@ describe("Category Page", () => {
     vi.mocked(sanityFetch)
       .mockResolvedValueOnce(mockCategory)
       .mockResolvedValueOnce(mockAllCategories)
+      .mockResolvedValueOnce(mockAllWithParent)
       .mockResolvedValueOnce(mockSubcategories)
       .mockResolvedValueOnce(mockProducts);
     await renderCategoryPage();
@@ -145,6 +157,7 @@ describe("Category Page", () => {
     vi.mocked(sanityFetch)
       .mockResolvedValueOnce(mockCategory)
       .mockResolvedValueOnce(mockAllCategories)
+      .mockResolvedValueOnce(mockAllWithParent)
       .mockResolvedValueOnce(mockSubcategories)
       .mockResolvedValueOnce([]);
     await renderCategoryPage();
@@ -158,6 +171,7 @@ describe("Category Page", () => {
       .mockResolvedValueOnce(null)
       .mockResolvedValueOnce([])
       .mockResolvedValueOnce([])
+      .mockResolvedValueOnce([])
       .mockResolvedValueOnce([]);
 
     await expect(renderCategoryPage("nonexistent")).rejects.toThrow("NEXT_NOT_FOUND");
@@ -169,6 +183,7 @@ describe("Category Page", () => {
     vi.mocked(sanityFetch)
       .mockResolvedValueOnce(mockCategory)
       .mockResolvedValueOnce(mockAllCategories)
+      .mockResolvedValueOnce(mockAllWithParent)
       .mockResolvedValueOnce(mockSubcategories)
       .mockResolvedValueOnce(mockProducts);
     const { container } = await renderCategoryPage();
@@ -181,11 +196,12 @@ describe("Category Page", () => {
     vi.mocked(sanityFetch)
       .mockResolvedValueOnce(mockCategory)
       .mockResolvedValueOnce(mockAllCategories)
+      .mockResolvedValueOnce(mockAllWithParent)
       .mockResolvedValueOnce(mockSubcategories)
       .mockResolvedValueOnce(mockProducts);
     await renderCategoryPage();
-    expect(screen.getByText(/Filter by Category/i)).toBeInTheDocument();
-    expect(screen.getByText(/Filter by Product Type/i)).toBeInTheDocument();
+    // ProductFilter renders category buttons — check for the top-level category button
+    expect(screen.getByRole("button", { name: "Hardwood Flooring" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Wide Plank" })).toBeInTheDocument();
   });
 
@@ -193,6 +209,7 @@ describe("Category Page", () => {
     vi.mocked(sanityFetch)
       .mockResolvedValueOnce(mockCategory)
       .mockResolvedValueOnce(mockAllCategories)
+      .mockResolvedValueOnce(mockAllWithParent)
       .mockResolvedValueOnce(mockSubcategories)
       .mockResolvedValueOnce(mockProducts);
     await renderCategoryPage();

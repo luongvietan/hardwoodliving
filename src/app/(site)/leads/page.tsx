@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import Container from "@/components/layout/Container";
 import { createClient } from "@/lib/supabase/server";
@@ -48,13 +49,34 @@ export default async function LeadsPage() {
   return (
     <Container className="py-16">
       {/* Page Header */}
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight text-gray-900">
-          Leads Management
-        </h1>
-        <p className="mt-1 text-sm text-gray-600">
-          View and manage contact inquiries and trade registrations.
-        </p>
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight text-gray-900">
+            Leads Management
+          </h1>
+          <p className="mt-1 text-sm text-gray-600">
+            View and manage contact inquiries and trade registrations.
+          </p>
+        </div>
+
+        {/* Admin nav links */}
+        <div className="flex items-center gap-2">
+          <span className="rounded border border-accent-orange bg-orange-50 px-3 py-1.5 text-sm font-medium text-accent-orange">
+            Leads
+          </span>
+          <Link
+            href="/leads/import"
+            className="rounded border border-gray-200 px-3 py-1.5 text-sm text-gray-600 hover:border-gray-400 hover:text-gray-800"
+          >
+            Import Products
+          </Link>
+          <Link
+            href="/admin"
+            className="rounded border border-gray-200 px-3 py-1.5 text-sm text-gray-600 hover:border-gray-400 hover:text-gray-800"
+          >
+            Studio
+          </Link>
+        </div>
       </div>
 
       {/* Error banner */}
