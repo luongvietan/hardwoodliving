@@ -4,6 +4,7 @@ import { sanityFetch } from "@/lib/sanity/fetch";
 import { getBestValueProductsQuery } from "@/lib/sanity/queries";
 import { getUserRole, getVisibilityOptions } from "@/lib/sanity/visibility";
 import { SITE_URL } from "@/lib/constants";
+import type { SanityImageValue } from "@/lib/sanity/types";
 import BestValueCatalog from "./BestValueCatalog";
 
 export const metadata: Metadata = {
@@ -24,7 +25,7 @@ interface Product {
   isOnSale?: boolean;
   isBestValue?: boolean;
   priceUnit?: string;
-  images?: { asset?: { _ref: string } }[];
+  images?: SanityImageValue[];
   category?: {
     _id: string;
     title: string;
