@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Container from "@/components/layout/Container";
 import ContactForm from "@/components/forms/ContactForm";
 import { getSiteSettings } from "@/lib/sanity/siteSettings";
+import { SITE_URL } from "@/lib/constants";
 
 export const metadata: Metadata = {
   title: "Contact Us | Book a Showroom Visit – Hardwood Living Vancouver",
