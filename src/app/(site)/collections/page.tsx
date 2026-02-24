@@ -6,9 +6,23 @@ import { SITE_URL } from "@/lib/constants";
 import { COLLECTION_MATERIALS } from "@/lib/url-structure";
 
 export const metadata: Metadata = {
-  title: "Collections | Premium Flooring",
+  title: "Flooring Collections | Hardwood, Engineered, Vinyl & Laminate",
   description:
-    "Explore hardwood, engineered, luxury vinyl, laminate, and more. Find the perfect floor for your home.",
+    "Explore our premium flooring collections — hardwood, engineered wood, luxury vinyl plank (LVP), and laminate. Find the perfect floor for your home in Vancouver, BC.",
+  keywords: [
+    "flooring collections Canada",
+    "hardwood flooring types",
+    "engineered wood flooring",
+    "luxury vinyl plank",
+    "laminate flooring",
+    "flooring styles Vancouver",
+  ],
+  openGraph: {
+    title: "Flooring Collections | Hardwood, Engineered, Vinyl & Laminate",
+    description:
+      "Explore premium flooring collections — hardwood, engineered wood, luxury vinyl plank, and laminate. Visit our Vancouver showroom.",
+    url: `${SITE_URL}/collections`,
+  },
   alternates: { canonical: `${SITE_URL}/collections` },
 };
 

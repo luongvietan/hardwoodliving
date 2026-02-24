@@ -37,10 +37,24 @@ interface Product {
 }
 
 export const metadata: Metadata = {
-  title: "Product Catalog",
-  description: "Browse our complete range of premium hardwood flooring products by category.",
+  title: "Flooring Product Catalog | Shop Hardwood, Vinyl & Laminate",
+  description:
+    "Browse our complete range of premium flooring products — hardwood, engineered wood, luxury vinyl, and laminate. Filter by category and find your perfect floor.",
+  keywords: [
+    "buy hardwood flooring",
+    "flooring products Canada",
+    "shop hardwood floors online",
+    "engineered wood floors",
+    "vinyl flooring products",
+  ],
+  openGraph: {
+    title: "Flooring Product Catalog | Shop Hardwood, Vinyl & Laminate",
+    description:
+      "Browse premium flooring products — hardwood, engineered wood, luxury vinyl, and laminate. Filter by category at Hardwood Living.",
+    url: `${SITE_URL}/products`,
+  },
   alternates: {
-    canonical: "/products",
+    canonical: `${SITE_URL}/products`,
   },
 };
 

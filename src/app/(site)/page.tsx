@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import type { SanityImageValue } from "@/lib/sanity/types";
 import HeroSection from "@/components/home/HeroSection";
 import AnimatedSection from "@/components/ui/AnimatedSection";
@@ -10,7 +11,11 @@ import LimitedTimeOffer from "@/components/home/LimitedTimeOffer";
 import Testimonials from "@/components/home/Testimonials";
 import Faq from "@/components/home/Faq";
 import BookVisitForm from "@/components/home/BookVisitForm";
-import JsonLd, { buildOrganizationJsonLd } from "@/components/seo/JsonLd";
+import JsonLd, {
+  buildLocalBusinessJsonLd,
+  buildWebSiteJsonLd,
+  buildFaqJsonLd,
+} from "@/components/seo/JsonLd";
 import { sanityFetch } from "@/lib/sanity/fetch";
 import { getHomepageQuery } from "@/lib/sanity/queries";
 import { getSiteSettings } from "@/lib/sanity/siteSettings";
@@ -85,6 +90,28 @@ interface HomepageData {
   };
 }
 
+export const metadata: Metadata = {
+  title: "Hardwood Living | Premium Hardwood Flooring in Canada",
+  description:
+    "Shop premium hardwood, engineered wood, luxury vinyl, and laminate flooring in Vancouver, BC. Visit our showroom for expert guidance and personalized recommendations.",
+  keywords: [
+    "hardwood flooring Vancouver",
+    "engineered hardwood BC",
+    "luxury vinyl plank Canada",
+    "flooring showroom Vancouver",
+    "hardwood flooring installation BC",
+  ],
+  openGraph: {
+    title: "Hardwood Living | Premium Hardwood Flooring in Canada",
+    description:
+      "Shop premium hardwood, engineered wood, luxury vinyl, and laminate flooring in Vancouver, BC. Expert guidance, stress-free showroom experience.",
+    url: SITE_URL,
+  },
+  alternates: {
+    canonical: SITE_URL,
+  },
+};
+
 /** Optimal homepage: Hero → Pain Points → Solution → Core Collections (4) → Specialty → Why Us → Projects → Limited Offer → Testimonials → FAQ (3) → Booking */
 export default async function Home() {
   let data: HomepageData | null = null;
@@ -108,15 +135,52 @@ export default async function Home() {
   const testimonials = (data?.testimonials ?? []).slice(0, 4);
   const faqItems = (data?.faq?.items ?? []).slice(0, 3);
 
+  const contactInfo = settings.contactInfo;
+
   return (
     <>
       <JsonLd
-        data={buildOrganizationJsonLd({
-          name: settings.siteName || "",
+        data={buildWebSiteJsonLd({
+          name: settings.siteName || "Hardwood Living",
           url: SITE_URL,
           description,
         })}
       />
+      <JsonLd
+        data={buildLocalBusinessJsonLd({
+          name: settings.siteName || "Hardwood Living",
+          url: SITE_URL,
+          description,
+          phone: contactInfo?.phone,
+          email: contactInfo?.email,
+          address: contactInfo?.address
+            ? {
+                streetAddress: contactInfo.address,
+                addressLocality: "Vancouver",
+                addressRegion: "BC",
+                postalCode: "V6B 1A1",
+                addressCountry: "CA",
+              }
+            : undefined,
+          openingHours: ["Mo-Fr 09:00-18:00", "Sa 10:00-16:00"],
+          priceRange: "$$",
+        })}
+      />
+      {faqItems.length > 0 && (
+        <JsonLd
+          data={buildFaqJsonLd(
+            faqItems
+              .filter(
+                (item): item is { question: string; answer: string } =>
+                  !!item.question && !!item.answer
+              )
+              .map((item) => ({
+                question: item.question,
+                answer: item.answer,
+              }))
+          )}
+        />
+      )}
 
       {/* 1. Hero — Find Your Perfect Hardfloor, 5.0 rating, 2 CTAs */}
       <HeroSection

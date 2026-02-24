@@ -7,9 +7,32 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/admin", "/admin/", "/api", "/api/"],
+        disallow: [
+          "/admin",
+          "/admin/",
+          "/api/",
+          "/leads/",
+          "/trades/dashboard",
+          "/trades/login",
+          "/trades/register",
+          "/_next/",
+          "/studio/",
+        ],
+      },
+      {
+        userAgent: "GPTBot",
+        disallow: ["/"],
+      },
+      {
+        userAgent: "ChatGPT-User",
+        disallow: ["/"],
+      },
+      {
+        userAgent: "CCBot",
+        disallow: ["/"],
       },
     ],
     sitemap: `${SITE_URL}/sitemap.xml`,
+    host: SITE_URL,
   };
 }

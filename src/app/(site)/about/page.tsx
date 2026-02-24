@@ -24,9 +24,21 @@ interface HomepageAbout {
 }
 
 export const metadata: Metadata = {
-  title: "About Us | Hardwood Living",
+  title: "About Us | Hardwood Living – Vancouver Flooring Showroom",
   description:
-    "Learn about our showroom, our team, and why homeowners and designers trust us for premium flooring.",
+    "Learn about Hardwood Living — Vancouver's trusted flooring showroom. We help homeowners and designers find premium hardwood, engineered wood, vinyl, and laminate floors.",
+  keywords: [
+    "about Hardwood Living",
+    "flooring showroom Vancouver",
+    "flooring experts BC",
+    "trusted flooring company Canada",
+  ],
+  openGraph: {
+    title: "About Us | Hardwood Living – Vancouver Flooring Showroom",
+    description:
+      "Learn about Hardwood Living — Vancouver's trusted flooring showroom since 2005. Expert guidance for homeowners, designers, and contractors.",
+    url: `${SITE_URL}/about`,
+  },
   alternates: { canonical: `${SITE_URL}/about` },
 };
 

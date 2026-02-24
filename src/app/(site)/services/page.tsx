@@ -6,9 +6,23 @@ import { SITE_URL } from "@/lib/constants";
 import { SERVICE_PAGES } from "@/lib/url-structure";
 
 export const metadata: Metadata = {
-  title: "Services | Installation, Sanding & Maintenance",
+  title: "Flooring Services | Installation, Sanding & Maintenance in Vancouver",
   description:
-    "Professional floor installation, sanding & finishing, and maintenance services. Expert guidance for your flooring project.",
+    "Professional hardwood floor installation, sanding & finishing, and maintenance services in Vancouver, BC. Expert guidance from first visit to finished floor.",
+  keywords: [
+    "hardwood floor installation Vancouver",
+    "floor sanding and finishing BC",
+    "flooring maintenance Vancouver",
+    "hardwood floor refinishing",
+    "flooring contractor Vancouver",
+    "floor installation service Canada",
+  ],
+  openGraph: {
+    title: "Flooring Services | Installation, Sanding & Maintenance in Vancouver",
+    description:
+      "Professional hardwood floor installation, sanding, finishing, and maintenance in Vancouver, BC. Expert guidance every step of the way.",
+    url: `${SITE_URL}/services`,
+  },
   alternates: { canonical: `${SITE_URL}/services` },
 };
 

@@ -4,11 +4,23 @@ import ContactForm from "@/components/forms/ContactForm";
 import { getSiteSettings } from "@/lib/sanity/siteSettings";
 
 export const metadata: Metadata = {
-  title: "Contact Us",
+  title: "Contact Us | Book a Showroom Visit – Hardwood Living Vancouver",
   description:
-    "Get in touch with our team for consultations, quotes, and inquiries about premium hardwood products.",
+    "Contact Hardwood Living for flooring consultations, quotes, and showroom visits in Vancouver, BC. Call 604-726-5453 or fill out our online form.",
+  keywords: [
+    "contact flooring store Vancouver",
+    "book showroom visit Vancouver",
+    "flooring consultation BC",
+    "hardwood flooring quote Vancouver",
+  ],
+  openGraph: {
+    title: "Contact Us | Book a Showroom Visit – Hardwood Living Vancouver",
+    description:
+      "Get in touch with Hardwood Living for consultations, quotes, and showroom visits. Vancouver, BC flooring experts.",
+    url: `${SITE_URL}/contact`,
+  },
   alternates: {
-    canonical: "/contact",
+    canonical: `${SITE_URL}/contact`,
   },
 };
 
